@@ -1,11 +1,8 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Calendar, Award, BookOpen, GraduationCap, Mail, Linkedin, Youtube } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { motion } from "motion/react";
-import img1 from "figma:asset/b690ce40310c4d3f8c38a3ba50fae9abb9c07804.png";
-import img2 from "figma:asset/9996e2ba093b89781c6b1f1d9254ca6b6af72380.png";
-import img3 from "figma:asset/fd6057f056141d9a4a23bf3af9c98f3c990e1fdf.png";
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
@@ -18,198 +15,87 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     { id: 3, title: "Research Paper Submission Deadline", date: "2025-10-25", content: "Submit your research papers by October 25th." },
   ];
 
-  const facultyMembers = [
-    // Row 1
-    {
-      id: 1,
-      name: "Mrs. Keshika Jangde",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "N/A",
-      experience: "8.5 Yrs",
-      dateOfJoining: "24-08-2023",
-      image: img1,
-      imageIndex: 0
-    },
-    {
-      id: 2,
-      name: "Ms. Jyoti Gautam",
-      designation: "Assistant Professor",
-      qualification: "PG",
-      specialization: "N/A",
-      experience: "07 Yrs",
-      dateOfJoining: "05-05-2025",
-      image: img1,
-      imageIndex: 1
-    },
-    {
-      id: 3,
-      name: "Mr. Tegendra Kumar",
-      designation: "Assistant Professor",
-      qualification: "PG",
-      specialization: "N/A",
-      experience: "13 Yrs",
-      dateOfJoining: "04-11-2019",
-      image: img1,
-      imageIndex: 2
-    },
-    {
-      id: 4,
-      name: "Ms. Toshaniwali Bhargav",
-      designation: "Assistant Professor",
-      qualification: "PG",
-      specialization: "IoT, Deep Learning",
-      experience: "08 Yrs",
-      dateOfJoining: "N/A",
-      image: img1,
-      imageIndex: 3
-    },
-    {
-      id: 5,
-      name: "Ms. Upasana Khadatkar",
-      designation: "Assistant Professor",
-      qualification: "PG",
-      specialization: "Image Processing",
-      experience: "04 Yrs",
-      dateOfJoining: "N/A",
-      image: img1,
-      imageIndex: 4
-    },
-    // Row 2
-    {
-      id: 6,
-      name: "Ms. Prapti pandey",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Image Processing",
-      experience: "01 Yrs",
-      dateOfJoining: "05-08-2024",
-      image: img2,
-      imageIndex: 0
-    },
-    {
-      id: 7,
-      name: "Ms. Preeti Tuli",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "DBMS, ML, NLP",
-      experience: "24.9 Yrs",
-      dateOfJoining: "05-07-2016",
-      image: img2,
-      imageIndex: 1
-    },
-    {
-      id: 8,
-      name: "Ms. Shraddha Taunk",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Machine Learning",
-      experience: "9.5 Yrs",
-      dateOfJoining: "01-04-2021",
-      image: img2,
-      imageIndex: 2
-    },
-    {
-      id: 9,
-      name: "Ms. Poonam Gupta",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Machine Learning",
-      experience: "9 Yrs",
-      dateOfJoining: "18-03-2024",
-      image: img2,
-      imageIndex: 3
-    },
-    {
-      id: 10,
-      name: "Mr. Manoj Kumar Singh",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Computer Network",
-      experience: "15 Yrs",
-      dateOfJoining: "11-02-2022",
-      image: img2,
-      imageIndex: 4
-    },
-    {
-      id: 11,
-      name: "Mr. Narendra Kumar Dewangan",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Deep Learning",
-      experience: "17 Yrs",
-      dateOfJoining: "02-01-2023",
-      image: img2,
-      imageIndex: 5
-    },
-    // Row 3
-    {
-      id: 12,
-      name: "Mr. Saurabh Mishra",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Artificial Intelligence",
-      experience: "02 Yrs",
-      dateOfJoining: "14-08-2024",
-      image: img3,
-      imageIndex: 0
-    },
-    {
-      id: 13,
-      name: "Mr. Deepak Rao Khadatkar",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "AI, ML, DL",
-      experience: "17 Yrs",
-      dateOfJoining: "19-07-2019",
-      image: img3,
-      imageIndex: 1
-    },
-    {
-      id: 14,
-      name: "Mr. Vivek Kumar Soni",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Image Processing",
-      experience: "9.5 Yrs",
-      dateOfJoining: "23-08-2023",
-      image: img3,
-      imageIndex: 2
-    },
-    {
-      id: 15,
-      name: "Mr. Vaibhav Chandrakar",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Machine Learning",
-      experience: "12 Yrs",
-      dateOfJoining: "01-06-2023",
-      image: img3,
-      imageIndex: 3
-    },
-    {
-      id: 16,
-      name: "Mr. Sunil Kumar Dewangan",
-      designation: "Assistant Professor & Head",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Machine Learning, Soft Computing",
-      experience: "16.5 Yrs",
-      dateOfJoining: "N/A",
-      image: img3,
-      imageIndex: 4
-    },
-    {
-      id: 17,
-      name: "Ms. Priyata Mishra",
-      designation: "Assistant Professor",
-      qualification: "Ph.D (Pursuing)",
-      specialization: "Image Processing",
-      experience: "10 Yrs",
-      dateOfJoining: "23-08-2023",
-      image: img3,
-      imageIndex: 5
-    },
+  type Faculty = {
+    id: number;
+    name: string;
+    designation: string;
+    qualification: string;
+    specialization: string;
+    experience: string;
+    dateOfJoining: string;
+  };
+
+  const hod: Faculty & { title: string } = {
+    id: 0,
+    name: "Dr. Anand Tamrakar",
+    title: "Head of Department, CSE",
+    designation: "Professor & Head",
+    qualification: "Ph.D",
+    specialization: "Computer Science & Engineering",
+    experience: "20+ Years",
+    dateOfJoining: "01-07-2010",
+  };
+
+  const facultyMembers: Faculty[] = [
+    { id: 1, name: "Mrs. Keshika Jangde", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Computer Science", experience: "8.5 Yrs", dateOfJoining: "24-08-2023" },
+    { id: 2, name: "Ms. Jyoti Gautam", designation: "Assistant Professor", qualification: "PG", specialization: "Computer Science", experience: "07 Yrs", dateOfJoining: "05-05-2025" },
+    { id: 3, name: "Mr. Tegendra Kumar", designation: "Assistant Professor", qualification: "PG", specialization: "Computer Science", experience: "13 Yrs", dateOfJoining: "04-11-2019" },
+    { id: 4, name: "Ms. Toshaniwali Bhargav", designation: "Assistant Professor", qualification: "PG", specialization: "IoT, Deep Learning", experience: "08 Yrs", dateOfJoining: "--" },
+    { id: 5, name: "Ms. Upasana Khadatkar", designation: "Assistant Professor", qualification: "PG", specialization: "Image Processing", experience: "04 Yrs", dateOfJoining: "--" },
+    { id: 6, name: "Ms. Prapti Pandey", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Image Processing", experience: "01 Yrs", dateOfJoining: "05-08-2024" },
+    { id: 7, name: "Ms. Preeti Tuli", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "DBMS, ML, NLP", experience: "24.9 Yrs", dateOfJoining: "05-07-2016" },
+    { id: 8, name: "Ms. Shraddha Taunk", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Machine Learning", experience: "9.5 Yrs", dateOfJoining: "01-04-2021" },
+    { id: 9, name: "Ms. Poonam Gupta", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Machine Learning", experience: "9 Yrs", dateOfJoining: "18-03-2024" },
+    { id: 10, name: "Mr. Manoj Kumar Singh", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Computer Networks", experience: "15 Yrs", dateOfJoining: "11-02-2022" },
+    { id: 11, name: "Mr. Narendra Kumar Dewangan", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Deep Learning", experience: "17 Yrs", dateOfJoining: "02-01-2023" },
+    { id: 12, name: "Mr. Saurabh Mishra", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Artificial Intelligence", experience: "02 Yrs", dateOfJoining: "14-08-2024" },
+    { id: 13, name: "Mr. Deepak Rao Khadatkar", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "AI, ML, DL", experience: "17 Yrs", dateOfJoining: "19-07-2019" },
+    { id: 14, name: "Mr. Vivek Kumar Soni", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Image Processing", experience: "9.5 Yrs", dateOfJoining: "23-08-2023" },
+    { id: 15, name: "Mr. Vaibhav Chandrakar", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Machine Learning", experience: "12 Yrs", dateOfJoining: "01-06-2023" },
+    { id: 16, name: "Mr. Sunil Kumar Dewangan", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Machine Learning, Soft Computing", experience: "16.5 Yrs", dateOfJoining: "--" },
+    { id: 17, name: "Ms. Priyata Mishra", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Image Processing", experience: "10 Yrs", dateOfJoining: "23-08-2023" },
   ];
+
+  // Animated default avatar using inline SVG + motion (no external images)
+  function AnimatedAvatar({ size = 96 }: { size?: number }) {
+    const radius = size / 2;
+    const stroke = Math.max(4, size * 0.06);
+    return (
+      <motion.svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="rounded-full shadow-sm"
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Pulsing ring */}
+        <motion.circle
+          cx={radius}
+          cy={radius}
+          r={radius - stroke / 2}
+          fill="#E5E7EB"
+          stroke="#3B82F6"
+          strokeWidth={stroke}
+          initial={{ strokeOpacity: 0.35 }}
+          animate={{ strokeOpacity: [0.35, 0.15, 0.35] }}
+          transition={{ duration: 2.2, repeat: Infinity }}
+        />
+        {/* Head */}
+        <circle cx={radius} cy={radius * 0.55} r={size * 0.18} fill="#9CA3AF" />
+        {/* Shoulders */}
+        <path
+          d={`M ${radius - size * 0.3} ${radius + size * 0.2}
+              C ${radius - size * 0.15} ${radius}, ${radius + size * 0.15} ${radius}, ${radius + size * 0.3} ${radius + size * 0.2}
+              L ${radius + size * 0.3} ${size}
+              L ${radius - size * 0.3} ${size} Z`}
+          fill="#A3A3A3"
+        />
+      </motion.svg>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
@@ -261,11 +147,11 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         </div>
       </div>
 
-      {/* Faculty Section */}
-      <div id="faculty" className="py-16 overflow-hidden" style={{ backgroundColor: '#ffffff' }}>
+      {/* Faculty Section (Dynamic) */}
+      <section id="faculty" className="py-16" style={{ backgroundColor: '#F9FAFB' }}>
         <div className="container mx-auto px-6">
-          <motion.h2 
-            className="text-center mb-12"
+          <motion.h2
+            className="text-center mb-12 font-semibold"
             style={{ color: '#1e3a8a' }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -274,94 +160,91 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           >
             Our Faculty
           </motion.h2>
-        </div>
-        
-        {/* Horizontal Scrolling Container */}
-        <motion.div 
-          className="flex gap-6 px-6"
-          animate={{ x: [0, -3400] }}
-          transition={{
-            x: {
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: 50,
-              ease: "linear"
-            }
-          }}
-          style={{ width: 'max-content' }}
-        >
-          {[...facultyMembers, ...facultyMembers].map((faculty, index) => (
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+            {/* HOD Highlight */}
             <motion.div
-              key={`${faculty.id}-${index}`}
-              className="w-80 flex-shrink-0"
-              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              className="lg:col-span-1"
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
             >
-              <Card className="shadow-sm hover:shadow-lg transition-shadow h-full">
-                <CardContent className="p-6">
-                  {/* Profile Image */}
-                  <div className="flex justify-center mb-4">
-                    <div 
-                      className="w-32 h-32 rounded-full overflow-hidden border-4"
-                      style={{ borderColor: '#60a5fa' }}
-                    >
-                      <img 
-                        src={faculty.image} 
-                        alt={faculty.name}
-                        className="w-full h-full object-cover"
-                        style={{
-                          objectPosition: `${(faculty.imageIndex % 3) * -230}px ${Math.floor(faculty.imageIndex / 3) * -320}px`,
-                          width: '690px',
-                          height: '640px'
-                        }}
-                      />
+              <Card className="shadow-lg rounded-xl h-full">
+                <CardContent className="p-8 flex flex-col items-center text-center gap-4">
+                  <div className="relative">
+                    <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
+                      <div className="rounded-full bg-white p-1">
+                        <AnimatedAvatar size={120} />
+                      </div>
                     </div>
                   </div>
-                  
-                  {/* Faculty Information */}
-                  <div className="text-center space-y-2">
-                    <h3 style={{ color: '#1e3a8a' }}>{faculty.name}</h3>
-                    <p className="text-sm" style={{ color: '#374151' }}>{faculty.designation}</p>
-                    <div className="text-xs space-y-1" style={{ color: '#6b7280' }}>
-                      <p>Qualification - {faculty.qualification}</p>
-                      <p>Specialization - {faculty.specialization}</p>
-                      <p>Year of Experience - {faculty.experience}</p>
-                      <p>Date of Joining - {faculty.dateOfJoining}</p>
-                    </div>
-                    
-                    {/* Social Icons */}
-                    <div className="flex justify-center gap-3 pt-3">
-                      <motion.button 
-                        className="p-2 rounded"
-                        style={{ backgroundColor: '#f97316' }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Mail className="h-4 w-4 text-white" />
-                      </motion.button>
-                      <motion.button 
-                        className="p-2 rounded"
-                        style={{ backgroundColor: '#f97316' }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Linkedin className="h-4 w-4 text-white" />
-                      </motion.button>
-                      <motion.button 
-                        className="p-2 rounded"
-                        style={{ backgroundColor: '#f97316' }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Youtube className="h-4 w-4 text-white" />
-                      </motion.button>
-                    </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-semibold" style={{ color: '#1F2937' }}>{hod.name}</h3>
+                    <p className="text-sm" style={{ color: '#3B82F6' }}>{hod.title}</p>
+                  </div>
+                  <div className="text-sm space-y-1" style={{ color: '#4B5563' }}>
+                    <p>Designation - {hod.designation}</p>
+                    <p>Qualification - {hod.qualification}</p>
+                    <p>Specialization - {hod.specialization}</p>
+                    <p>Experience - {hod.experience}</p>
+                    <p>Joining Date - {hod.dateOfJoining}</p>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
-          ))}
-        </motion.div>
-      </div>
+
+            {/* Carousel */}
+            <div className="lg:col-span-2 overflow-hidden">
+              <div className="relative">
+                {/* Track */}
+                <motion.div
+                  className="flex gap-6"
+                  style={{ width: 'max-content' }}
+                  animate={{ x: [0, -1200, 0] }}
+                  transition={{ duration: 30, ease: 'linear', repeat: Infinity }}
+                >
+                  {[...facultyMembers, ...facultyMembers].map((f, idx) => (
+                    <motion.div key={`${f.id}-${idx}`} className="w-72 flex-shrink-0"
+                      whileHover={{ y: -6 }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                    >
+                      <Card className="shadow-lg rounded-xl h-full border-0">
+                        <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                          <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
+                            <div className="rounded-full bg-white p-1">
+                              <AnimatedAvatar size={96} />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <h3 className="text-lg font-semibold" style={{ color: '#1F2937' }}>{f.name}</h3>
+                            <p className="text-sm" style={{ color: '#374151' }}>{f.designation}</p>
+                          </div>
+                          <div className="text-xs space-y-1" style={{ color: '#6B7280' }}>
+                            <p>Qualification - {f.qualification}</p>
+                            <p>Specialization - {f.specialization}</p>
+                            <p>Experience - {f.experience}</p>
+                            <p>Joining Date - {f.dateOfJoining}</p>
+                          </div>
+                          <div className="flex justify-center gap-3 pt-2">
+                            <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Mail className="h-4 w-4 text-white" /></button>
+                            <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Linkedin className="h-4 w-4 text-white" /></button>
+                            <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Youtube className="h-4 w-4 text-white" /></button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                {/* Optional: gradient fade edges */}
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#F9FAFB] to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#F9FAFB] to-transparent" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Announcements Section */}
       <div className="py-16" style={{ backgroundColor: '#f3f4f6' }}>
