@@ -16,20 +16,35 @@ import image_31f866a600b286454181d60b7ea702115451599f from 'figma:asset/31f866a6
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 
 interface StudentProfileData {
+  // Left Panel
+  photo: string;
+  semester: string;
+  section: string;
+  mentorName: string;
+  mentorDesignation: string;
+  backlogs: Backlog[];
+  // Right Panel
   fullName: string;
-  dateOfBirth: string;
   rollNumber: string;
   enrollmentNumber: string;
-  attendance: number;
-  designation: string;
   linkedIn: string;
   github: string;
-  fatherName: string;
-  fatherPhone: string;
-  motherName: string;
-  motherPhone: string;
+  dateOfBirth: string;
+  attendance: string;
+  designation: string;
   email: string;
   phone: string;
+  address: string;
+  fatherName: string;
+  fatherPhone: string;
+  fatherOccupation: string;
+  motherName: string;
+  motherPhone: string;
+  motherOccupation: string;
+  results: Result[];
+  cgpa: string;
+  researchPapers: string;
+  projects: string;
   achievements: string;
 }
 
@@ -38,29 +53,230 @@ interface FieldValidation {
 }
 
 export function StudentProfileModern() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const [formProgress, setFormProgress] = useState(0);
-  const [validatedFields, setValidatedFields] = useState<FieldValidation>({});
-  const [shakingFields, setShakingFields] = useState<FieldValidation>({});
-  
   const [formData, setFormData] = useState<StudentProfileData>({
+    photo: "",
+    semester: "7",
+    section: "A",
+    mentorName: "Dr. Anand Tamrakar",
+    mentorDesignation: "Professor & Head",
+    backlogs: [],
     fullName: "Priya Sharma",
-    dateOfBirth: "2003-05-15",
     rollNumber: "21CS002",
     enrollmentNumber: "0827CS211002",
-    attendance: 92,
-    designation: "student",
     linkedIn: "linkedin.com/in/priyasharma",
     github: "github.com/priyasharma",
-    fatherName: "Rajesh Sharma",
-    fatherPhone: "+91 98765 12345",
-    motherName: "Sunita Sharma",
-    motherPhone: "+91 98765 67890",
+    dateOfBirth: "2003-05-15",
+    attendance: "92",
+    designation: "Student Representative",
     email: "priya.sharma@student.edu",
     phone: "+91 98765 43210",
+    address: "123 Main Street, Raipur, CG",
+    fatherName: "Rajesh Sharma",
+    fatherPhone: "+91 98765 12345",
+    fatherOccupation: "Engineer",
+    motherName: "Sunita Sharma",
+    motherPhone: "+91 98765 67890",
+    motherOccupation: "Teacher",
+    results: [],
+    cgpa: "8.9",
+    researchPapers: "2",
+    projects: "4",
     achievements: "First Prize in Hackathon 2024\nBest Project Award - Web Development\nActive Member - Coding Club",
   });
+  
+  // Animated SVG Avatar
+  function AnimatedAvatar({ size = 120 }: { size?: number }) {
+    const radius = size / 2;
+    const stroke = Math.max(4, size * 0.06);
+    return (
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="rounded-full shadow">
+        <circle cx={radius} cy={radius} r={radius - stroke / 2} fill="#E5E7EB" stroke="#3B82F6" strokeWidth={stroke} />
+        <circle cx={radius} cy={radius * 0.55} r={size * 0.18} fill="#9CA3AF" />
+        <path d={`M ${radius - size * 0.3} ${radius + size * 0.2} C ${radius - size * 0.15} ${radius}, ${radius + size * 0.15} ${radius}, ${radius + size * 0.3} ${radius + size * 0.2} L ${radius + size * 0.3} ${size} L ${radius - size * 0.3} ${size} Z`} fill="#A3A3A3" />
+      </svg>
+    );
+  }
+  
+  // Handlers for dynamic fields (backlogs, results)
+  const addBacklog = () => setFormData(f => ({ ...f, backlogs: [...f.backlogs, { subject: "", semester: "" }] }));
+  const updateBacklog = (i: number, field: keyof Backlog, value: string) => setFormData(f => {
+    const backlogs = [...f.backlogs];
+    backlogs[i][field] = value;
+    return { ...f, backlogs };
+  });
+  const removeBacklog = (i: number) => setFormData(f => {
+    const backlogs = [...f.backlogs];
+    backlogs.splice(i, 1);
+    return { ...f, backlogs };
+  });
+  const addResult = () => setFormData(f => ({ ...f, results: [...f.results, { subject: "", marks: "", grade: "" }] }));
+  const updateResult = (i: number, field: keyof Result, value: string) => setFormData(f => {
+    const results = [...f.results];
+    results[i][field] = value;
+    return { ...f, results };
+  });
+  const removeResult = (i: number) => setFormData(f => {
+    const results = [...f.results];
+    results.splice(i, 1);
+    return { ...f, results };
+  });
+  
+  // Main Layout
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 md:p-8">
+      <div className="max-w-5xl mx-auto">
+        <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-xl">
+            <CardTitle className="text-2xl md:text-3xl flex items-center gap-3">
+              <User className="h-7 w-7" /> Student Profile
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 md:p-10">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Left Panel */}
+              <div className="md:w-1/3 w-full space-y-8">
+                <div className="flex flex-col items-center gap-3">
+                  <AnimatedAvatar size={120} />
+                  <div className="text-center">
+                    <div className="font-semibold text-lg text-gray-800">{formData.fullName}</div>
+                    <div className="text-sm text-gray-500">{formData.rollNumber}</div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold text-blue-700 mb-1 flex items-center gap-2"><BookOpen className="h-4 w-4" /> Academic Info</div>
+                  <div className="text-sm text-gray-700">Semester: <span className="font-medium">{formData.semester}</span></div>
+                  <div className="text-sm text-gray-700">Section: <span className="font-medium">{formData.section}</span></div>
+                  <div className="text-sm text-gray-700">Mentor: <span className="font-medium">{formData.mentorName}</span></div>
+                  <div className="text-sm text-gray-700">Mentor Designation: <span className="font-medium">{formData.mentorDesignation}</span></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold text-blue-700 mb-1 flex items-center gap-2"><Award className="h-4 w-4" /> Backlogs</div>
+                  {formData.backlogs.length === 0 && <div className="text-sm text-gray-400">No backlogs</div>}
+                  {formData.backlogs.map((b, i) => (
+                    <div key={i} className="flex gap-2 items-center text-sm">
+                      <Input value={b.subject} onChange={e => updateBacklog(i, "subject", e.target.value)} placeholder="Subject" className="w-28" />
+                      <Input value={b.semester} onChange={e => updateBacklog(i, "semester", e.target.value)} placeholder="Sem" className="w-16" />
+                      <Button type="button" size="sm" variant="outline" onClick={() => removeBacklog(i)}>-</Button>
+                    </div>
+                  ))}
+                  <Button type="button" size="sm" onClick={addBacklog}>+ Add Backlog</Button>
+                </div>
+              </div>
+              {/* Right Panel */}
+              <div className="md:w-2/3 w-full space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label>Full Name</Label>
+                    <Input value={formData.fullName} onChange={e => setFormData(f => ({ ...f, fullName: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Roll Number</Label>
+                    <Input value={formData.rollNumber} onChange={e => setFormData(f => ({ ...f, rollNumber: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Enrollment Number</Label>
+                    <Input value={formData.enrollmentNumber} onChange={e => setFormData(f => ({ ...f, enrollmentNumber: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>LinkedIn URL</Label>
+                    <Input value={formData.linkedIn} onChange={e => setFormData(f => ({ ...f, linkedIn: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>GitHub URL</Label>
+                    <Input value={formData.github} onChange={e => setFormData(f => ({ ...f, github: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Date of Birth</Label>
+                    <Input type="date" value={formData.dateOfBirth} onChange={e => setFormData(f => ({ ...f, dateOfBirth: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Attendance (%)</Label>
+                    <Input type="number" value={formData.attendance} onChange={e => setFormData(f => ({ ...f, attendance: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Designation</Label>
+                    <Input value={formData.designation} onChange={e => setFormData(f => ({ ...f, designation: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label>Email Address</Label>
+                    <Input type="email" value={formData.email} onChange={e => setFormData(f => ({ ...f, email: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Phone Number</Label>
+                    <Input value={formData.phone} onChange={e => setFormData(f => ({ ...f, phone: e.target.value }))} />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Complete Address</Label>
+                    <Input value={formData.address} onChange={e => setFormData(f => ({ ...f, address: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label>Father's Name</Label>
+                    <Input value={formData.fatherName} onChange={e => setFormData(f => ({ ...f, fatherName: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Father's Contact Number</Label>
+                    <Input value={formData.fatherPhone} onChange={e => setFormData(f => ({ ...f, fatherPhone: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Father's Occupation</Label>
+                    <Input value={formData.fatherOccupation} onChange={e => setFormData(f => ({ ...f, fatherOccupation: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Mother's Name</Label>
+                    <Input value={formData.motherName} onChange={e => setFormData(f => ({ ...f, motherName: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Mother's Contact Number</Label>
+                    <Input value={formData.motherPhone} onChange={e => setFormData(f => ({ ...f, motherPhone: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Mother's Occupation</Label>
+                    <Input value={formData.motherOccupation} onChange={e => setFormData(f => ({ ...f, motherOccupation: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold text-blue-700 mb-1 flex items-center gap-2"><BookOpen className="h-4 w-4" /> Current Semester Results</div>
+                  {formData.results.length === 0 && <div className="text-sm text-gray-400">No results entered</div>}
+                  {formData.results.map((r, i) => (
+                    <div key={i} className="flex gap-2 items-center text-sm mb-1">
+                      <Input value={r.subject} onChange={e => updateResult(i, "subject", e.target.value)} placeholder="Subject" className="w-32" />
+                      <Input value={r.marks} onChange={e => updateResult(i, "marks", e.target.value)} placeholder="Marks" className="w-20" />
+                      <Input value={r.grade} onChange={e => updateResult(i, "grade", e.target.value)} placeholder="Grade" className="w-16" />
+                      <Button type="button" size="sm" variant="outline" onClick={() => removeResult(i)}>-</Button>
+                    </div>
+                  ))}
+                  <Button type="button" size="sm" onClick={addResult}>+ Add Result</Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <Label>Average CGPA</Label>
+                    <Input value={formData.cgpa} onChange={e => setFormData(f => ({ ...f, cgpa: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Research Papers Count</Label>
+                    <Input value={formData.researchPapers} onChange={e => setFormData(f => ({ ...f, researchPapers: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Projects Made Count</Label>
+                    <Input value={formData.projects} onChange={e => setFormData(f => ({ ...f, projects: e.target.value }))} />
+                  </div>
+                </div>
+                <div>
+                  <Label>Achievements / Awards / Publications</Label>
+                  <Textarea rows={4} value={formData.achievements} onChange={e => setFormData(f => ({ ...f, achievements: e.target.value }))} />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
 
   // Calculate form completion progress
   useEffect(() => {
