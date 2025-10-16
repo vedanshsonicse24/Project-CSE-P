@@ -67,8 +67,7 @@ export function Header({ userRole, userName, onLogout, onNavigateToLogin, onNavi
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="outline"
-                    className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white border-0 transition-all shadow-sm"
+                    className="bg-indigo-600 text-white hover:bg-indigo-700 border-0 transition-all shadow-sm"
                   >
                     <span className="mr-1">{selectedClub || "Select Club"}</span>
                     <ChevronDown className="h-4 w-4" />
@@ -109,8 +108,7 @@ export function Header({ userRole, userName, onLogout, onNavigateToLogin, onNavi
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="outline"
-                    className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white border-0 transition-all shadow-sm"
+                      className="bg-indigo-600 text-white hover:bg-indigo-700 border-0 transition-all shadow-sm"
                   >
                     <span className="mr-1">{selectedClub || "Select Club"}</span>
                     <ChevronDown className="h-4 w-4" />
