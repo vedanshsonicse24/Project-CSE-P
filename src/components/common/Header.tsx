@@ -1,4 +1,4 @@
-import { GraduationCap, Bell, User, LogOut } from "lucide-react";
+import { GraduationCap, Bell, User, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Badge } from "../ui/badge";
 import ssipMtLogo from "../../assets/ssipmt-logo-full.png";
+import { useState } from "react";
 
 interface HeaderProps {
   userRole?: "faculty" | "student" | "hod" | "admin";
@@ -19,6 +20,8 @@ interface HeaderProps {
 }
 
 export function Header({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile }: HeaderProps) {
+  const [selectedClub, setSelectedClub] = useState<"C.O.E" | "C.S.A" | null>(null);
+
   const getRoleLabel = () => {
     if (userRole === "faculty") return "Faculty";
     if (userRole === "student") return "Student";
@@ -61,6 +64,31 @@ export function Header({ userRole, userName, onLogout, onNavigateToLogin, onNavi
           {/* User-specific actions */}
           {isHomePage ? (
             <div className="flex items-center gap-3">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white border-0 transition-all shadow-sm"
+                  >
+                    <span className="mr-1">{selectedClub || "Select Club"}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-40">
+                  <DropdownMenuItem
+                    onClick={() => setSelectedClub("C.O.E")}
+                    className="cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
+                    C.O.E
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setSelectedClub("C.S.A")}
+                    className="cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
+                    C.S.A
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button variant="outline" asChild className="border-slate-200 text-slate-700 hover:bg-slate-50">
                 <a href="https://www.ssipmt.edu.in/alumni.php" target="_blank" rel="noreferrer">Alumni</a>
               </Button>
@@ -78,6 +106,32 @@ export function Header({ userRole, userName, onLogout, onNavigateToLogin, onNavi
             </div>
           ) : (
             <div className="flex items-center gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white border-0 transition-all shadow-sm"
+                  >
+                    <span className="mr-1">{selectedClub || "Select Club"}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-40">
+                  <DropdownMenuItem
+                    onClick={() => setSelectedClub("C.O.E")}
+                    className="cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
+                    C.O.E
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setSelectedClub("C.S.A")}
+                    className="cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
+                    C.S.A
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <Button variant="ghost" size="icon" className="relative hover:bg-slate-100 text-slate-700">
                 <Bell className="h-5 w-5" />
                 <span 
