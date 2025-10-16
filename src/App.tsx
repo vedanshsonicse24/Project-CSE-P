@@ -3,6 +3,7 @@ import { Header } from "./components/common/Header";
 import { HomePage } from "./components/HomePage";
 import { LoginPage } from "./components/LoginPage";
 import { FacultyDashboard } from "./components/faculty/FacultyDashboard";
+import { FacultyProfile } from "./components/faculty/FacultyProfile";
 import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
@@ -10,7 +11,7 @@ import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -66,6 +67,14 @@ export default function App() {
       );
     }
 
+    if (currentPage === "faculty-profile" && userRole === "faculty") {
+      return (
+        <PageTransition>
+          <FacultyProfile />
+        </PageTransition>
+      );
+    }
+
     return null;
   };
 
@@ -77,7 +86,13 @@ export default function App() {
         userName={userName || undefined} 
         onLogout={userRole ? handleLogout : undefined}
         onNavigateToLogin={!userRole ? () => setCurrentPage("login") : undefined}
-        onNavigateToProfile={userRole === "student" ? () => setCurrentPage("student-profile") : undefined}
+        onNavigateToProfile={
+          userRole === "student" 
+            ? () => setCurrentPage("student-profile") 
+            : userRole === "faculty" 
+            ? () => setCurrentPage("faculty-profile")
+            : undefined
+        }
       />
       {renderPage()}
       <Toaster position="top-right" />
