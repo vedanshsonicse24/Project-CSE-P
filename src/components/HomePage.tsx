@@ -163,16 +163,17 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
             Our Faculty
           </motion.h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-            {/* HOD Highlight - Majority width on large screens */}
+          <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+            {/* HOD Highlight - 60% width on desktop */}
             <motion.div
-              className="lg:col-span-2"
+              className="w-full lg:w-3/5"
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              whileHover={{ scale: 1.02, boxShadow: '0 8px 32px #3B82F6' }}
             >
-              <Card className="shadow-lg rounded-xl h-full">
+              <Card className="shadow-lg rounded-xl h-full transition-transform duration-200">
                 <CardContent className="p-8">
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <div className="shrink-0">
@@ -200,16 +201,17 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
               </Card>
             </motion.div>
 
-            {/* Faculty Table (sorted) */}
-            <div className="lg:col-span-1">
+            {/* Faculty Table (sorted, 40% width) */}
+            <div className="w-full lg:w-2/5">
               <Card className="shadow-lg rounded-xl h-full">
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-sm">
                       <thead className="bg-slate-50 text-slate-700">
                         <tr>
+                          <th className="px-4 py-3 text-left font-medium">Avatar</th>
                           <th className="px-4 py-3 text-left font-medium">Name</th>
-                          <th className="px-4 py-3 text-left font-medium">Designation</th>
+                          <th className="px-4 py-3 text-left font-medium">Title</th>
                           <th className="px-4 py-3 text-left font-medium">Qualification</th>
                           <th className="px-4 py-3 text-left font-medium">Specialization</th>
                           <th className="px-4 py-3 text-left font-medium">Experience</th>
@@ -217,15 +219,25 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {facultyMembers.map((f) => (
-                          <tr key={f.id} className="hover:bg-slate-50/60">
+                        {facultyMembers.map((f, i) => (
+                          <motion.tr
+                            key={f.id}
+                            className={
+                              `hover:bg-blue-50/60 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`
+                            }
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: i * 0.04 }}
+                          >
+                            <td className="px-4 py-3"><AnimatedAvatar size={48} /></td>
                             <td className="px-4 py-3 text-slate-900 font-medium">{f.name}</td>
                             <td className="px-4 py-3">{f.designation}</td>
                             <td className="px-4 py-3">{f.qualification}</td>
                             <td className="px-4 py-3">{f.specialization}</td>
                             <td className="px-4 py-3">{f.experience}</td>
                             <td className="px-4 py-3">{f.dateOfJoining}</td>
-                          </tr>
+                          </motion.tr>
                         ))}
                       </tbody>
                     </table>
