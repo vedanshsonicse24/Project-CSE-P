@@ -164,70 +164,74 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           </motion.h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-            {/* HOD Highlight */}
+            {/* HOD Highlight - Majority width on large screens */}
             <motion.div
-              className="lg:col-span-1"
+              className="lg:col-span-2"
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
               <Card className="shadow-lg rounded-xl h-full">
-                <CardContent className="p-8 flex flex-col items-center text-center gap-4">
-                  <div className="relative">
-                    <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
-                      <div className="rounded-full bg-white p-1">
-                        <AnimatedAvatar size={120} />
+                <CardContent className="p-8">
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <div className="shrink-0">
+                      <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
+                        <div className="rounded-full bg-white p-1">
+                          <AnimatedAvatar size={140} />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-semibold" style={{ color: '#1F2937' }}>{hod.name}</h3>
-                    <p className="text-sm" style={{ color: '#3B82F6' }}>{hod.title}</p>
-                  </div>
-                  <div className="text-sm space-y-1" style={{ color: '#4B5563' }}>
-                    <p>Designation - {hod.designation}</p>
-                    <p>Qualification - {hod.qualification}</p>
-                    <p>Specialization - {hod.specialization}</p>
-                    <p>Experience - {hod.experience}</p>
-                    <p>Joining Date - {hod.dateOfJoining}</p>
+                    <div className="flex-1">
+                      <div className="mb-3">
+                        <h3 className="text-2xl font-semibold" style={{ color: '#1F2937' }}>{hod.name}</h3>
+                        <p className="text-sm" style={{ color: '#3B82F6' }}>{hod.title}</p>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm" style={{ color: '#4B5563' }}>
+                        <p><span className="font-medium text-slate-800">Designation:</span> {hod.designation}</p>
+                        <p><span className="font-medium text-slate-800">Qualification:</span> {hod.qualification}</p>
+                        <p><span className="font-medium text-slate-800">Specialization:</span> {hod.specialization}</p>
+                        <p><span className="font-medium text-slate-800">Experience:</span> {hod.experience}</p>
+                        <p><span className="font-medium text-slate-800">Joining Date:</span> {hod.dateOfJoining}</p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Static Grid (sorted) */}
-            <div className="lg:col-span-2">
-              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {facultyMembers.map((f) => (
-                  <div key={f.id}>
-                    <Card className="shadow-lg rounded-xl h-full border-0">
-                      <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                        <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
-                          <div className="rounded-full bg-white p-1">
-                            <AnimatedAvatar size={96} />
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <h3 className="text-lg font-semibold" style={{ color: '#1F2937' }}>{f.name}</h3>
-                          <p className="text-sm" style={{ color: '#374151' }}>{f.designation}</p>
-                        </div>
-                        <div className="text-xs space-y-1" style={{ color: '#6B7280' }}>
-                          <p>Qualification - {f.qualification}</p>
-                          <p>Specialization - {f.specialization}</p>
-                          <p>Experience - {f.experience}</p>
-                          <p>Joining Date - {f.dateOfJoining}</p>
-                        </div>
-                        <div className="flex justify-center gap-3 pt-2">
-                          <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Mail className="h-4 w-4 text-white" /></button>
-                          <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Linkedin className="h-4 w-4 text-white" /></button>
-                          <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Youtube className="h-4 w-4 text-white" /></button>
-                        </div>
-                      </CardContent>
-                    </Card>
+            {/* Faculty Table (sorted) */}
+            <div className="lg:col-span-1">
+              <Card className="shadow-lg rounded-xl h-full">
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm">
+                      <thead className="bg-slate-50 text-slate-700">
+                        <tr>
+                          <th className="px-4 py-3 text-left font-medium">Name</th>
+                          <th className="px-4 py-3 text-left font-medium">Designation</th>
+                          <th className="px-4 py-3 text-left font-medium">Qualification</th>
+                          <th className="px-4 py-3 text-left font-medium">Specialization</th>
+                          <th className="px-4 py-3 text-left font-medium">Experience</th>
+                          <th className="px-4 py-3 text-left font-medium">Joining</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {facultyMembers.map((f) => (
+                          <tr key={f.id} className="hover:bg-slate-50/60">
+                            <td className="px-4 py-3 text-slate-900 font-medium">{f.name}</td>
+                            <td className="px-4 py-3">{f.designation}</td>
+                            <td className="px-4 py-3">{f.qualification}</td>
+                            <td className="px-4 py-3">{f.specialization}</td>
+                            <td className="px-4 py-3">{f.experience}</td>
+                            <td className="px-4 py-3">{f.dateOfJoining}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                ))}
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
