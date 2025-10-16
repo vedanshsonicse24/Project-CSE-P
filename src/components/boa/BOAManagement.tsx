@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { CheckCircle, XCircle, Clock, Eye, FileText } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Eye, FileText, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,8 +20,15 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type BOAStatus = "pending" | "approved" | "rejected";
+type ClubType = "C.O.E" | "C.S.A" | null;
 
 interface BOARequest {
   id: string;
@@ -42,6 +49,7 @@ interface BOARequest {
   approvedBy?: string;
   approvalDate?: string;
   remarks?: string;
+  club?: ClubType;
 }
 
 const sampleRequests: BOARequest[] = [
@@ -187,6 +195,15 @@ export function BOAManagement() {
     setIsDialogOpen(true);
   };
 
+    const handleClubSelection = (requestId: string, club: ClubType) => {
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === requestId ? { ...req, club } : req
+        )
+      );
+      toast.success(`Club ${club} assigned to request ${requestId}`);
+    };
+
   const renderRequestsTable = (requestsList: BOARequest[]) => (
     <Table>
       <TableHeader>
@@ -199,6 +216,7 @@ export function BOAManagement() {
           <TableHead>Lectures</TableHead>
           <TableHead>Event In-Charge</TableHead>
           <TableHead>Class In-Charge</TableHead>
+            <TableHead>Club</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>View Photos</TableHead>
           <TableHead>Actions</TableHead>
@@ -207,7 +225,7 @@ export function BOAManagement() {
       <TableBody>
         {requestsList.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={12} className="text-center text-gray-500">
+              <TableCell colSpan={13} className="text-center text-gray-500">
               No requests found
             </TableCell>
           </TableRow>
@@ -222,6 +240,34 @@ export function BOAManagement() {
               <TableCell>{request.numLectures}</TableCell>
               <TableCell>{request.teacherInCharge}</TableCell>
               <TableCell>{request.classInCharge}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white border-0 transition-all shadow-sm"
+                      >
+                        <span className="mr-1">{request.club || "Select Club"}</span>
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-40">
+                      <DropdownMenuItem
+                        onClick={() => handleClubSelection(request.id, "C.O.E")}
+                        className="cursor-pointer hover:bg-gray-100 transition-colors"
+                      >
+                        C.O.E
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleClubSelection(request.id, "C.S.A")}
+                        className="cursor-pointer hover:bg-gray-100 transition-colors"
+                      >
+                        C.S.A
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               <TableCell>{getStatusBadge(request.status)}</TableCell>
               <TableCell>
                 <button
