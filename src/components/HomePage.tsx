@@ -36,7 +36,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     dateOfJoining: "01-07-2010",
   };
 
-  const facultyMembers: Faculty[] = [
+  let facultyMembers: Faculty[] = [
     { id: 1, name: "Mrs. Keshika Jangde", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Computer Science", experience: "8.5 Yrs", dateOfJoining: "24-08-2023" },
     { id: 2, name: "Ms. Jyoti Gautam", designation: "Assistant Professor", qualification: "PG", specialization: "Computer Science", experience: "07 Yrs", dateOfJoining: "05-05-2025" },
     { id: 3, name: "Mr. Tegendra Kumar", designation: "Assistant Professor", qualification: "PG", specialization: "Computer Science", experience: "13 Yrs", dateOfJoining: "04-11-2019" },
@@ -55,6 +55,8 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     { id: 16, name: "Mr. Sunil Kumar Dewangan", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Machine Learning, Soft Computing", experience: "16.5 Yrs", dateOfJoining: "--" },
     { id: 17, name: "Ms. Priyata Mishra", designation: "Assistant Professor", qualification: "Ph.D (Pursuing)", specialization: "Image Processing", experience: "10 Yrs", dateOfJoining: "23-08-2023" },
   ];
+  // Sort alphabetically by name for backend-friendly static ordering
+  facultyMembers = [...facultyMembers].sort((a, b) => a.name.localeCompare(b.name));
 
   // Animated default avatar using inline SVG + motion (no external images)
   function AnimatedAvatar({ size = 96 }: { size?: number }) {
@@ -194,52 +196,37 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
               </Card>
             </motion.div>
 
-            {/* Carousel */}
-            <div className="lg:col-span-2 overflow-hidden">
-              <div className="relative">
-                {/* Track */}
-                <motion.div
-                  className="flex gap-6"
-                  style={{ width: 'max-content' }}
-                  animate={{ x: [0, -1200, 0] }}
-                  transition={{ duration: 30, ease: 'linear', repeat: Infinity }}
-                >
-                  {[...facultyMembers, ...facultyMembers].map((f, idx) => (
-                    <motion.div key={`${f.id}-${idx}`} className="w-72 flex-shrink-0"
-                      whileHover={{ y: -6 }}
-                      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                    >
-                      <Card className="shadow-lg rounded-xl h-full border-0">
-                        <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                          <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
-                            <div className="rounded-full bg-white p-1">
-                              <AnimatedAvatar size={96} />
-                            </div>
+            {/* Static Grid (sorted) */}
+            <div className="lg:col-span-2">
+              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {facultyMembers.map((f) => (
+                  <div key={f.id}>
+                    <Card className="shadow-lg rounded-xl h-full border-0">
+                      <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                        <div className="p-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
+                          <div className="rounded-full bg-white p-1">
+                            <AnimatedAvatar size={96} />
                           </div>
-                          <div className="space-y-1">
-                            <h3 className="text-lg font-semibold" style={{ color: '#1F2937' }}>{f.name}</h3>
-                            <p className="text-sm" style={{ color: '#374151' }}>{f.designation}</p>
-                          </div>
-                          <div className="text-xs space-y-1" style={{ color: '#6B7280' }}>
-                            <p>Qualification - {f.qualification}</p>
-                            <p>Specialization - {f.specialization}</p>
-                            <p>Experience - {f.experience}</p>
-                            <p>Joining Date - {f.dateOfJoining}</p>
-                          </div>
-                          <div className="flex justify-center gap-3 pt-2">
-                            <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Mail className="h-4 w-4 text-white" /></button>
-                            <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Linkedin className="h-4 w-4 text-white" /></button>
-                            <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Youtube className="h-4 w-4 text-white" /></button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </motion.div>
-
-                {/* Optional: gradient fade edges */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#F9FAFB] to-transparent" />
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#F9FAFB] to-transparent" />
+                        </div>
+                        <div className="space-y-1">
+                          <h3 className="text-lg font-semibold" style={{ color: '#1F2937' }}>{f.name}</h3>
+                          <p className="text-sm" style={{ color: '#374151' }}>{f.designation}</p>
+                        </div>
+                        <div className="text-xs space-y-1" style={{ color: '#6B7280' }}>
+                          <p>Qualification - {f.qualification}</p>
+                          <p>Specialization - {f.specialization}</p>
+                          <p>Experience - {f.experience}</p>
+                          <p>Joining Date - {f.dateOfJoining}</p>
+                        </div>
+                        <div className="flex justify-center gap-3 pt-2">
+                          <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Mail className="h-4 w-4 text-white" /></button>
+                          <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Linkedin className="h-4 w-4 text-white" /></button>
+                          <button className="p-2 rounded bg-blue-500/90 hover:bg-blue-500 transition-colors"><Youtube className="h-4 w-4 text-white" /></button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
