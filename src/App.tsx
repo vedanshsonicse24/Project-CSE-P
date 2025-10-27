@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header } from "./components/common/Header";
+import { NewHeader } from "./components/common/NewHeader";
 import { HomePage } from "./components/HomePage";
 import { LoginPage } from "./components/LoginPage";
 import { FacultyDashboard } from "./components/faculty/FacultyDashboard";
@@ -80,8 +80,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Permanent Header across all pages */}
-      <Header 
+      {/* New Two-Tier Header */}
+      <NewHeader 
         userRole={userRole || undefined} 
         userName={userName || undefined} 
         onLogout={userRole ? handleLogout : undefined}
