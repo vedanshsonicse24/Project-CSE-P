@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import React from "react"; // Import React for the MouseEvent type
+import React, { useState, useEffect } from "react"; // Import React hooks
 
 interface NewHeaderProps {
   userRole?: "faculty" | "student" | "hod" | "admin";
@@ -20,6 +20,25 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
     e.currentTarget.style.setProperty('--x', `${x}px`);
     e.currentTarget.style.setProperty('--y', `${y}px`);
   };
+
+  // Add state to track if the page is scrolled
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Add an effect to listen for scroll events
+  useEffect(() => {
+    const handleScroll = () => {
+      // Set state to true if scrolled more than 10px, else false
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    // Add event listener
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []); // Empty array ensures this effect runs only once
   
   return (
     <>
@@ -34,9 +53,10 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         }
 
         body {
-          font-family: "NeueEinstellung", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+          font-family: "GothamBook", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
           margin: 0;
           background-color: #f4f4f4;
+          padding-top: 91px; /* This pushes all page content down to prevent it from hiding under the fixed header (42px + 49px = 91px) */
         }
 
         .container {
@@ -46,15 +66,19 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         }
 
         .site-header {
-          position: relative; 
-          font-family: "NeueEinstellung", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+          position: fixed; /* Makes header permanent */
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000; /* High z-index to stay on top */
+          font-family: "GothamBook", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
         }
 
         /* Top Bar - Academic Utility Navigation */
         .top-bar {
           background-color: var(--maroon-color);
           color: white;
-          font-family: "NeueEinstellung", -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: "GothamBook", -apple-system, BlinkMacSystemFont, sans-serif;
           font-weight: 400;
           font-size: 13px;
           height: 42px;
@@ -141,12 +165,20 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           position: absolute;
           top: 42px;
           left: 50%;
-          transform: translate(-50%, -50%);
           z-index: 10;
           background: white;
           border-radius: 100px;
           padding: var(--logo-bubble-padding);
           display: block;
+          /* Add smooth transition for the transform property */
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          /* Set the default (large) state */
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        /* Define the scrolled (normal) state */
+        .site-header.scrolled .logo-link {
+          transform: translate(-50%, -50%) scale(1);
         }
 
         .logo-link:hover {
@@ -208,7 +240,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           transition: all 0.3s ease;
           white-space: nowrap;
           color: var(--grey-text);
-          font-family: "NeueEinstellung", -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: "GothamBook", -apple-system, BlinkMacSystemFont, sans-serif;
           line-height: 49px;
           letter-spacing: 0.03em;
           position: relative;
@@ -300,7 +332,90 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           width: 400px;
           height: 400px;
         }
-        /* --- End of new CTA styles --- */
+        /* --- END of new CTA styles --- */
+
+        /* --- NEW HERO SECTION STYLES --- */
+        .hero-section {
+          position: relative;
+          width: 100%;
+          /* This makes the section fill the screen below your 91px header */
+          height: calc(100vh - 91px); 
+          overflow: hidden; /* Hide video overflow */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #000; /* This black shows if video fails to load */
+        }
+
+        .hero-video {
+          position: absolute;
+          inset: 0; /* top:0; right:0; bottom:0; left:0 */
+          width: 100%;
+          height: 100%;
+          z-index: 1; /* Place behind content */
+          object-fit: cover; /* Ensure video covers the container */
+          object-position: center center; /* Center the video content */
+          display: block;
+        }
+
+        .hero-content {
+          position: relative; /* Position content above video */
+          z-index: 2;
+          color: white;
+          text-align: center;
+          padding: 20px;
+          max-width: 800px; /* Limit content width */
+        }
+
+        .hero-content h1 {
+          font-family: "GothamBook", sans-serif; /* Use your preferred font */
+          font-size: 3.5em; /* Adjust font size */
+          font-weight: 700;
+          margin-bottom: 20px;
+          line-height: 1.2;
+        }
+
+        .hero-content p {
+          font-family: "GothamBook", sans-serif; /* Use your preferred font */
+          font-size: 1.2em; /* Adjust font size */
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+
+        .hero-btn {
+          display: inline-block;
+          background-color: transparent;
+          color: white;
+          border: 2px solid var(--maroon-color); /* Maroon border */
+          text-decoration: none;
+          padding: 12px 25px;
+          border-radius: 0; /* Square corners */
+          font-weight: 600;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          font-family: "GothamBook", sans-serif;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .hero-btn:hover {
+          background-color: var(--maroon-color); /* Maroon fill on hover */
+          color: white;
+        }
+
+        /* Responsive adjustments for hero section */
+        @media (max-width: 768px) {
+          .hero-section {
+            height: calc(100vh - 91px); /* Keep full height on mobile too */
+          }
+          .hero-content h1 {
+            font-size: 2.5em;
+          }
+          .hero-content p {
+            font-size: 1em;
+          }
+        }
+        /* --- END HERO SECTION STYLES --- */
 
 
         /* Responsive Design */
@@ -417,7 +532,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         }
       `}</style>
 
-      <header className="site-header">
+      <header className={isScrolled ? "site-header scrolled" : "site-header"}>
         {/* Top Bar - Tier 1 */}
         <div className="top-bar">
           <nav className="container">
@@ -473,6 +588,19 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           />
         </a>
       </header>
+
+      {/* --- NEW HERO SECTION WITH BACKGROUND VIDEO --- */}
+      <div className="hero-section">
+        <video autoPlay loop muted playsInline className="hero-video" poster="/assets/campus-fallback.jpg">
+          <source src="/assets/SSYouTube.online_Virtual Tour of SSIPMT Campus Raipur_1080p.mp4" type="video/mp4" />
+          {/* WebM version (optional): place it into public/assets and add a <source> entry for best cross-browser support */}
+          {/* Note: poster attribute provides a fallback image while the video loads */}
+        </video>
+        <div className="hero-content container">
+          {/* Hero content removed per user request */}
+        </div>
+      </div>
+      {/* --- END NEW HERO SECTION --- */}
     </>
   );
 }

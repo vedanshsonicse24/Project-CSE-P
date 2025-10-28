@@ -86,6 +86,24 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     { name: "Ms. Priyata Mishra", role: "Assistant Professor", img: "/images/fac17.jpg" },
   ];
 
+  const projects = [
+    {
+      title: "E-Commerce Platform",
+      description: "A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.",
+      tech: "React, Node.js, Express, MongoDB"
+    },
+    {
+      title: "AI Health Scanner",
+      description: "A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.",
+      tech: "Python, TensorFlow, Keras, OpenCV"
+    },
+    {
+      title: "Campus Connect App",
+      description: "A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.",
+      tech: "Flutter, Firebase, Dart"
+    }
+  ];
+
   const hod = facultyData.find((f) => f.role === "HOD");
   const others = facultyData.filter((f) => f.role !== "HOD");
 
@@ -225,56 +243,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         </div>
       </section>
 
-      {/* Departments Section */}
-      <section id="departments" className="py-16 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <motion.h2 
-            className="text-3xl font-bold text-center mb-12"
-            style={{ color: '#1e3a8a' }}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            Our Departments
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {departments.map((dept, index) => (
-              <motion.div
-                key={index}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-              >
-                <div className="h-48 overflow-hidden">
-                  <ImageWithFallback
-                    src={dept.image}
-                    alt={dept.name}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3" style={{ color: '#1e3a8a' }}>
-                    {dept.name}
-                  </h3>
-                  <p className="text-gray-600 mb-4">{dept.description}</p>
-                  <div className="space-y-2">
-                    <p className="font-semibold text-sm text-gray-700">Programs Offered:</p>
-                    {dept.courses.map((course, i) => (
-                      <span key={i} className="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full mr-2 mb-2">
-                        {course}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Student Projects moved below Faculty (per request) */}
 
       {/* Faculty Section - Meet Our Faculty */}
       <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white">
@@ -348,7 +317,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         </div>
 
         {/* Enhanced Custom CSS for styling */}
-        <style jsx>{`
+  <style>{`
           .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -364,6 +333,190 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           }
         `}</style>
       </section>
+
+      {/* --- Student Projects Section --- */}
+      <div className="projects-section">
+        <div className="container">
+          <h2 className="section-title">Student Projects</h2>
+          
+          <div className="projects-grid">
+            
+            {/* Card 1 */}
+            <div 
+              className="project-card"
+              style={{ backgroundImage: "url('https://placehold.co/600x400/34495e/white?text=Project+Image')" }}
+            >
+              <div className="project-card-content">
+                <h3>E-Commerce Platform</h3>
+                <p>A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.</p>
+                <div className="project-tags">
+                  <span className="tech-tag">React</span>
+                  <span className="tech-tag">Node.js</span>
+                  <span className="tech-tag">MongoDB</span>
+                </div>
+                <a href="#" className="project-btn">View Project</a>
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div 
+              className="project-card"
+              style={{ backgroundImage: "url('https://placehold.co/600x400/8e44ad/white?text=Project+Image')" }}
+            >
+              <div className="project-card-content">
+                <h3>AI Health Scanner</h3>
+                <p>A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.</p>
+                <div className="project-tags">
+                  <span className="tech-tag">Python</span>
+                  <span className="tech-tag">TensorFlow</span>
+                  <span className="tech-tag">Keras</span>
+                </div>
+                <a href="#" className="project-btn">View Project</a>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div 
+              className="project-card"
+              style={{ backgroundImage: "url('https://placehold.co/600x400/2c3e50/white?text=Project+Image')" }}
+            >
+              <div className="project-card-content">
+                <h3>Campus Connect App</h3>
+                <p>A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.</p>
+                <div className="project-tags">
+                  <span className="tech-tag">Flutter</span>
+                  <span className="tech-tag">Firebase</span>
+                  <span className="tech-tag">Dart</span>
+                </div>
+                <a href="#" className="project-btn">View Project</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        /* --- Student Projects Section --- */
+        .projects-section {
+          padding: 60px 20px;
+          background-color: #f4f4f4; /* Updated background to match body */
+          text-align: center;
+        }
+
+        .section-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: var(--grey-text, #333);
+          margin-bottom: 40px;
+          font-family: 'Gotham', sans-serif;
+        }
+
+        .projects-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 30px;
+          max-width: 1400px;
+          margin: 0 auto;
+        }
+
+        .project-card {
+          position: relative; /* Needed for the gradient overlay */
+          border-radius: 16px; /* More rounded corners */
+          overflow: hidden; /* Clips the image to the border-radius */
+          min-height: 450px; /* Gives the card a uniform height */
+          
+          /* Background image (set via inline style in JSX) */
+          background-size: cover;
+          background-position: center;
+          
+          /* Flex to push content to the bottom */
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end; /* Aligns content to the bottom */
+
+          color: #ffffff; /* All text inside is white */
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* This is the dark gradient overlay at the bottom */
+        .project-card::before {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 70%;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+          z-index: 1; /* Sits below content, above image */
+        }
+
+        /* Wrapper for all text content */
+        .project-card-content {
+          position: relative;
+          z-index: 2; /* Sits on top of the gradient */
+          padding: 24px;
+        }
+
+        .project-card h3 {
+          font-size: 1.7rem; /* Larger title */
+          font-weight: 700;
+          color: #ffffff;
+          margin-top: 0;
+          margin-bottom: 8px;
+          font-family: 'Gotham', sans-serif;
+        }
+
+        .project-card p {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          color: #e0e0e0; /* Slightly off-white for description */
+          margin-bottom: 16px;
+        }
+
+        /* New Tags section */
+        .project-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 20px;
+        }
+
+        .tech-tag {
+          background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+          backdrop-filter: blur(5px); /* Frosted glass effect */
+          color: #ffffff;
+          padding: 5px 12px;
+          border-radius: 99px; /* Pill shape */
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+
+        /* New Button */
+        .project-btn {
+          display: block;
+          background: #ffffff;
+          color: #000000;
+          text-decoration: none;
+          padding: 12px 20px;
+          border-radius: 99px; /* Pill shape */
+          text-align: center;
+          font-weight: 600;
+          transition: transform 0.2s ease, background-color 0.2s ease;
+          font-family: 'Gotham', sans-serif;
+        }
+
+        .project-btn:hover {
+          transform: scale(1.03);
+          background-color: #f0f0f0;
+        }
+      `}</style>
 
       {/* Announcements Section */}
       <section id="announcements" className="py-16" style={{ backgroundColor: '#f3f4f6' }}>
