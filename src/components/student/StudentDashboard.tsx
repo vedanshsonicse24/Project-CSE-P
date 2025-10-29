@@ -22,20 +22,14 @@ import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Toaster } from "../ui/sonner";
 import { BOASubmissionForm } from "../boa/BOASubmissionForm";
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: User, label: "Profile", id: "profile" },
-  { icon: Upload, label: "Upload CV", id: "cv" },
-  { icon: Award, label: "Achievements", id: "achievements" },
-  { icon: FileText, label: "BOA Upload", id: "boa" },
-  { icon: Bell, label: "Notifications", id: "notifications" },
-];
+const sidebarItems: any[] = [];
 
 interface StudentDashboardProps {
   initialSection?: string;
+  onNavigateToProfile?: () => void;
 }
 
-export function StudentDashboard({ initialSection = "dashboard" }: StudentDashboardProps) {
+export function StudentDashboard({ initialSection = "dashboard", onNavigateToProfile }: StudentDashboardProps) {
   const [activeSection, setActiveSection] = useState(initialSection);
 
   // Update active section when prop changes
@@ -188,7 +182,7 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
               <Input placeholder="O+" />
             </div>
           </div>
-          <Button className="mt-6">Update Profile</Button>
+          <Button className="mt-6" onClick={onNavigateToProfile}>Update Profile</Button>
         </CardContent>
       </Card>
 

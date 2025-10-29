@@ -6,7 +6,7 @@ import { Switch } from '../ui/switch';
 import { EditableCell } from './EditableCell';
 import { subjects as initialSubjects, faculty as initialFaculty, labs as initialLabs, initialTimetableData } from './data';
 import { Subject, Faculty, Lab, TimetableData } from './types';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import { Input } from '../ui/input';
 

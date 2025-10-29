@@ -1,0 +1,457 @@
+/* ========================================
+   SWIPE-BASED ATTENDANCE ANIMATIONS
+   ======================================== */
+
+/* ===== FEEDBACK ANIMATIONS ===== */
+
+@keyframes swipe-feedback-present-animation {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(16, 185, 129, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes swipe-feedback-absent-animation {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.swipe-feedback-present {
+  animation: swipe-feedback-present-animation 600ms ease-in-out;
+}
+
+.swipe-feedback-absent {
+  animation: swipe-feedback-absent-animation 600ms ease-in-out;
+}
+
+/* Dark mode variants */
+@media (prefers-color-scheme: dark) {
+  @keyframes swipe-feedback-present-animation {
+    0% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(5, 150, 105, 0.4);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+
+  @keyframes swipe-feedback-absent-animation {
+    0% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(220, 38, 38, 0.4);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+}
+
+/* ===== HAPTIC PULSE ===== */
+
+@keyframes haptic-pulse-animation {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+}
+
+.haptic-pulse {
+  animation: haptic-pulse-animation 100ms ease-in-out;
+}
+
+/* ===== SWIPE ICON APPEAR ===== */
+
+@keyframes swipe-icon-appear-animation {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.swipe-icon-appear {
+  animation: swipe-icon-appear-animation 150ms ease-out;
+}
+
+/* ===== LOADING SPINNER ===== */
+
+@keyframes attendance-spinner-animation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.attendance-spinner {
+  animation: attendance-spinner-animation 600ms linear infinite;
+}
+
+/* ===== CHECKMARK POP ===== */
+
+@keyframes checkmark-pop-animation {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkmark-pop {
+  animation: checkmark-pop-animation 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===== ERROR SHAKE ===== */
+
+@keyframes error-shake-animation {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.error-shake {
+  animation: error-shake-animation 400ms ease-in-out;
+}
+
+/* ===== SWIPE HINT TUTORIAL ===== */
+
+@keyframes swipe-hint-animation {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translateX(-10px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(0);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translateX(10px);
+    opacity: 1;
+  }
+}
+
+.swipe-hint {
+  animation: swipe-hint-animation 1.5s ease-in-out infinite;
+}
+
+/* ===== STATISTICS ANIMATION ===== */
+
+@keyframes stat-animation-keyframes {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.stat-animation {
+  animation: stat-animation-keyframes 400ms ease-out;
+}
+
+/* ===== SWIPEABLE ROW STYLES ===== */
+
+.swipeable-row {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: grab;
+}
+
+.swipeable-row:active {
+  cursor: grabbing;
+}
+
+/* ===== ATTENDANCE BUTTON STYLES ===== */
+
+.attendance-button {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms ease-in-out;
+}
+
+.attendance-button:active {
+  transform: scale(0.95);
+}
+
+.attendance-button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ===== STATUS BADGES ===== */
+
+.status-badge-present {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.status-badge-absent {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.status-badge-unmarked {
+  background-color: #d1d5db;
+  color: #374151;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Dark mode status badges */
+@media (prefers-color-scheme: dark) {
+  .status-badge-present {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  }
+
+  .status-badge-absent {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+
+  .status-badge-unmarked {
+    background-color: #4b5563;
+    color: #d1d5db;
+  }
+}
+
+/* ===== FOCUS STATES FOR ACCESSIBILITY ===== */
+
+.swipeable-row:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+
+@media (max-width: 640px) {
+  .swipeable-row {
+    touch-action: pan-y;
+  }
+
+  .attendance-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  /* Increase touch targets on mobile */
+  .status-badge-present,
+  .status-badge-absent,
+  .status-badge-unmarked {
+    padding: 0.375rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ===== REDUCED MOTION SUPPORT ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .swipe-feedback-present,
+  .swipe-feedback-absent,
+  .haptic-pulse,
+  .swipe-icon-appear,
+  .attendance-spinner,
+  .checkmark-pop,
+  .error-shake,
+  .swipe-hint,
+  .stat-animation {
+    animation: none;
+  }
+
+  .swipeable-row,
+  .attendance-button {
+    transition: none;
+  }
+}
+
+/* ===== HIGH CONTRAST SUPPORT ===== */
+
+@media (prefers-contrast: high) {
+  .swipeable-row {
+    border-width: 3px;
+  }
+
+  .attendance-button {
+    border: 2px solid currentColor;
+  }
+
+  .status-badge-present,
+  .status-badge-absent,
+  .status-badge-unmarked {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ===== GRADIENT BACKGROUNDS FOR SWIPE INDICATORS ===== */
+
+.swipe-indicator-present {
+  background: linear-gradient(90deg, 
+    rgba(16, 185, 129, 0) 0%, 
+    rgba(16, 185, 129, 0.2) 50%, 
+    rgba(16, 185, 129, 0.4) 100%
+  );
+}
+
+.swipe-indicator-absent {
+  background: linear-gradient(90deg, 
+    rgba(239, 68, 68, 0.4) 0%, 
+    rgba(239, 68, 68, 0.2) 50%, 
+    rgba(239, 68, 68, 0) 100%
+  );
+}
+
+/* Dark mode gradient variants */
+@media (prefers-color-scheme: dark) {
+  .swipe-indicator-present {
+    background: linear-gradient(90deg, 
+      rgba(5, 150, 105, 0) 0%, 
+      rgba(5, 150, 105, 0.3) 50%, 
+      rgba(5, 150, 105, 0.5) 100%
+    );
+  }
+
+  .swipe-indicator-absent {
+    background: linear-gradient(90deg, 
+      rgba(220, 38, 38, 0.5) 0%, 
+      rgba(220, 38, 38, 0.3) 50%, 
+      rgba(220, 38, 38, 0) 100%
+    );
+  }
+}
+
+/* ===== SMOOTH TRANSITIONS ===== */
+
+.swipeable-row * {
+  transition: transform 200ms ease-out, opacity 150ms ease-out;
+}
+
+/* ===== HOVER EFFECTS (Desktop Only) ===== */
+
+@media (min-width: 768px) {
+  .swipeable-row:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .attendance-button:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* ===== PREVENT TEXT SELECTION DURING SWIPE ===== */
+
+.swipeable-row::selection,
+.swipeable-row *::selection {
+  background: transparent;
+}
+
+.swipeable-row::-moz-selection,
+.swipeable-row *::-moz-selection {
+  background: transparent;
+}
+
+/* ===== LOADING STATE OVERLAY ===== */
+
+.attendance-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .attendance-loading-overlay {
+    background-color: rgba(31, 41, 55, 0.8);
+  }
+}
+
+/* ===== ACCESSIBILITY: KEYBOARD FOCUS ===== */
+
+.swipeable-row:focus,
+.attendance-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* ===== PRINT STYLES ===== */
+
+@media print {
+  .swipeable-row {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+
+  .attendance-button {
+    display: none;
+  }
+}

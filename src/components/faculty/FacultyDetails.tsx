@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface Faculty {
   id: string;
@@ -303,14 +303,14 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
     >
       {/* Header */}
       <div
-        className="sticky top-0 z-40 shadow-md"
+        className="sticky top-0 z-0 shadow-md"
         style={{
-          backgroundColor: "#ff7b00",
+          backgroundColor: "#800000",
           borderTopLeftRadius: "12px",
           borderTopRightRadius: "12px",
         }}
       >
-        <div className="flex items-center justify-between px-6 py-4 backdrop-blur-xl border-b shadow-2xl" style={{ background: 'linear-gradient(135deg, rgba(255, 123, 0, 0.2) 0%, rgba(251, 146, 60, 0.25) 50%, rgba(255, 123, 0, 0.15) 100%)', borderColor: 'rgba(255, 123, 0, 0.3)', boxShadow: '0 8px 32px 0 rgba(255, 123, 0, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)' }}>
+        <div className="flex items-center justify-between px-6 py-4 backdrop-blur-xl border-b shadow-2xl" style={{ background: 'linear-gradient(135deg, rgba(128, 0, 0, 0.2) 0%, rgba(160, 0, 0, 0.25) 50%, rgba(128, 0, 0, 0.15) 100%)', borderColor: 'rgba(128, 0, 0, 0.3)', boxShadow: '0 8px 32px 0 rgba(128, 0, 0, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)' }}>
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -328,6 +328,17 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
             </h1>
           </div>
           <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white"
+              />
+              <Input
+                placeholder="Search by name or ID"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-64 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
+              />
+            </div>
             <Button
               variant="ghost"
               onClick={handleExportCSV}
@@ -381,7 +392,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
             <Button
               onClick={handleExportCSV}
               className="text-white shadow-md"
-              style={{ backgroundColor: "#ff7b00" }}
+              style={{ backgroundColor: "#800000" }}
             >
               <Download className="h-4 w-4 mr-2" />
               Download CSV
@@ -391,8 +402,8 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
           {/* Faculty Table */}
           <div className="rounded-lg overflow-hidden border">
             <Table>
-              <TableHeader style={{ backgroundColor: "#ffede0" }}>
-                <TableRow style={{ borderBottom: "2px solid #ff7b00" }}>
+              <TableHeader style={{ backgroundColor: "#f5e6e6" }}>
+                <TableRow style={{ borderBottom: "2px solid #800000" }}>
                   <TableHead className="text-white" style={{ color: "#333" }}>
                     Faculty ID
                   </TableHead>
@@ -443,7 +454,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
                         size="sm"
                         onClick={() => handleViewProfile(faculty)}
                         className="text-white shadow-md"
-                        style={{ backgroundColor: "#ff7b00" }}
+                        style={{ backgroundColor: "#800000" }}
                       >
                         View Profile
                       </Button>
@@ -465,12 +476,12 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
       {/* Modal */}
       {isModalOpen && selectedFaculty && editedFaculty && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", paddingTop: "140px", paddingBottom: "20px" }}
           onClick={handleCloseModal}
         >
           <div
-            className="rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-200"
+            className="rounded-xl shadow-2xl max-w-5xl w-full max-h-[calc(100vh-160px)] overflow-hidden animate-in fade-in zoom-in duration-200 mx-4"
             style={{ backgroundColor: "#ffffff" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -478,7 +489,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
             <div
               className="px-6 py-4 flex items-center justify-between"
               style={{
-                backgroundColor: "#ff7b00",
+                backgroundColor: "#800000",
                 borderTopLeftRadius: "12px",
                 borderTopRightRadius: "12px",
               }}
@@ -561,7 +572,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
                               updateField("department", e.target.value)
                             }
                             className="mt-1"
-                            style={{ borderColor: "#ff7b00" }}
+                            style={{ borderColor: "#800000" }}
                           />
                         ) : (
                           <p style={{ color: "#333", marginTop: "4px" }}>
@@ -576,7 +587,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
                         {isEditMode ? (
                           <Select
                             value={editedFaculty.designation}
-                            onValueChange={(value) =>
+                            onValueChange={(value: string) =>
                               updateField("designation", value)
                             }
                           >
@@ -781,7 +792,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
                         {isEditMode ? (
                           <Select
                             value={editedFaculty.gender}
-                            onValueChange={(value) => updateField("gender", value)}
+                            onValueChange={(value: string) => updateField("gender", value)}
                           >
                             <SelectTrigger className="mt-1">
                               <SelectValue />
@@ -990,7 +1001,7 @@ export function FacultyDetails({ onBack }: FacultyDetailsProps) {
                         <Button
                           onClick={handleSave}
                           className="text-white"
-                          style={{ backgroundColor: "#ff7b00" }}
+                          style={{ backgroundColor: "#800000" }}
                         >
                           Save Changes
                         </Button>

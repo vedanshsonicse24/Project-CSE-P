@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
@@ -12,6 +12,7 @@ interface HomePageProps {
 
 export function HomePage({ onNavigateToLogin }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [clubsDropdownOpen, setClubsDropdownOpen] = useState(false);
 
   // Show scroll to top button when scrolling down
   useEffect(() => {
@@ -156,7 +157,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         <div className="container mx-auto px-6">
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
-            style={{ color: '#1e3a8a' }}
+            style={{ color: '#800000' }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -175,13 +176,13 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <div className="flex justify-center mb-4">
-                  <div className="p-4 rounded-full bg-blue-100">
-                    <stat.icon className="h-8 w-8" style={{ color: '#1e3a8a' }} />
+                  <div className="p-4 rounded-full bg-blue-50">
+                    <stat.icon className="h-8 w-8" style={{ color: '#800000' }} />
                   </div>
                 </div>
                 <motion.h3 
                   className="text-3xl font-bold mb-2"
-                  style={{ color: '#1e3a8a' }}
+                  style={{ color: '#800000' }}
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true }}
@@ -208,7 +209,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl font-bold mb-4" style={{ color: '#1e3a8a' }}>
+          <h2 className="text-4xl font-bold mb-4" style={{ color: '#800000' }}>
             Meet Our Faculty
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto px-6">
@@ -476,7 +477,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         <div className="container mx-auto px-6">
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
-            style={{ color: '#1e3a8a' }}
+            style={{ color: '#800000' }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -499,11 +500,11 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
                     <div className="flex items-start gap-4">
                       <motion.div 
                         className="p-3 rounded-lg" 
-                        style={{ backgroundColor: 'rgba(249, 115, 22, 0.1)' }}
+                        style={{ backgroundColor: 'rgba(128, 0, 0, 0.1)' }}
                         whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                         transition={{ duration: 0.5 }}
                       >
-                        <Bell className="h-6 w-6" style={{ color: '#f97316' }} />
+                        <Bell className="h-6 w-6" style={{ color: '#800000' }} />
                       </motion.div>
                       <div className="flex-1">
                         <div className="flex items-start justify-between">
@@ -700,8 +701,25 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
             >
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li><button onClick={() => scrollToSection('home')} className="text-gray-300 hover:text-white transition-colors text-left">Home</button></li>
-                <li><button onClick={() => scrollToSection('departments')} className="text-gray-300 hover:text-white transition-colors text-left">Departments</button></li>
+                <li><button onClick={scrollToTop} className="text-gray-300 hover:text-white transition-colors text-left">Home</button></li>
+                <li 
+                  className="relative"
+                  onMouseEnter={() => setClubsDropdownOpen(true)}
+                  onMouseLeave={() => setClubsDropdownOpen(false)}
+                >
+                  <button 
+                    className="text-gray-300 hover:text-white transition-colors text-left flex items-center gap-1 w-full"
+                  >
+                    Clubs
+                    <ChevronDown className={`h-4 w-4 transition-transform ${clubsDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {clubsDropdownOpen && (
+                    <ul className="ml-4 mt-2 space-y-1">
+                      <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">COE</a></li>
+                      <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">CSA</a></li>
+                    </ul>
+                  )}
+                </li>
                 <li><button onClick={() => scrollToSection('faculty')} className="text-gray-300 hover:text-white transition-colors text-left">Faculty</button></li>
                 <li><button onClick={() => scrollToSection('announcements')} className="text-gray-300 hover:text-white transition-colors text-left">Announcements</button></li>
                 <li><button onClick={() => scrollToSection('contact')} className="text-gray-300 hover:text-white transition-colors text-left">Contact</button></li>
@@ -716,11 +734,9 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
             >
               <h3 className="text-lg font-bold mb-4">Programs</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>B.Tech Computer Science</li>
-                <li>B.Tech Information Technology</li>
-                <li>M.Tech CSE</li>
-                <li>MCA</li>
-                <li>Research Programs</li>
+                <li>B.Tech</li>
+                <li>M.Tech</li>
+                <li>PhD</li>
               </ul>
             </motion.div>
 

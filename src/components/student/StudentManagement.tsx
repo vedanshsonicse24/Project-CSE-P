@@ -81,7 +81,7 @@ const mockStudents: Student[] = [
     address: "123 Main Street, Raipur, Chhattisgarh - 492001",
     linkedIn: "https://linkedin.com/in/amitkumar",
     github: "https://github.com/amitkumar",
-    designation: "Class Representative",
+    designation: "Toast Master",
     averageCGPA: 8.9,
     researchPapers: 2,
     projectsMade: 5,
@@ -113,7 +113,7 @@ const mockStudents: Student[] = [
     address: "456 Park Avenue, Raipur, Chhattisgarh - 492002",
     linkedIn: "https://linkedin.com/in/priyasharma",
     github: "https://github.com/priyasharma",
-    designation: "Cultural Secretary",
+    designation: "COE",
     averageCGPA: 8.8,
     researchPapers: 1,
     projectsMade: 4,
@@ -144,7 +144,7 @@ const mockStudents: Student[] = [
     address: "789 Green Valley, Raipur, Chhattisgarh - 492003",
     linkedIn: "https://linkedin.com/in/rahulverma",
     github: "https://github.com/rahulverma",
-    designation: "Sports Captain",
+    designation: "Toast Master",
     averageCGPA: 7.5,
     researchPapers: 0,
     projectsMade: 3,
@@ -174,7 +174,7 @@ const mockStudents: Student[] = [
     address: "321 Hill View, Raipur, Chhattisgarh - 492004",
     linkedIn: "https://linkedin.com/in/snehapatel",
     github: "https://github.com/snehapatel",
-    designation: "Technical Lead",
+    designation: "COE",
     averageCGPA: 9.1,
     researchPapers: 3,
     projectsMade: 7,
@@ -207,7 +207,7 @@ const mockStudents: Student[] = [
     address: "654 Lake Road, Raipur, Chhattisgarh - 492005",
     linkedIn: "https://linkedin.com/in/karansingh",
     github: "https://github.com/karansingh",
-    designation: "Student",
+    designation: "Toast Master",
     averageCGPA: 7.2,
     researchPapers: 0,
     projectsMade: 2,
@@ -419,9 +419,9 @@ export function StudentManagement() {
       <div
         className="w-full mb-6 relative overflow-hidden animate-slide-in-top"
         style={{
-          background: 'linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #1E40AF 100%)',
+          background: 'linear-gradient(135deg, #800000 0%, #a00000 50%, #600000 100%)',
           padding: "24px 32px",
-          boxShadow: '0 10px 40px rgba(30, 58, 138, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+          boxShadow: '0 10px 40px rgba(128, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
           borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
         }}
       >
@@ -452,7 +452,7 @@ export function StudentManagement() {
                 />
                 <Search
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
-                  style={{ color: "#1E3A8A" }}
+                  style={{ color: "#800000" }}
                 />
               </div>
 
@@ -514,7 +514,7 @@ export function StudentManagement() {
               }
               style={
                 attendanceFilter.includes("medium")
-                  ? { backgroundColor: "#3B82F6", borderRadius: '10px', fontWeight: '500' }
+                  ? { backgroundColor: "#800000", borderRadius: '10px', fontWeight: '500' }
                   : { borderRadius: '10px', fontWeight: '500' }
               }
             >
@@ -555,7 +555,7 @@ export function StudentManagement() {
             <Button
               onClick={() => setShowMonthlyDropdown(!showMonthlyDropdown)}
               className="button-hover-scale shadow-lg border-none"
-              style={{ backgroundColor: "#1E3A8A", color: "#fff", borderRadius: '12px', fontWeight: '500', padding: '12px 24px' }}
+              style={{ backgroundColor: "#800000", color: "#fff", borderRadius: '12px', fontWeight: '500', padding: '12px 24px' }}
             >
               Monthly Attendance
               <ChevronDown className="h-4 w-4 ml-2" />
@@ -573,7 +573,7 @@ export function StudentManagement() {
                     </Label>
                     <Select
                       value={monthlyFilters.semester}
-                      onValueChange={(value) =>
+                      onValueChange={(value: string) =>
                         setMonthlyFilters({ ...monthlyFilters, semester: value })
                       }
                     >
@@ -596,7 +596,7 @@ export function StudentManagement() {
                     </Label>
                     <Select
                       value={monthlyFilters.section}
-                      onValueChange={(value) =>
+                      onValueChange={(value: string) =>
                         setMonthlyFilters({ ...monthlyFilters, section: value })
                       }
                     >
@@ -619,7 +619,7 @@ export function StudentManagement() {
                     </Label>
                     <Select
                       value={monthlyFilters.month}
-                      onValueChange={(value) =>
+                      onValueChange={(value: string) =>
                         setMonthlyFilters({ ...monthlyFilters, month: value })
                       }
                     >
@@ -655,7 +655,7 @@ export function StudentManagement() {
                     </Label>
                     <Select
                       value={monthlyFilters.year}
-                      onValueChange={(value) =>
+                      onValueChange={(value: string) =>
                         setMonthlyFilters({ ...monthlyFilters, year: value })
                       }
                     >
@@ -674,7 +674,7 @@ export function StudentManagement() {
 
                   <Button
                     className="w-full text-white"
-                    style={{ backgroundColor: "#ff7b00" }}
+                    style={{ backgroundColor: "#800000" }}
                     onClick={() => {
                       setShowMonthlyDropdown(false);
                       toast.success("Viewing monthly attendance...");
@@ -694,7 +694,7 @@ export function StudentManagement() {
           style={{ backgroundColor: "#fff" }}
         >
           <Table>
-            <TableHeader style={{ backgroundColor: "#ffede0" }}>
+            <TableHeader style={{ backgroundColor: "#f5e6e6" }}>
               <TableRow>
                 <TableHead style={{ color: "#333", fontWeight: "bold" }}>
                   Roll No
@@ -720,7 +720,7 @@ export function StudentManagement() {
               {filteredStudents.map((student) => (
                 <TableRow
                   key={student.id}
-                  className="hover:bg-orange-50 transition-colors"
+                  className="hover:bg-red-50 transition-colors"
                   style={{ borderBottom: "1px solid #eee" }}
                 >
                   <TableCell style={{ color: "#333" }}>{student.roll}</TableCell>
@@ -751,7 +751,7 @@ export function StudentManagement() {
                       size="sm"
                       onClick={() => handleViewDetails(student)}
                       className="text-white"
-                      style={{ backgroundColor: "#ff7b00" }}
+                      style={{ backgroundColor: "#800000" }}
                     >
                       View Details
                     </Button>
@@ -772,19 +772,19 @@ export function StudentManagement() {
       {/* Student Detail Modal */}
       {isModalOpen && selectedStudent && editedStudent && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", paddingTop: "100px", paddingBottom: "20px" }}
           onClick={handleCloseModal}
         >
           <div
-            className="rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-200"
+            className="rounded-xl shadow-2xl max-w-5xl w-full max-h-[calc(100vh-120px)] overflow-hidden animate-in fade-in zoom-in duration-200 mx-4"
             style={{ backgroundColor: "#fff" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div
               className="px-6 py-4 flex items-center justify-between"
-              style={{ backgroundColor: "#ff7b00" }}
+              style={{ backgroundColor: "#800000" }}
             >
               <h2 className="text-xl" style={{ color: "#fff", fontWeight: "bold" }}>
                 Student Details
@@ -835,7 +835,7 @@ export function StudentManagement() {
                         backgroundColor: "#d1d5db",
                         color: "#666",
                         fontSize: "48px",
-                        border: "3px solid #ff7b00",
+                        border: "3px solid #800000",
                       }}
                     >
                       {getInitials(editedStudent.name)}
@@ -844,7 +844,7 @@ export function StudentManagement() {
                       <Button
                         variant="outline"
                         size="sm"
-                        style={{ borderColor: "#ff7b00", color: "#ff7b00" }}
+                        style={{ borderColor: "#800000", color: "#800000" }}
                       >
                         <Upload className="h-4 w-4 mr-2" />
                         Upload Photo
@@ -855,7 +855,7 @@ export function StudentManagement() {
                   {/* Academic Info Card */}
                   <div
                     className="rounded-lg p-4 text-center"
-                    style={{ backgroundColor: "#ff7b00", color: "#fff" }}
+                    style={{ backgroundColor: "#800000", color: "#fff" }}
                   >
                     <p className="text-lg">
                       Semester {editedStudent.semester} - Section {editedStudent.section}
@@ -865,7 +865,7 @@ export function StudentManagement() {
                   {/* Mentor Card */}
                   <div
                     className="rounded-lg p-4 text-center"
-                    style={{ backgroundColor: "#ff7b00", color: "#fff" }}
+                    style={{ backgroundColor: "#800000", color: "#fff" }}
                   >
                     <p className="text-sm mb-1">Mentor</p>
                     <p className="text-lg">{editedStudent.mentorName}</p>
@@ -878,7 +878,7 @@ export function StudentManagement() {
                   >
                     <button
                       className="w-full px-4 py-3 flex items-center justify-between"
-                      style={{ backgroundColor: "#ff7b00", color: "#fff" }}
+                      style={{ backgroundColor: "#800000", color: "#fff" }}
                       onClick={() => setShowBacklogs(!showBacklogs)}
                     >
                       <span>
@@ -906,6 +906,23 @@ export function StudentManagement() {
                       </div>
                     )}
                   </div>
+
+                  {/* Download CV Button */}
+                  <div
+                    className="rounded-lg overflow-hidden"
+                    style={{ border: "1px solid #ddd" }}
+                  >
+                    <button
+                      className="w-full px-4 py-3 flex items-center justify-center gap-2"
+                      style={{ backgroundColor: "#800000", color: "#fff" }}
+                      onClick={() => {
+                        console.log("Downloading CV for:", editedStudent.name);
+                      }}
+                    >
+                      <Download className="h-4 w-4" />
+                      <span>Download CV</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Right Panel (60%) */}
@@ -915,7 +932,7 @@ export function StudentManagement() {
                     className="rounded-lg p-4"
                     style={{ backgroundColor: "#f9fafb" }}
                   >
-                    <h3 className="mb-4" style={{ color: "#ff7b00", fontWeight: "600" }}>
+                    <h3 className="mb-4" style={{ color: "#800000", fontWeight: "600" }}>
                       Personal Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -998,7 +1015,7 @@ export function StudentManagement() {
                       </div>
                       <div>
                         <Label style={{ color: "#666", fontSize: "12px" }}>
-                          Designation
+                          Active in (Clubs)
                         </Label>
                         {isEditMode ? (
                           <Input
@@ -1007,6 +1024,7 @@ export function StudentManagement() {
                               updateField("designation", e.target.value)
                             }
                             className="mt-1"
+                            placeholder="e.g., Coding Club, Sports Club"
                           />
                         ) : (
                           <p style={{ color: "#333", marginTop: "4px" }}>
@@ -1029,7 +1047,7 @@ export function StudentManagement() {
                             href={editedStudent.linkedIn}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: "#ff7b00", marginTop: "4px", display: "block" }}
+                            style={{ color: "#800000", marginTop: "4px", display: "block" }}
                           >
                             View Profile
                           </a>
@@ -1050,7 +1068,7 @@ export function StudentManagement() {
                             href={editedStudent.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: "#ff7b00", marginTop: "4px", display: "block" }}
+                            style={{ color: "#800000", marginTop: "4px", display: "block" }}
                           >
                             View Profile
                           </a>
@@ -1064,7 +1082,7 @@ export function StudentManagement() {
                     className="rounded-lg p-4"
                     style={{ backgroundColor: "#f9fafb" }}
                   >
-                    <h3 className="mb-4" style={{ color: "#ff7b00", fontWeight: "600" }}>
+                    <h3 className="mb-4" style={{ color: "#800000", fontWeight: "600" }}>
                       Contact Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1129,7 +1147,7 @@ export function StudentManagement() {
                     className="rounded-lg p-4"
                     style={{ backgroundColor: "#f9fafb" }}
                   >
-                    <h3 className="mb-4" style={{ color: "#ff7b00", fontWeight: "600" }}>
+                    <h3 className="mb-4" style={{ color: "#800000", fontWeight: "600" }}>
                       Parent Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1251,7 +1269,7 @@ export function StudentManagement() {
                     className="rounded-lg p-4"
                     style={{ backgroundColor: "#f9fafb" }}
                   >
-                    <h3 className="mb-4" style={{ color: "#ff7b00", fontWeight: "600" }}>
+                    <h3 className="mb-4" style={{ color: "#800000", fontWeight: "600" }}>
                       Academic Details
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1325,7 +1343,7 @@ export function StudentManagement() {
                     className="rounded-lg p-4"
                     style={{ backgroundColor: "#f9fafb" }}
                   >
-                    <h3 className="mb-4" style={{ color: "#ff7b00", fontWeight: "600" }}>
+                    <h3 className="mb-4" style={{ color: "#800000", fontWeight: "600" }}>
                       Achievements
                     </h3>
                     {isEditMode ? (
@@ -1353,7 +1371,7 @@ export function StudentManagement() {
                           variant="outline"
                           onClick={addAchievement}
                           className="w-full"
-                          style={{ borderColor: "#ff7b00", color: "#ff7b00" }}
+                          style={{ borderColor: "#800000", color: "#800000" }}
                         >
                           <Plus className="h-4 w-4 mr-2" />
                           Add Achievement
@@ -1384,7 +1402,7 @@ export function StudentManagement() {
                         <Button
                           onClick={handleSave}
                           className="text-white"
-                          style={{ backgroundColor: "#ff7b00" }}
+                          style={{ backgroundColor: "#800000" }}
                         >
                           Save Changes
                         </Button>

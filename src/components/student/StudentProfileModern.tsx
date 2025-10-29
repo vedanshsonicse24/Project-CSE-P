@@ -9,11 +9,9 @@ import { Slider } from "../ui/slider";
 import { 
   User, Calendar, Hash, Award, Mail, Phone, Users, 
   Linkedin, Github, BookOpen, GraduationCap, Moon, Sun, 
-  HelpCircle, Sparkles, Check, AlertCircle, Rocket 
+  HelpCircle, Sparkles, Check, AlertCircle, Rocket, Pencil
 } from "lucide-react";
 import { toast } from "sonner";
-import image_31f866a600b286454181d60b7ea702115451599f from 'figma:asset/31f866a600b286454181d60b7ea702115451599f.png';
-import { ImageWithFallback } from "../figma/ImageWithFallback";
 
 interface StudentProfileData {
   fullName: string;
@@ -31,6 +29,9 @@ interface StudentProfileData {
   email: string;
   phone: string;
   achievements: string;
+  numberOfBacklogs: string;
+  backlogSubject: string;
+  activeInClubs: string;
 }
 
 interface FieldValidation {
@@ -45,29 +46,40 @@ export function StudentProfileModern() {
   const [shakingFields, setShakingFields] = useState<FieldValidation>({});
   
   const [formData, setFormData] = useState<StudentProfileData>({
-    fullName: "Priya Sharma",
-    dateOfBirth: "2003-05-15",
-    rollNumber: "21CS002",
-    enrollmentNumber: "0827CS211002",
-    attendance: 92,
-    designation: "student",
-    linkedIn: "linkedin.com/in/priyasharma",
-    github: "github.com/priyasharma",
-    fatherName: "Rajesh Sharma",
-    fatherPhone: "+91 98765 12345",
-    motherName: "Sunita Sharma",
-    motherPhone: "+91 98765 67890",
-    email: "priya.sharma@student.edu",
-    phone: "+91 98765 43210",
-    achievements: "First Prize in Hackathon 2024\nBest Project Award - Web Development\nActive Member - Coding Club",
+    fullName: "",
+    dateOfBirth: "",
+    rollNumber: "",
+    enrollmentNumber: "",
+    attendance: 0,
+    designation: "",
+    linkedIn: "",
+    github: "",
+    fatherName: "",
+    fatherPhone: "",
+    motherName: "",
+    motherPhone: "",
+    email: "",
+    phone: "",
+    achievements: "",
+    numberOfBacklogs: "",
+    backlogSubject: "",
+    activeInClubs: "",
   });
 
   // Calculate form completion progress
   useEffect(() => {
-    const totalFields = Object.keys(formData).length;
-    const filledFields = Object.values(formData).filter(value => 
-      value !== "" && value !== 0
-    ).length;
+    // Exclude attendance, numberOfBacklogs, backlogSubject, and activeInClubs from progress calculation
+    const fieldsToCount = Object.keys(formData).filter(key => 
+      key !== 'attendance' && 
+      key !== 'numberOfBacklogs' && 
+      key !== 'backlogSubject' && 
+      key !== 'activeInClubs'
+    );
+    const totalFields = fieldsToCount.length;
+    const filledFields = fieldsToCount.filter(key => {
+      const value = formData[key as keyof StudentProfileData];
+      return value !== "" && value !== null && value !== undefined;
+    }).length;
     setFormProgress(Math.round((filledFields / totalFields) * 100));
   }, [formData]);
 
@@ -201,6 +213,9 @@ export function StudentProfileModern() {
       email: "",
       phone: "",
       achievements: "",
+      numberOfBacklogs: "",
+      backlogSubject: "",
+      activeInClubs: "",
     });
     setValidatedFields({});
     toast.info("Form reset", {
@@ -229,65 +244,34 @@ export function StudentProfileModern() {
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Hero Header with Logo */}
-        <div className="mb-8 text-center relative">
-          <div className="flex items-center justify-center gap-4 mb-6 animate-fade-in">
-            <div className="group">
-              <ImageWithFallback
-                src={image_31f866a600b286454181d60b7ea702115451599f}
-                alt="College Logo"
-                className="h-20 w-auto object-contain transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-              />
-            </div>
-            <GraduationCap className={`h-16 w-16 ${darkMode ? 'text-blue-400' : 'text-blue-600'} animate-bounce`} />
-          </div>
-          
-          <h1 className={`text-4xl md:text-5xl font-bold mb-3 animate-slide-down ${
-            darkMode 
-              ? 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400' 
-              : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600'
-          } bg-clip-text text-transparent`}>
-            Student Profile Portal
-          </h1>
-          
-          <p className={`text-lg ${subTextClass} max-w-2xl mx-auto animate-fade-in-delay`}>
-            Submit your academic and personal details to complete your student profile
-          </p>
-
-          {/* Floating Mascot */}
-          <div className="absolute -top-4 -right-4 hidden lg:block">
-            <Rocket className={`h-12 w-12 ${darkMode ? 'text-yellow-400' : 'text-orange-500'} animate-float`} />
-          </div>
-        </div>
-
         {/* Progress Bar */}
-        <div className="mb-6 animate-fade-in-delay-2">
+        <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className={`text-sm font-medium ${textClass}`}>Profile Completion</span>
+            <span className={`text-sm font-medium ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+              Profile Completion
+            </span>
             <span className={`text-sm font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
               {formProgress}%
             </span>
           </div>
-          <div className={`w-full h-3 ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} rounded-full overflow-hidden`}>
+          <div className={`w-full h-5 ${darkMode ? 'bg-gray-600' : 'bg-gray-400'} rounded-full relative border-2 ${darkMode ? 'border-gray-500' : 'border-gray-500'}`}>
             <div 
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-500 ease-out rounded-full"
+              className="absolute top-0 left-0 h-full bg-green-500 rounded-full transition-all duration-700 ease-out"
               style={{ width: `${formProgress}%` }}
-            ></div>
+            >
+            </div>
           </div>
         </div>
 
         {/* Main Form Card */}
         <Card className={`${cardClass} transform transition-all duration-300 hover:shadow-3xl animate-fade-in-up`}>
-          <CardHeader className={`${darkMode ? 'bg-gradient-to-r from-blue-900 to-purple-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'} text-white rounded-t-xl`}>
+          <CardHeader className={`${darkMode ? 'bg-gradient-to-r from-blue-900 to-purple-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'} rounded-t-xl`}>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-2xl md:text-3xl flex items-center gap-3">
-                  <User className="h-7 w-7 animate-pulse" />
-                  Student Information
+                <CardTitle className="text-2xl md:text-3xl flex items-center gap-3 text-black">
+                  <User className="h-7 w-7 text-black" />
+                  Student Profile
                 </CardTitle>
-                <CardDescription className={`${darkMode ? 'text-blue-100' : 'text-blue-50'} mt-2`}>
-                  Fill in your details below • All fields marked with * are required
-                </CardDescription>
               </div>
               
               {/* Dark Mode Toggle */}
@@ -303,11 +287,71 @@ export function StudentProfileModern() {
           </CardHeader>
           
           <CardContent className="p-6 md:p-8">
-            <form className="space-y-10">
+            <form className="space-y-6">
+              {/* Profile Picture Section */}
+              <div className="pb-6 border-b-2 border-gray-200 dark:border-gray-700">
+                <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${darkMode ? 'text-white' : 'section-heading'}`}>
+                  <User className={`h-5 w-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                  Profile Picture
+                </h3>
+                
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  {/* Left: Profile Image Display */}
+                  <div className="relative group">
+                    <div className="w-40 h-40 rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+                      <img
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer">
+                        <Pencil className="h-8 w-8 text-white" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Upload Controls */}
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <Label className={`text-sm font-medium mb-2 block ${darkMode ? 'text-gray-300' : 'label-text'}`}>
+                        Upload Profile Picture
+                      </Label>
+                      <p className={`text-xs mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        JPG, PNG or GIF. Max size 2MB. Recommended: 400x400px
+                      </p>
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className={`${darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300'}`}
+                        >
+                          <User className="h-4 w-4 mr-2" />
+                          Choose File
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Tip Box */}
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-blue-900/30 border border-blue-700' : 'bg-blue-50 border border-blue-200'}`}>
+                      <p className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
+                        💡 Tip: Use a clear, professional photo with good lighting for best results.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Personal Information */}
               <div className="space-y-6 animate-slide-in-left">
-                <h3 className={`text-2xl font-bold ${textClass} pb-3 border-b-2 ${darkMode ? 'border-blue-500' : 'border-blue-300'} flex items-center gap-3`}>
-                  <User className={`h-6 w-6 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                <h3 className={`text-xl font-bold mb-4 pb-3 border-b-2 ${darkMode ? 'border-blue-500 text-white' : 'border-blue-300 section-heading'} flex items-center gap-3`}>
+                  <User className={`h-5 w-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
                   Personal Information
                 </h3>
                 
@@ -316,7 +360,7 @@ export function StudentProfileModern() {
                   <div className="group relative">
                     <div className={`absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
                     <div className="relative">
-                      <Label htmlFor="fullName" className={`text-sm font-medium ${textClass} flex items-center gap-2 mb-2`}>
+                      <Label htmlFor="fullName" className={`text-sm font-medium mb-2 flex items-center gap-2 ${darkMode ? 'text-gray-300' : 'label-text'}`}>
                         <User className={`h-4 w-4 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
                         Full Name *
                         {validatedFields.fullName && <Check className="h-4 w-4 text-green-500 animate-scale-in" />}
@@ -341,7 +385,7 @@ export function StudentProfileModern() {
                   <div className="group relative">
                     <div className={`absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
                     <div className="relative">
-                      <Label htmlFor="dateOfBirth" className={`text-sm font-medium ${textClass} flex items-center gap-2 mb-2`}>
+                      <Label htmlFor="dateOfBirth" className={`text-sm font-medium mb-2 flex items-center gap-2 ${darkMode ? 'text-gray-300' : 'label-text'}`}>
                         <Calendar className={`h-4 w-4 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
                         Date of Birth *
                         {validatedFields.dateOfBirth && <Check className="h-4 w-4 text-green-500 animate-scale-in" />}
@@ -418,8 +462,8 @@ export function StudentProfileModern() {
 
               {/* Academic Information */}
               <div className="space-y-6 animate-slide-in-right">
-                <h3 className={`text-2xl font-bold ${textClass} pb-3 border-b-2 ${darkMode ? 'border-purple-500' : 'border-purple-300'} flex items-center gap-3`}>
-                  <BookOpen className={`h-6 w-6 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                <h3 className={`text-xl font-bold mb-4 pb-3 border-b-2 ${darkMode ? 'border-purple-500 text-white' : 'border-purple-300 section-heading'} flex items-center gap-3`}>
+                  <BookOpen className={`h-5 w-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
                   Academic Information
                 </h3>
                 
@@ -468,28 +512,47 @@ export function StudentProfileModern() {
                     />
                   </div>
 
-                  {/* Attendance Slider */}
+                  {/* Attendance Progress Bar (Read-Only) */}
                   <div className="md:col-span-2 group">
-                    <Label className={`text-sm font-medium ${textClass} flex items-center gap-2 mb-4`}>
-                      <BookOpen className={`h-4 w-4 ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                      Attendance Percentage: 
-                      <span className={`text-2xl font-bold ml-2 ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                    <Label className={`text-sm font-medium ${textClass} flex items-center justify-between gap-2 mb-4`}>
+                      <div className="flex items-center gap-2">
+                        <BookOpen className={`h-4 w-4 ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                        Attendance Percentage
+                      </div>
+                      <span className={`text-2xl font-bold ${
+                        formData.attendance >= 75 
+                          ? darkMode ? 'text-emerald-400' : 'text-emerald-600'
+                          : formData.attendance >= 65
+                          ? darkMode ? 'text-yellow-400' : 'text-yellow-600'
+                          : darkMode ? 'text-red-400' : 'text-red-600'
+                      }`}>
                         {formData.attendance}%
                       </span>
                     </Label>
                     <div className="relative">
-                      <Slider
-                        value={[formData.attendance]}
-                        onValueChange={(value: number[]) => handleInputChange("attendance", value[0])}
-                        max={100}
-                        step={1}
-                        className="w-full"
-                      />
+                      {/* Progress Bar */}
+                      <div className={`w-full h-3 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} overflow-hidden`}>
+                        <div 
+                          className={`h-full transition-all duration-500 ease-out ${
+                            formData.attendance >= 75 
+                              ? 'bg-gradient-to-r from-emerald-500 to-emerald-600'
+                              : formData.attendance >= 65
+                              ? 'bg-gradient-to-r from-yellow-500 to-yellow-600'
+                              : 'bg-gradient-to-r from-red-500 to-red-600'
+                          }`}
+                          style={{ width: `${formData.attendance}%` }}
+                        />
+                      </div>
                       <div className="flex justify-between mt-2 text-xs text-gray-500">
                         <span>0%</span>
-                        <span>50%</span>
+                        <span className={formData.attendance >= 65 ? 'font-semibold text-emerald-600' : 'font-semibold text-red-600'}>
+                          Required: 75%
+                        </span>
                         <span>100%</span>
                       </div>
+                      <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'} italic`}>
+                        * Attendance is calculated automatically based on your class records
+                      </p>
                     </div>
                   </div>
 
@@ -514,13 +577,67 @@ export function StudentProfileModern() {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Number of Backlogs */}
+                  <div className="group relative">
+                    <Label htmlFor="numberOfBacklogs" className={`text-sm font-medium mb-2 flex items-center gap-2 ${darkMode ? 'text-gray-300' : 'label-text'}`}>
+                      <Hash className={`h-4 w-4 ${darkMode ? 'text-red-400' : 'text-red-600'}`} />
+                      Number of Backlogs
+                    </Label>
+                    <Input
+                      id="numberOfBacklogs"
+                      value={formData.numberOfBacklogs}
+                      onChange={(e) => handleInputChange("numberOfBacklogs", e.target.value)}
+                      placeholder="Enter number or 'null'"
+                      className={`
+                        ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400' : 'bg-white border-gray-300'}
+                        transition-all duration-300 focus:scale-105 focus:shadow-lg
+                      `}
+                    />
+                  </div>
+
+                  {/* Backlog Subject */}
+                  <div className="group relative">
+                    <Label htmlFor="backlogSubject" className={`text-sm font-medium mb-2 flex items-center gap-2 ${darkMode ? 'text-gray-300' : 'label-text'}`}>
+                      <BookOpen className={`h-4 w-4 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`} />
+                      Backlog Subject
+                    </Label>
+                    <Input
+                      id="backlogSubject"
+                      value={formData.backlogSubject}
+                      onChange={(e) => handleInputChange("backlogSubject", e.target.value)}
+                      placeholder="Enter subject or 'null'"
+                      className={`
+                        ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400' : 'bg-white border-gray-300'}
+                        transition-all duration-300 focus:scale-105 focus:shadow-lg
+                      `}
+                    />
+                  </div>
+
+                  {/* Active in (Clubs) */}
+                  <div className="md:col-span-2 group relative">
+                    <Label htmlFor="activeInClubs" className={`text-sm font-medium mb-2 flex items-center gap-2 ${darkMode ? 'text-gray-300' : 'label-text'}`}>
+                      <Users className={`h-4 w-4 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`} />
+                      Active in (Clubs)
+                    </Label>
+                    <Input
+                      id="activeInClubs"
+                      value={formData.activeInClubs}
+                      onChange={(e) => handleInputChange("activeInClubs", e.target.value)}
+                      placeholder="e.g., Toast Master, COE"
+                      className={`
+                        ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400' : 'bg-white border-gray-300'}
+                        transition-all duration-300 focus:scale-105 focus:shadow-lg
+                      `}
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Social Links */}
               <div className="space-y-6 animate-slide-in-left">
-                <h3 className={`text-2xl font-bold ${textClass} pb-3 border-b-2 ${darkMode ? 'border-pink-500' : 'border-pink-300'} flex items-center gap-3`}>
-                  <Sparkles className={`h-6 w-6 ${darkMode ? 'text-pink-400' : 'text-pink-600'}`} />
+                <h3 className={`text-xl font-bold mb-4 pb-3 border-b-2 ${darkMode ? 'border-pink-500 text-white' : 'border-pink-300 section-heading'} flex items-center gap-3`}>
+                  <Sparkles className={`h-5 w-5 ${darkMode ? 'text-pink-400' : 'text-pink-600'}`} />
                   Social & Professional Links
                 </h3>
                 
@@ -569,8 +686,8 @@ export function StudentProfileModern() {
 
               {/* Parent Information */}
               <div className="space-y-6 animate-slide-in-right">
-                <h3 className={`text-2xl font-bold ${textClass} pb-3 border-b-2 ${darkMode ? 'border-indigo-500' : 'border-indigo-300'} flex items-center gap-3`}>
-                  <Users className={`h-6 w-6 ${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
+                <h3 className={`text-xl font-bold mb-4 pb-3 border-b-2 ${darkMode ? 'border-indigo-500 text-white' : 'border-indigo-300 section-heading'} flex items-center gap-3`}>
+                  <Users className={`h-5 w-5 ${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
                   Parent / Guardian Information
                 </h3>
                 
@@ -669,8 +786,8 @@ export function StudentProfileModern() {
 
               {/* Achievements */}
               <div className="space-y-6 animate-slide-in-left">
-                <h3 className={`text-2xl font-bold ${textClass} pb-3 border-b-2 ${darkMode ? 'border-yellow-500' : 'border-yellow-300'} flex items-center gap-3`}>
-                  <Award className={`h-6 w-6 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
+                <h3 className={`text-xl font-bold mb-4 pb-3 border-b-2 ${darkMode ? 'border-yellow-500 text-white' : 'border-yellow-300 section-heading'} flex items-center gap-3`}>
+                  <Award className={`h-5 w-5 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
                   Achievements & Honors
                 </h3>
                 
@@ -697,7 +814,7 @@ export function StudentProfileModern() {
                 <Button
                   type="button"
                   onClick={handleSave}
-                  className="flex-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-6 text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-6 text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group"
                 >
                   <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />
                   Save Profile
@@ -706,10 +823,7 @@ export function StudentProfileModern() {
                   type="button"
                   variant="outline"
                   onClick={handleReset}
-                  className={`
-                    flex-1 border-2 font-semibold py-6 text-lg transition-all duration-300 transform hover:scale-105
-                    ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700'}
-                  `}
+                  className="flex-1 border-2 border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold py-6 text-lg transition-all duration-300 transform hover:scale-105"
                 >
                   Reset Form
                 </Button>
@@ -749,7 +863,7 @@ export function StudentProfileModern() {
             <ul className="text-sm space-y-1">
               <li>• Fill all required fields marked with *</li>
               <li>• Use valid email and URLs</li>
-              <li>• Adjust attendance with the slider</li>
+              <li>• Attendance is calculated automatically</li>
               <li>• Click Save to submit your profile</li>
             </ul>
           </div>

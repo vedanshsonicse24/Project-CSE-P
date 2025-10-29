@@ -595,7 +595,12 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                         <a 
                           href="#" 
                           className={activeNavItem === "profile" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('profile'); }}
+                          onClick={(e) => { 
+                            e.preventDefault(); 
+                            if (onNavigateToProfile) {
+                              onNavigateToProfile();
+                            }
+                          }}
                         >
                           PROFILE
                         </a>
@@ -675,7 +680,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                           className={activeNavItem === "boa" ? "active" : ""} 
                           onClick={(e) => { e.preventDefault(); handleNavClick('boa'); }}
                         >
-                          BOA UPLOAD
+                          UPLOAD BOA
                         </a>
                         <a 
                           href="#" 

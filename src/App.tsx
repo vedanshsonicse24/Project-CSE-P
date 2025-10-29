@@ -12,13 +12,15 @@ import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
 import { FacultyInfoPage } from "./components/pages/FacultyInfoPage";
+import AttendanceScheduleDemo from "./components/faculty/AttendanceScheduleDemo";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
 import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register";
+
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register" | "attendance-demo";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -185,7 +187,7 @@ export default function App() {
       return (
         <PageTransition>
           {userRole === "faculty" && <FacultyDashboard initialSection={dashboardSection} />}
-          {userRole === "student" && <StudentDashboard initialSection={dashboardSection} />}
+          {userRole === "student" && <StudentDashboard initialSection={dashboardSection} onNavigateToProfile={() => setCurrentPage("student-profile")} />}
           {userRole === "hod" && <HODDashboard initialSection={dashboardSection} />}
           {userRole === "admin" && <HODDashboard isViewOnly={true} initialSection={dashboardSection} />}
         </PageTransition>
@@ -204,6 +206,14 @@ export default function App() {
       return (
         <PageTransition>
           <FacultyProfile />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "attendance-demo") {
+      return (
+        <PageTransition>
+          <AttendanceScheduleDemo />
         </PageTransition>
       );
     }
@@ -258,7 +268,7 @@ export default function App() {
       />
 
       {/* Breadcrumb Navigation */}
-      {currentPage !== "home" && currentPage !== "login" && !userRole && (
+      {currentPage !== "home" && currentPage !== "login" && currentPage !== "student-register" && currentPage !== "faculty-register" && !userRole && (
         <Breadcrumb
           items={getBreadcrumbItems(
             currentPage,
