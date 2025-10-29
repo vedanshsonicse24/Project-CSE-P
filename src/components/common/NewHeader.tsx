@@ -11,12 +11,62 @@ interface NewHeaderProps {
   onNavigateToHome?: () => void;
   onNavigateToFacultyInfo?: () => void;
   onNavigateToAlumni?: () => void;
+  onNavigateToContact?: () => void;
+  onNavigateToNewsEvents?: () => void;
+  onNavigateToCOE?: () => void;
   showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
+export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, showHeroVideo }: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [showClubsDropdown, setShowClubsDropdown] = useState(false);
+  
+  // Navigation sections for search
+  const searchableeSections = [
+    { name: "Home", key: "home" },
+    { name: "Who We Are", key: "about" },
+    { name: "Education & Research", key: "education" },
+    { name: "Admissions", key: "admissions" },
+    { name: "SSIPMT Programs", key: "programs" },
+    { name: "Faculty Info", key: "faculty" },
+    { name: "Alumni", key: "alumni" },
+    { name: "Contact", key: "contact" },
+    { name: "News & Events", key: "news" },
+    { name: "Student Dashboard", key: "student-dashboard" },
+    { name: "Faculty Dashboard", key: "faculty-dashboard" },
+    { name: "HOD Dashboard", key: "hod-dashboard" },
+  ];
+
+  const filteredSections = searchableeSections.filter(section =>
+    section.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearchSelect = (sectionKey: string) => {
+    switch(sectionKey) {
+      case "home":
+        onNavigateToHome?.();
+        break;
+      case "faculty":
+        onNavigateToFacultyInfo?.();
+        break;
+      case "alumni":
+        onNavigateToAlumni?.();
+        break;
+      case "contact":
+        onNavigateToContact?.();
+        break;
+      case "news":
+        onNavigateToNewsEvents?.();
+        break;
+      default:
+        onNavigateToSection?.(sectionKey);
+    }
+    setSearchQuery("");
+    setShowSearchDropdown(false);
+  };
   
   const handleNavClick = (section: string) => {
     setActiveNavItem(section);
@@ -168,6 +218,80 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           display: block;
         }
 
+        .search-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .search-box {
+          position: relative;
+          display: flex;
+          align-items: center;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          padding: 6px 12px;
+          min-width: 200px;
+          transition: all 0.2s ease;
+        }
+
+        .search-box:focus-within {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-box-icon {
+          color: #64748b;
+          margin-right: 8px;
+          flex-shrink: 0;
+        }
+
+        .search-input {
+          border: none;
+          outline: none;
+          flex: 1;
+          font-size: 14px;
+          color: #1e293b;
+          background: transparent;
+        }
+
+        .search-input::placeholder {
+          color: #94a3b8;
+        }
+
+        .search-dropdown {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+          max-height: 300px;
+          overflow-y: auto;
+          margin-top: 4px;
+        }
+
+        .search-dropdown-item {
+          padding: 12px 16px;
+          cursor: pointer;
+          font-size: 14px;
+          color: #1e293b;
+          border-bottom: 1px solid #f1f5f9;
+          transition: background-color 0.2s ease;
+        }
+
+        .search-dropdown-item:hover {
+          background-color: #f8fafc;
+        }
+
+        .search-dropdown-item:last-child {
+          border-bottom: none;
+        }
+
         .info-dropdown {
           position: relative;
           display: inline-block;
@@ -207,6 +331,49 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         }
 
         .info-dropdown-content a:hover {
+          background-color: #f8f9fa;
+          color: var(--maroon-color);
+        }
+
+        .clubs-dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .clubs-dropdown-content {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: white;
+          min-width: 160px;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e5e5e5;
+          border-radius: 4px;
+          z-index: 1001;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .clubs-dropdown-content.show {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .clubs-dropdown-content a {
+          color: var(--grey-text);
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+          transition: background-color 0.2s ease;
+        }
+
+        .clubs-dropdown-content a:hover {
           background-color: #f8f9fa;
           color: var(--maroon-color);
         }
@@ -465,14 +632,20 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         <div className="top-bar">
           <nav className="container">
             <div className="top-nav-left">
-              <a href="#">NEWS & EVENTS</a>
+              <button 
+                onClick={onNavigateToNewsEvents}
+                className="text-white hover:opacity-85 transition-opacity text-sm uppercase cursor-pointer bg-transparent border-none"
+                style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.5px' }}
+              >
+                NEWS & EVENTS
+              </button>
               <a href="#">CAREERS</a>
               <div 
                 className="info-dropdown"
                 onMouseEnter={() => setShowInfoDropdown(true)}
                 onMouseLeave={() => setShowInfoDropdown(false)}
               >
-                <a href="#" style={{ cursor: 'pointer' }}>INFO FOR</a>
+                <a href="#" style={{ cursor: 'pointer' }}>PEOPLE</a>
                 <div className={`info-dropdown-content ${showInfoDropdown ? 'show' : ''}`}>
                   <a 
                     href="#" 
@@ -520,20 +693,39 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                 </>
               ) : (
                 <>
-                  <a href="#">VIRTUAL TOUR</a>
                   <a 
-                    href="#contact"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const element = document.getElementById('contact');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }}
+                    href="https://tourmkr.com/F1yU45CLVU/44753896p&40.42h&69.6t" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
+                  >
+                    VIRTUAL TOUR
+                  </a>
+                  <button 
+                    onClick={onNavigateToContact}
+                    className="text-white hover:opacity-85 transition-opacity text-sm uppercase cursor-pointer"
                   >
                     CONTACT US
-                  </a>
-                  <a href="#">DIRECTORY</a>
+                  </button>
+                  <div 
+                    className="clubs-dropdown"
+                    onMouseEnter={() => setShowClubsDropdown(true)}
+                    onMouseLeave={() => setShowClubsDropdown(false)}
+                  >
+                    <a href="#" style={{ cursor: 'pointer' }}>CLUBS</a>
+                    <div className={`clubs-dropdown-content ${showClubsDropdown ? 'show' : ''}`}>
+                      <a href="#" onClick={(e) => { e.preventDefault(); setShowClubsDropdown(false); }}>
+                        C.S.A.
+                      </a>
+                      <a href="#" onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowClubsDropdown(false); 
+                        onNavigateToCOE?.();
+                      }}>
+                        C.O.E.
+                      </a>
+                    </div>
+                  </div>
                   {onNavigateToLogin && (
                     <button 
                       onClick={onNavigateToLogin}
@@ -544,9 +736,6 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                   )}
                 </>
               )}
-              <div className="search-icon" aria-label="Search">
-                <Search size={16} />
-              </div>
             </div>
           </nav>
         </div>
@@ -723,13 +912,34 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                   </div>
                   
                   <div className="main-nav-right">
-                    <a href="#">LIFE AT SSIPMT</a>
                     <a href="#">SSIPMT PROGRAMS</a>
-                    <a 
-                      href="#"
-                    >
-                      APPLY
-                    </a>
+                    <div className="search-container">
+                      <div className="search-box">
+                        <Search size={16} className="search-box-icon" />
+                        <input
+                          type="text"
+                          placeholder="Search sections..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onFocus={() => setShowSearchDropdown(true)}
+                          onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
+                          className="search-input"
+                        />
+                      </div>
+                      {showSearchDropdown && searchQuery && filteredSections.length > 0 && (
+                        <div className="search-dropdown">
+                          {filteredSections.map((section) => (
+                            <div
+                              key={section.key}
+                              className="search-dropdown-item"
+                              onClick={() => handleSearchSelect(section.key)}
+                            >
+                              {section.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </>
               )}

@@ -50,27 +50,26 @@ export function DevContentEditor({ contentType, onClose }: DevContentEditorProps
   };
 
   const saveContent = () => {
-    let success = false;
-    switch (contentType) {
-      case 'announcements':
-        success = ContentManager.setAnnouncements(content);
-        break;
-      case 'stats':
-        success = ContentManager.setStats(content);
-        break;
-      case 'departments':
-        success = ContentManager.setDepartments(content);
-        break;
-      case 'hero':
-        if (heroContent) {
-          success = ContentManager.setHeroContent(heroContent);
-        }
-        break;
-    }
-    
-    if (success) {
+    try {
+      switch (contentType) {
+        case 'announcements':
+          ContentManager.saveAnnouncements(content);
+          break;
+        case 'stats':
+          ContentManager.saveStats(content);
+          break;
+        case 'departments':
+          ContentManager.saveDepartments(content);
+          break;
+        case 'hero':
+          if (heroContent) {
+            ContentManager.saveHeroContent(heroContent);
+          }
+          break;
+      }
+      
       toast.success('Content saved successfully!');
-    } else {
+    } catch (error) {
       toast.error('Failed to save content');
     }
   };

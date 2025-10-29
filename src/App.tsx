@@ -14,11 +14,13 @@ import { HODDashboard } from "./components/hod/HODDashboard";
 import { FacultyInfoPage } from "./components/pages/FacultyInfoPage";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
+import { NewsAndEventsPage } from "./components/pages/NewsAndEventsPage";
+import { COEPage } from "./components/pages/COEPage";
 import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "news-events" | "student-register" | "faculty-register" | "coe";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -219,6 +221,22 @@ export default function App() {
       );
     }
 
+    if (currentPage === "news-events") {
+      return (
+        <PageTransition>
+          <NewsAndEventsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "coe") {
+      return (
+        <PageTransition>
+          <COEPage />
+        </PageTransition>
+      );
+    }
+
     if (currentPage === "alumni") {
       return (
         <PageTransition>
@@ -257,11 +275,20 @@ export default function App() {
         onNavigateToHome={() => setCurrentPage("home")}
         onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
         onNavigateToAlumni={() => setCurrentPage("alumni")}
+        onNavigateToContact={() => {
+          setCurrentPage("home");
+          setTimeout(() => {
+            const contactSection = document.getElementById("contact");
+            contactSection?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        }}
+        onNavigateToNewsEvents={() => setCurrentPage("news-events")}
+        onNavigateToCOE={() => setCurrentPage("coe")}
         showHeroVideo={currentPage === "home"}
       />
 
       {/* Breadcrumb Navigation */}
-      {currentPage !== "home" && currentPage !== "login" && !userRole && (
+      {currentPage !== "home" && currentPage !== "login" && currentPage !== "coe" && !userRole && (
         <Breadcrumb
           items={getBreadcrumbItems(
             currentPage,
