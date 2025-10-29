@@ -151,53 +151,6 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
 
-      {/* Hero Section */}
-      <section id="home" className="relative h-[500px] overflow-hidden">
-        <ImageWithFallback
-          src="https://images.unsplash.com/photo-1760131556605-7f2e63d00385?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB1bml2ZXJzaXR5JTIwY2FtcHVzfGVufDF8fHx8MTc2MDQxOTI4NXww&ixlib=rb-4.1.0&q=80&w=1080"
-          alt="Campus"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(96, 165, 250, 0.7) 100%)' }} />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white px-6">
-            <motion.h1 
-              className="text-5xl mb-4"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              Welcome to CSE Department Portal
-            </motion.h1>
-            <motion.p 
-              className="text-xl mb-8 max-w-2xl mx-auto"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              A comprehensive platform for faculty, students, and administrators
-              to streamline academic operations and enhance learning experiences.
-            </motion.p>
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
-                onClick={onNavigateToLogin} 
-                size="lg" 
-                className="text-white hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#f97316' }}
-              >
-                Login to Continue
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* Stats Section */}
       <section id="stats" className="py-16 bg-white">
         <div className="container mx-auto px-6">
@@ -626,6 +579,56 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
               </div>
               <h3 className="font-bold mb-2" style={{ color: '#1e3a8a' }}>Address</h3>
               <p className="text-gray-600">SSIPMT Campus, Raipur, Chhattisgarh</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hero Section - Welcome Section moved before footer */}
+      <section id="home" className="relative h-[500px] overflow-hidden">
+        <ImageWithFallback
+          src="https://images.unsplash.com/photo-1760131556605-7f2e63d00385?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB1bml2ZXJzaXR5JTIwY2FtcHVzfGVufDF8fHx8MTc2MDQxOTI4NXww&ixlib=rb-4.1.0&q=80&w=1080"
+          alt="Campus"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(96, 165, 250, 0.7) 100%)' }} />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-6">
+            <motion.h1 
+              className="text-5xl mb-4"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Welcome to CSE Department Portal
+            </motion.h1>
+            <motion.p 
+              className="text-xl mb-8 max-w-2xl mx-auto"
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              A comprehensive platform for faculty, students, and administrators
+              to streamline academic operations and enhance learning experiences.
+            </motion.p>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button 
+                onClick={onNavigateToLogin} 
+                size="lg" 
+                className="text-white hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#f97316' }}
+              >
+                Login to Continue
+              </Button>
             </motion.div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
@@ -31,8 +31,17 @@ const sidebarItems = [
   { icon: Bell, label: "Notifications", id: "notifications" },
 ];
 
-export function StudentDashboard() {
-  const [activeSection, setActiveSection] = useState("dashboard");
+interface StudentDashboardProps {
+  initialSection?: string;
+}
+
+export function StudentDashboard({ initialSection = "dashboard" }: StudentDashboardProps) {
+  const [activeSection, setActiveSection] = useState(initialSection);
+
+  // Update active section when prop changes
+  useEffect(() => {
+    setActiveSection(initialSection);
+  }, [initialSection]);
 
   const studentInfo = {
     name: "Priya Sharma",
@@ -43,6 +52,13 @@ export function StudentDashboard() {
     phone: "+91 98765 43210",
     cgpa: "8.9",
     attendance: "92%",
+  };
+
+  const mentorInfo = {
+    name: "Dr. Rajesh Kumar",
+    department: "Computer Science & Engineering",
+    email: "rajesh.kumar@faculty.edu",
+    phone: "+91 98765 12345",
   };
 
 

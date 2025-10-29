@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 
 interface LoginPageProps {
-  onLogin: (role: "faculty" | "student" | "hod" | "admin", username: string) => void;
+  onLogin: (role: "faculty" | "student" | "hod" | "admin", username: string, rememberMe?: boolean) => void;
   onNavigateToHome?: () => void;
 }
 
@@ -40,8 +40,8 @@ const roleData = [
   },
   {
     id: "hod",
-    title: "Super Admin Portal",
-    heading: "Welcome Super Admin",
+    title: "Developer Portal",
+    heading: "Welcome Developer",
     description: "Full system access and administrative controls. Oversee department operations, approve requests, manage faculty and students, and make strategic decisions.",
     gradient: "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)",
     shapes: [
@@ -89,7 +89,7 @@ export function LoginPage({ onLogin, onNavigateToHome }: LoginPageProps) {
         toast.success(`Successfully logged in as ${currentRole.title}`);
       }
       
-      onLogin(finalRole, email);
+      onLogin(finalRole, email, rememberMe);
     }, 1500);
   };
 

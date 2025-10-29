@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
@@ -39,13 +39,22 @@ const sidebarItems = [
   { icon: GraduationCap, label: "Student Management", id: "student-management" },
   { icon: FileText, label: "Grade Behaviour", id: "grading" },
   { icon: FileText, label: "BOA Approvals", id: "boa" },
-  { icon: Calendar, label: "Proxy Lectures", id: "proxy" },
+  { icon: Calendar, label: "Engage Lectures", id: "proxy" },
 ];
 
-export function FacultyDashboard() {
-  const [activeSection, setActiveSection] = useState("dashboard");
+interface FacultyDashboardProps {
+  initialSection?: string;
+}
+
+export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashboardProps) {
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
+
+  // Update active section when prop changes
+  useEffect(() => {
+    setActiveSection(initialSection);
+  }, [initialSection]);
 
   const classes = [
     { id: 1, code: "CSE301", name: "Data Structures", section: "A", students: 45, time: "9:00 AM - 10:30 AM" },
@@ -66,7 +75,7 @@ export function FacultyDashboard() {
     { id: 3, name: "Pooja Gupta", roll: "21CS020", performance: "Average", contact: "pooja@student.edu" },
   ];
 
-  const proxyLectures = [
+  const engageLectures = [
     { id: 1, date: "2025-10-10", class: "CSE301", takenBy: "Dr. Sharma", reason: "Conference" },
     { id: 2, date: "2025-10-12", class: "CSE302", takenBy: "Prof. Gupta", reason: "Personal Leave" },
   ];
@@ -79,7 +88,7 @@ export function FacultyDashboard() {
           <StatsCard title="Total Classes" value="3" icon={BookOpen} />
           <StatsCard title="Total Students" value="125" icon={Users} bgColor="bg-green-50" iconColor="text-green-600" />
           <StatsCard title="Mentees" value="3" icon={UserCheck} bgColor="bg-purple-50" iconColor="text-purple-600" />
-          <StatsCard title="Proxy Lectures" value="2" icon={Calendar} bgColor="bg-orange-50" iconColor="text-orange-600" />
+          <StatsCard title="Engage Lectures" value="2" icon={Calendar} bgColor="bg-orange-50" iconColor="text-orange-600" />
         </div>
       </div>
 
@@ -237,9 +246,9 @@ export function FacultyDashboard() {
     </div>
   );
 
-  const renderProxy = () => (
+  const renderEngage = () => (
     <div className="space-y-6">
-      <h2>Proxy Lecture History</h2>
+      <h2>Engage Lecture History</h2>
       <Card>
         <CardContent className="pt-6">
           <Table>
@@ -252,7 +261,7 @@ export function FacultyDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {proxyLectures.map((lecture) => (
+              {engageLectures.map((lecture) => (
                 <TableRow key={lecture.id}>
                   <TableCell>{lecture.date}</TableCell>
                   <TableCell>{lecture.class}</TableCell>
@@ -347,7 +356,7 @@ export function FacultyDashboard() {
       case "boa":
         return renderBOA();
       case "proxy":
-        return renderProxy();
+        return renderEngage();
       case "mentee":
         return renderMentees();
       default:

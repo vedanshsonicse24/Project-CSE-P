@@ -1,5 +1,5 @@
-import { Search } from "lucide-react";
-import React, { useState, useEffect } from "react"; // Import React hooks
+﻿import { Search } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
 interface NewHeaderProps {
   userRole?: "faculty" | "student" | "hod" | "admin";
@@ -7,56 +7,66 @@ interface NewHeaderProps {
   onLogout?: () => void;
   onNavigateToLogin?: () => void;
   onNavigateToProfile?: () => void;
+  onNavigateToSection?: (section: string) => void;
+  onNavigateToHome?: () => void;
+  onNavigateToFacultyInfo?: () => void;
+  onNavigateToAlumni?: () => void;
+  showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile }: NewHeaderProps) {
+export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
+  const [activeNavItem, setActiveNavItem] = useState("dashboard");
+  const [showInfoDropdown, setShowInfoDropdown] = useState(false);
   
-  // This is the new function for the mouse tracking effect
+  const handleNavClick = (section: string) => {
+    setActiveNavItem(section);
+    onNavigateToSection?.(section);
+  };
+  
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left; // x position within the element.
-    const y = e.clientY - rect.top;  // y position within the element.
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     
     e.currentTarget.style.setProperty('--x', `${x}px`);
     e.currentTarget.style.setProperty('--y', `${y}px`);
   };
 
-  // Add state to track if the page is scrolled
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Add an effect to listen for scroll events
   useEffect(() => {
+    // Only enable scroll animation on homepage (when showHeroVideo is true)
+    if (!showHeroVideo) {
+      setIsScrolled(false);
+      return;
+    }
+
     const handleScroll = () => {
-      // Set state to true if scrolled more than 10px, else false
       setIsScrolled(window.scrollY > 10);
     };
 
-    // Add event listener
     window.addEventListener("scroll", handleScroll);
 
-    // Clean up event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []); // Empty array ensures this effect runs only once
+  }, [showHeroVideo]);
   
   return (
     <>
-      {/* Custom CSS Variables and Styles */}
       <style>{`
         :root {
           --maroon-color: #800000;
           --grey-text: rgb(77, 77, 77);
           --logo-height: 70px;
           --logo-bubble-padding: 15px;
-          --logo-top-position: 25px; 
         }
 
         body {
           font-family: "GothamBook", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
           margin: 0;
           background-color: #f4f4f4;
-          padding-top: 91px; /* This pushes all page content down to prevent it from hiding under the fixed header (42px + 49px = 91px) */
+          padding-top: 91px;
         }
 
         .container {
@@ -66,15 +76,14 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         }
 
         .site-header {
-          position: fixed; /* Makes header permanent */
+          position: fixed;
           top: 0;
           left: 0;
           width: 100%;
-          z-index: 1000; /* High z-index to stay on top */
+          z-index: 1000;
           font-family: "GothamBook", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
         }
 
-        /* Top Bar - Academic Utility Navigation */
         .top-bar {
           background-color: var(--maroon-color);
           color: white;
@@ -115,7 +124,15 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           justify-content: flex-end;
         }
 
-        .top-bar a {
+        .user-welcome {
+          color: white;
+          font-size: 13px;
+          font-weight: 400;
+          letter-spacing: 0.02em;
+        }
+
+        .top-bar a,
+        .top-bar button {
           color: white;
           text-decoration: none;
           text-transform: uppercase;
@@ -123,9 +140,15 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           font-weight: 500;
           letter-spacing: 0.5px;
           padding: 8px 0;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-family: inherit;
+          font-size: inherit;
         }
 
-        .top-bar a:hover {
+        .top-bar a:hover,
+        .top-bar button:hover {
           opacity: 0.85;
           text-decoration: underline;
         }
@@ -145,7 +168,49 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           display: block;
         }
 
-        /* Main Header - Primary Navigation */
+        .info-dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .info-dropdown-content {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: white;
+          min-width: 160px;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e5e5e5;
+          border-radius: 4px;
+          z-index: 1001;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .info-dropdown-content.show {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .info-dropdown-content a {
+          color: var(--grey-text);
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+          transition: background-color 0.2s ease;
+        }
+
+        .info-dropdown-content a:hover {
+          background-color: #f8f9fa;
+          color: var(--maroon-color);
+        }
+
         .main-header-container {
           position: relative;
           background-color: #ffffff;
@@ -163,27 +228,25 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
 
         .logo-link {
           position: absolute;
-          top: 42px;
+          top: ${userRole ? '52px' : '42px'};
           left: 50%;
           z-index: 10;
           background: white;
           border-radius: 100px;
           padding: var(--logo-bubble-padding);
           display: block;
-          /* Add smooth transition for the transform property */
-          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          /* Set the default (large) state */
-          transform: translate(-50%, -50%) scale(1.2);
+          transition: ${showHeroVideo ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'};
+          transform: translate(-50%, -50%) scale(${showHeroVideo ? '1.2' : '1'});
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          /* Ensure perfect centering */
+          margin: 0;
         }
 
-        /* Define the scrolled (normal) state */
+        ${showHeroVideo ? `
         .site-header.scrolled .logo-link {
           transform: translate(-50%, -50%) scale(1);
         }
-
-        .logo-link:hover {
-          /* No shadow on hover */
-        }
+        ` : ''}
 
         .logo-image {
           height: var(--logo-height);
@@ -191,11 +254,10 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           display: block;
         }
 
-        /* Main Navigation - UChicago Style */
         .main-nav {
           display: flex;
           align-items: center;
-          height: 49px;
+          height: ${userRole ? '70px' : '49px'};
           position: relative;
           z-index: 5;
           max-width: 1400px;
@@ -209,44 +271,87 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         .main-nav-right {
           display: flex;
           align-items: center;
-          gap: 28px;
+          gap: 24px;
           flex-basis: 50%;
           box-sizing: border-box;
         }
 
         .main-nav-left {
-          justify-content: flex-end; 
-          padding-right: 220px; /* Increased padding */
+          justify-content: flex-end;
+          padding-right: 220px;
           padding-left: 20px;
         }
 
         .main-nav-right {
           justify-content: flex-start;
-          padding-left: 220px; /* Increased padding */
+          padding-left: 220px;
           padding-right: 20px;
         }
 
-        .logo-space {
-          display: none;
+        /* Responsive adjustments for better spacing on different screen sizes */
+        @media (max-width: 1200px) {
+          .main-nav-left {
+            padding-right: 150px;
+          }
+          .main-nav-right {
+            padding-left: 150px;
+          }
         }
+
+        @media (max-width: 992px) {
+          .main-nav-left {
+            padding-right: 120px;
+          }
+          .main-nav-right {
+            padding-left: 120px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .main-nav-left {
+            padding-right: 35px;
+          }
+          .main-nav-right {
+            padding-left: 35px;
+          }
+        }
+
+        /* Enhanced spacing and styling for logged-in users */
+        ${userRole ? `
+          .main-nav-left,
+          .main-nav-right {
+            gap: 25px;
+          }
+          
+          .main-nav a {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 0 8px;
+          }
+          
+          .main-header-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-bottom: 2px solid #e9ecef;
+          }
+        ` : ''}
 
         .main-nav a {
           text-decoration: none;
           text-transform: uppercase;
           font-weight: 600;
           font-size: 13px;
-          padding: 0;
+          padding: 0 4px;
           border-bottom: 3px solid transparent;
           transition: all 0.3s ease;
           white-space: nowrap;
           color: var(--grey-text);
           font-family: "GothamBook", -apple-system, BlinkMacSystemFont, sans-serif;
-          line-height: 49px;
+          line-height: ${userRole ? '70px' : '49px'};
           letter-spacing: 0.03em;
           position: relative;
           display: flex;
           align-items: center;
-          height: 49px;
+          height: ${userRole ? '70px' : '49px'};
         }
 
         .main-nav a::after {
@@ -277,7 +382,6 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           width: 100%;
         }
 
-        /* --- CTA Button - NEW MOUSE-TRACKING STYLES --- */
         .btn-cta {
           border: 2px solid var(--maroon-color);
           color: var(--maroon-color);
@@ -291,261 +395,145 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           letter-spacing: 0.05em;
           transition: all 0.3s ease;
           position: relative;
-          overflow: hidden; /* This is crucial */
+          overflow: hidden;
           display: flex;
           align-items: center;
           height: auto;
           line-height: 1;
-          z-index: 1; /* Ensure text is above the ::before element */
+          z-index: 1;
         }
-        
-        /* This is the new tracking element */
+
         .btn-cta::before {
           content: '';
           position: absolute;
-          
-          /* Position defaults to center, updates from JS */
-          left: var(--x, 50%); 
+          left: var(--x, 50%);
           top: var(--y, 50%);
-          
-          transform: translate(-50%, -50%); /* Center it on the cursor */
-          
+          transform: translate(-50%, -50%);
           background: var(--maroon-color);
-          width: 0px; /* Start as a dot */
+          width: 0px;
           height: 0px;
           border-radius: 50%;
-          
-          /* Animate its size on hover */
           transition: width 0.4s ease, height 0.4s ease;
-          z-index: -1; /* Place it behind the text */
+          z-index: -1;
         }
 
         .btn-cta:hover {
-          color: white; /* Text turns white on hover */
+          color: white;
           border-color: var(--maroon-color);
           transform: translateY(-2px);
           box-shadow: 0 4px 8px rgba(128, 0, 0, 0.3);
         }
 
         .btn-cta:hover::before {
-          /* Expand the circle to be larger than the button */
           width: 400px;
           height: 400px;
         }
-        /* --- END of new CTA styles --- */
 
-        /* --- NEW HERO SECTION STYLES --- */
         .hero-section {
           position: relative;
           width: 100%;
-          /* This makes the section fill the screen below your 91px header */
-          height: calc(100vh - 91px); 
-          overflow: hidden; /* Hide video overflow */
+          height: calc(100vh - 91px);
+          overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #000; /* This black shows if video fails to load */
+          background-color: #000;
         }
 
         .hero-video {
           position: absolute;
-          inset: 0; /* top:0; right:0; bottom:0; left:0 */
+          inset: 0;
           width: 100%;
           height: 100%;
-          z-index: 1; /* Place behind content */
-          object-fit: cover; /* Ensure video covers the container */
-          object-position: center center; /* Center the video content */
+          z-index: 1;
+          object-fit: cover;
+          object-position: center center;
           display: block;
         }
 
         .hero-content {
-          position: relative; /* Position content above video */
+          position: relative;
           z-index: 2;
           color: white;
           text-align: center;
           padding: 20px;
-          max-width: 800px; /* Limit content width */
-        }
-
-        .hero-content h1 {
-          font-family: "GothamBook", sans-serif; /* Use your preferred font */
-          font-size: 3.5em; /* Adjust font size */
-          font-weight: 700;
-          margin-bottom: 20px;
-          line-height: 1.2;
-        }
-
-        .hero-content p {
-          font-family: "GothamBook", sans-serif; /* Use your preferred font */
-          font-size: 1.2em; /* Adjust font size */
-          line-height: 1.6;
-          margin-bottom: 30px;
-        }
-
-        .hero-btn {
-          display: inline-block;
-          background-color: transparent;
-          color: white;
-          border: 2px solid var(--maroon-color); /* Maroon border */
-          text-decoration: none;
-          padding: 12px 25px;
-          border-radius: 0; /* Square corners */
-          font-weight: 600;
-          transition: all 0.3s ease;
-          cursor: pointer;
-          font-family: "GothamBook", sans-serif;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .hero-btn:hover {
-          background-color: var(--maroon-color); /* Maroon fill on hover */
-          color: white;
-        }
-
-        /* Responsive adjustments for hero section */
-        @media (max-width: 768px) {
-          .hero-section {
-            height: calc(100vh - 91px); /* Keep full height on mobile too */
-          }
-          .hero-content h1 {
-            font-size: 2.5em;
-          }
-          .hero-content p {
-            font-size: 1em;
-          }
-        }
-        /* --- END HERO SECTION STYLES --- */
-
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-          .main-nav {
-            max-width: 100%;
-            padding: 0 16px;
-          }
-          
-          .main-nav-left,
-          .main-nav-right {
-            gap: 20px;
-          }
-          
-          .main-nav-left {
-            padding-right: 150px;
-            padding-left: 16px;
-          }
-          
-          .main-nav-right {
-            padding-left: 150px;
-            padding-right: 16px;
-          }
-          
-          .main-nav a {
-            font-size: 12px;
-            letter-spacing: 0.02em;
-          }
-        }
-
-        @media (max-width: 1024px) {
-          .main-nav {
-            height: 45px;
-          }
-          
-          .main-nav-left,
-          .main-nav-right {
-            gap: 16px;
-          }
-          
-          .main-nav-left {
-            padding-right: 120px;
-            padding-left: 12px;
-          }
-          
-          .main-nav-right {
-            padding-left: 120px;
-            padding-right: 12px;
-          }
-          
-          .main-nav a {
-            font-size: 11px;
-            line-height: 45px;
-            height: 45px;
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .top-bar .container {
-            width: 100%;
-            padding: 0 12px;
-          }
-          
-          .top-nav-left,
-          .top-nav-right {
-            gap: 12px;
-          }
-          
-          .top-nav-left {
-            justify-content: flex-start;
-          }
-
-          .top-nav-right {
-            justify-content: flex-end;
-          }
-          
-          .main-nav {
-            padding: 0 12px;
-            flex-direction: column;
-            height: auto;
-            padding-bottom: 16px;
-          }
-          
-          .main-nav-left,
-          .main-nav-right {
-            gap: 12px;
-            margin: 0;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 0; 
-            flex-basis: 100%;
-          }
-          
-          .main-nav-left {
-            order: 2; 
-            margin-top: 50px; 
-          }
-          
-          .main-nav-right {
-            order: 3;
-            margin-top: 12px;
-          }
-          
-          .main-nav a {
-            font-size: 11px;
-            line-height: 1;
-            height: auto;
-            padding: 12px 8px;
-          }
-
-          .logo-link {
-            transform: translate(-50%, -50%);
-          }
+          max-width: 800px;
         }
       `}</style>
 
-      <header className={isScrolled ? "site-header scrolled" : "site-header"}>
-        {/* Top Bar - Tier 1 */}
+      <header className={showHeroVideo && isScrolled ? "site-header scrolled" : "site-header"}>
         <div className="top-bar">
           <nav className="container">
             <div className="top-nav-left">
               <a href="#">NEWS</a>
               <a href="#">EVENTS</a>
               <a href="#">CAREERS</a>
-              <a href="#">INFO FOR ▾</a>
+              <div 
+                className="info-dropdown"
+                onMouseEnter={() => setShowInfoDropdown(true)}
+                onMouseLeave={() => setShowInfoDropdown(false)}
+              >
+                <a href="#" style={{ cursor: 'pointer' }}>INFO FOR</a>
+                <div className={`info-dropdown-content ${showInfoDropdown ? 'show' : ''}`}>
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigateToFacultyInfo?.();
+                      setShowInfoDropdown(false);
+                    }}
+                  >
+                    FACULTY INFO
+                  </a>
+                  <a 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigateToAlumni?.();
+                      setShowInfoDropdown(false);
+                    }}
+                  >
+                    ALUMNI
+                  </a>
+                </div>
+              </div>
             </div>
             <div className="top-nav-right">
-              <a href="#">VISIT</a>
-              <a href="#">CONTACT US</a>
-              <a href="#">DIRECTORY</a>
+              {userRole ? (
+                <>
+                  <span className="user-welcome">Welcome, {userName || 'User'}</span>
+                  {onNavigateToProfile && (
+                    <button 
+                      onClick={onNavigateToProfile}
+                      className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
+                    >
+                      PROFILE
+                    </button>
+                  )}
+                  {onLogout && (
+                    <button 
+                      onClick={onLogout}
+                      className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
+                    >
+                      LOGOUT
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <a href="#">VISIT</a>
+                  <a href="#">CONTACT US</a>
+                  <a href="#">DIRECTORY</a>
+                  {onNavigateToLogin && (
+                    <button 
+                      onClick={onNavigateToLogin}
+                      className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
+                    >
+                      LOGIN
+                    </button>
+                  )}
+                </>
+              )}
               <div className="search-icon" aria-label="Search">
                 <Search size={16} />
               </div>
@@ -553,34 +541,204 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           </nav>
         </div>
 
-        {/* Main Header Container - Tier 2 */}
         <div className="main-header-container">
           <div className="main-header-bar">
             <nav className="main-nav">
-              <div className="main-nav-left">
-                <a href="#" className="active">WHO WE ARE</a>
-                <a href="#">EDUCATION & RESEARCH</a>
-                <a href="#">ADMISSIONS</a>
-              </div>
-              
-              <div className="main-nav-right">
-                <a href="#">LIFE AT SSIPMT</a>
-                <a href="#">SSIPMT PROGRAMS</a>
-                
-                {/* --- ADDED onMouseMove HANDLER HERE --- */}
-                <a 
-                  href="#" 
-                  className="btn-cta"
-                  onMouseMove={handleMouseMove} 
-                >
-                  APPLY
-                </a>
-              </div>
+              {userRole ? (
+                // Logged in navigation with portal-specific buttons
+                <>
+                  <div className="main-nav-left">
+                    <a 
+                      href="#" 
+                      className={activeNavItem === "dashboard" ? "active" : ""} 
+                      onClick={(e) => { e.preventDefault(); handleNavClick('dashboard'); }}
+                    >
+                      DASHBOARD
+                    </a>
+                    {userRole === 'faculty' && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "attendance" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('attendance'); }}
+                        >
+                          ATTENDANCE
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "timetable" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('timetable'); }}
+                        >
+                          TIMETABLE
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "grading" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('grading'); }}
+                        >
+                          GRADING
+                        </a>
+                      </>
+                    )}
+                    {userRole === 'student' && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "profile" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('profile'); }}
+                        >
+                          PROFILE
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "cv" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('cv'); }}
+                        >
+                          UPLOAD CV
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "achievements" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('achievements'); }}
+                        >
+                          ACHIEVEMENTS
+                        </a>
+                      </>
+                    )}
+                    {userRole === 'hod' && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "students" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('students'); }}
+                        >
+                          STUDENTS
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "faculty" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('faculty'); }}
+                        >
+                          FACULTY
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "lectures" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('lectures'); }}
+                        >
+                          LECTURES
+                        </a>
+                      </>
+                    )}
+                  </div>
+                  
+                  <div className="main-nav-right">
+                    {userRole === 'faculty' && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "student-management" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('student-management'); }}
+                        >
+                          STUDENT MGMT
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "boa" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('boa'); }}
+                        >
+                          BOA APPROVALS
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "proxy" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('proxy'); }}
+                        >
+                          ENGAGE LECTURES
+                        </a>
+                      </>
+                    )}
+                    {userRole === 'student' && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "boa" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('boa'); }}
+                        >
+                          BOA UPLOAD
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "notifications" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('notifications'); }}
+                        >
+                          NOTIFICATIONS
+                        </a>
+                      </>
+                    )}
+                    {userRole === 'hod' && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "timetable" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('timetable'); }}
+                        >
+                          TIMETABLE
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "boa-management" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('boa-management'); }}
+                        >
+                          BOA MGMT
+                        </a>
+                        <a 
+                          href="#" 
+                          className={activeNavItem === "reports" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('reports'); }}
+                        >
+                          REPORTS
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : (
+                // Public navigation
+                <>
+                  <div className="main-nav-left">
+                    <a href="#" className="active">WHO WE ARE</a>
+                    <a href="#">EDUCATION & RESEARCH</a>
+                    <a href="#">ADMISSIONS</a>
+                  </div>
+                  
+                  <div className="main-nav-right">
+                    <a href="#">LIFE AT SSIPMT</a>
+                    <a href="#">SSIPMT PROGRAMS</a>
+                    <a 
+                      href="#" 
+                      className="btn-cta"
+                      onMouseMove={handleMouseMove} 
+                    >
+                      APPLY
+                    </a>
+                  </div>
+                </>
+              )}
             </nav>
           </div>
         </div>
         
-        <a href="/" className="logo-link">
+        <a 
+          href={userRole ? "#" : "/"} 
+          className="logo-link"
+          onClick={(e) => {
+            if (userRole && onNavigateToHome) {
+              e.preventDefault();
+              onNavigateToHome();
+            }
+          }}
+        >
           <img 
             src="https://ssipmt.edu.in/assets/images/logo/logo.jpg?v2" 
             alt="SSIPMT Logo" 
@@ -589,18 +747,15 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         </a>
       </header>
 
-      {/* --- NEW HERO SECTION WITH BACKGROUND VIDEO --- */}
-      <div className="hero-section">
-        <video autoPlay loop muted playsInline className="hero-video" poster="/assets/campus-fallback.jpg">
-          <source src="/assets/SSYouTube.online_Virtual Tour of SSIPMT Campus Raipur_1080p.mp4" type="video/mp4" />
-          {/* WebM version (optional): place it into public/assets and add a <source> entry for best cross-browser support */}
-          {/* Note: poster attribute provides a fallback image while the video loads */}
-        </video>
-        <div className="hero-content container">
-          {/* Hero content removed per user request */}
+      {showHeroVideo && (
+        <div className="hero-section">
+          <video autoPlay loop muted playsInline className="hero-video" poster="/assets/campus-fallback.jpg">
+            <source src="/assets/SSYouTube.online_Virtual Tour of SSIPMT Campus Raipur_1080p.mp4" type="video/mp4" />
+          </video>
+          <div className="hero-content container">
+          </div>
         </div>
-      </div>
-      {/* --- END NEW HERO SECTION --- */}
+      )}
     </>
   );
 }

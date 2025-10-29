@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
@@ -57,13 +57,19 @@ const sidebarItems = [
 
 interface HODDashboardProps {
   isViewOnly?: boolean;
+  initialSection?: string;
 }
 
-export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
-  const [activeSection, setActiveSection] = useState("dashboard");
+export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" }: HODDashboardProps) {
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [selectedSemester, setSelectedSemester] = useState("6");
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
+
+  // Update active section when prop changes
+  useEffect(() => {
+    setActiveSection(initialSection);
+  }, [initialSection]);
 
   const departmentStats = {
     totalStudents: 480,
@@ -127,7 +133,7 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
   const renderDashboard = () => (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-6">Super Admin Dashboard</h2>
+        <h2 className="mb-6">Developer Dashboard</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard title="Total Students" value={departmentStats.totalStudents} icon={Users} />
           <StatsCard title="Total Faculty" value={departmentStats.totalFaculty} icon={Users} bgColor="bg-green-50" iconColor="text-green-600" />
@@ -409,12 +415,12 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
               <div className="p-3 bg-red-50 rounded-lg">
                 <p className="text-sm">Dr. Priya Kumar</p>
                 <p className="text-xs text-gray-600">On Leave: Oct 15 - Oct 17</p>
-                <p className="text-xs text-gray-500">Proxy: Dr. Sharma</p>
+                <p className="text-xs text-gray-500">Engage: Dr. Sharma</p>
               </div>
               <div className="p-3 bg-yellow-50 rounded-lg">
                 <p className="text-sm">Prof. Amit Gupta</p>
                 <p className="text-xs text-gray-600">Upcoming Leave: Oct 20 - Oct 21</p>
-                <p className="text-xs text-gray-500">Proxy: Pending</p>
+                <p className="text-xs text-gray-500">Engage: Pending</p>
               </div>
             </div>
           </CardContent>
@@ -449,7 +455,7 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
 
   const renderLectures = () => (
     <div className="space-y-6">
-      <h2>Lecture & Proxy Management</h2>
+      <h2>Lecture & Engage Management</h2>
 
       <Card>
         <CardHeader>
@@ -462,7 +468,7 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
                 <TableHead>Date</TableHead>
                 <TableHead>Class</TableHead>
                 <TableHead>Original Faculty</TableHead>
-                <TableHead>Proxy Faculty</TableHead>
+                <TableHead>Engage Faculty</TableHead>
                 <TableHead>Reason</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Action</TableHead>
@@ -498,7 +504,7 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Assign Proxy Lecture</CardTitle>
+          <CardTitle>Assign Engage Lecture</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -516,10 +522,10 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm">Select Proxy Faculty</label>
+              <label className="text-sm">Select Engage Faculty</label>
               <Select>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select proxy" />
+                  <SelectValue placeholder="Select engage" />
                 </SelectTrigger>
                 <SelectContent>
                   {faculty.filter(f => f.leave === "Available").map((member) => (
@@ -537,7 +543,7 @@ export function HODDashboard({ isViewOnly = false }: HODDashboardProps) {
               <Input type="date" />
             </div>
           </div>
-          <Button className="mt-4">Assign Proxy</Button>
+          <Button className="mt-4">Assign Engage</Button>
         </CardContent>
       </Card>
     </div>
