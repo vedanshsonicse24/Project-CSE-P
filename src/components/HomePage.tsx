@@ -1,17 +1,45 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, Edit2, Save, X } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
+  userRole?: "faculty" | "student" | "hod" | "admin" | null;
 }
 
-export function HomePage({ onNavigateToLogin }: HomePageProps) {
+export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [editingProject, setEditingProject] = useState<number | null>(null);
+  const [editedProjects, setEditedProjects] = useState([
+    {
+      title: "Green palna",
+      description: "Green Palna links childbirth with environmental care by gifting new mothers five fruit saplings to nurture, tracked through an app promoting sustainability and nutrition.",
+      tech: "Shreyansh Golchha,Garv Choure,Yashwant nayak,Karsh Verm,Tanmay Sahua,Piyush Verma,Tanay Pandey,Churamani Kaushik,Shivam Dhamejan",
+    },
+    {
+      title: "Har Ghar Munga",
+      description: "Project Har Ghar Munga promotes sustainability and fights anemia by planting drumstick saplings and encouraging the use of moringa and fenugreek in diets.",
+      tech: "Garv Choure,Shreyansh Golchha,Vedansh Chandrakar,G Anjani,Tanmay Sahu,Shivam Dhamejani"
+    },
+    {
+      title: "Harihar Pathsala",
+      description: "Harihar Pathsala promotes health, nutrition, and eco-awareness by giving children saplings to plant and spreading TB prevention and nutrition education.",
+      tech: "Piyush Verma,Tanmay Sahu,G Anjani,Vedansh Chandrakar,Shreyansh Golchha,Garv Choure,Shivam Dhamejani,Yashwant Nayak"
+    }
+  ]);
+
+  // Load saved projects from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('studentProjects');
+    if (saved) {
+      setEditedProjects(JSON.parse(saved));
+    }
+  }, []);
 
   // Show scroll to top button when scrolling down
   useEffect(() => {
@@ -86,23 +114,32 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     { name: "Ms. Priyata Mishra", role: "Assistant Professor", img: "/images/fac17.jpg" },
   ];
 
-  const projects = [
-    {
-      title: "E-Commerce Platform",
-      description: "A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.",
-      tech: "React, Node.js, Express, MongoDB"
-    },
-    {
-      title: "AI Health Scanner",
-      description: "A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.",
-      tech: "Python, TensorFlow, Keras, OpenCV"
-    },
-    {
-      title: "Campus Connect App",
-      description: "A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.",
-      tech: "Flutter, Firebase, Dart"
+  const handleEditProject = (index: number) => {
+    setEditingProject(index);
+  };
+
+  const handleSaveProject = (index: number) => {
+    localStorage.setItem('studentProjects', JSON.stringify(editedProjects));
+    setEditingProject(null);
+    toast.success('Project updated successfully!');
+  };
+
+  const handleCancelEdit = () => {
+    // Reload from localStorage or reset to original
+    const saved = localStorage.getItem('studentProjects');
+    if (saved) {
+      setEditedProjects(JSON.parse(saved));
     }
-  ];
+    setEditingProject(null);
+  };
+
+  const handleProjectChange = (index: number, field: 'title' | 'description' | 'tech', value: string) => {
+    const updated = [...editedProjects];
+    updated[index] = { ...updated[index], [field]: value };
+    setEditedProjects(updated);
+  };
+
+  const isDeveloper = userRole === 'hod';
 
   const hod = facultyData.find((f) => f.role === "HOD");
   const others = facultyData.filter((f) => f.role !== "HOD");
@@ -294,56 +331,92 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           
           <div className="projects-grid">
             
-            {/* Card 1 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/34495e/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>E-Commerce Platform</h3>
-                <p>A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">React</span>
-                  <span className="tech-tag">Node.js</span>
-                  <span className="tech-tag">MongoDB</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/8e44ad/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>AI Health Scanner</h3>
-                <p>A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">TensorFlow</span>
-                  <span className="tech-tag">Keras</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/2c3e50/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>Campus Connect App</h3>
-                <p>A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">Flutter</span>
-                  <span className="tech-tag">Firebase</span>
-                  <span className="tech-tag">Dart</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
+            {editedProjects.map((project, index) => {
+              const bgColors = ['34495e', '8e44ad', '2c3e50'];
+              const bgColor = bgColors[index % bgColors.length];
+              const techItems = project.tech.split(',').map(t => t.trim());
+              const isEditing = editingProject === index;
+              
+              return (
+                <motion.div 
+                  key={index}
+                  className="project-card"
+                  style={{ backgroundImage: `url('https://placehold.co/600x400/${bgColor}/white?text=Project+Image')` }}
+                  layout
+                  transition={{ duration: 0.3 }}
+                >
+                  {isDeveloper && (
+                    <div className="edit-controls">
+                      {!isEditing ? (
+                        <button 
+                          className="edit-btn"
+                          onClick={() => handleEditProject(index)}
+                          title="Edit Project"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                      ) : (
+                        <div className="edit-actions">
+                          <button 
+                            className="save-btn"
+                            onClick={() => handleSaveProject(index)}
+                            title="Save Changes"
+                          >
+                            <Save size={16} />
+                          </button>
+                          <button 
+                            className="cancel-btn"
+                            onClick={handleCancelEdit}
+                            title="Cancel"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  <div className="project-card-content">
+                    {isEditing ? (
+                      <>
+                        <input
+                          type="text"
+                          className="edit-input edit-title"
+                          value={project.title}
+                          onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
+                          placeholder="Project Title"
+                        />
+                        <textarea
+                          className="edit-input edit-description"
+                          value={project.description}
+                          onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+                          placeholder="Project Description"
+                          rows={3}
+                        />
+                        <input
+                          type="text"
+                          className="edit-input edit-tech"
+                          value={project.tech}
+                          onChange={(e) => handleProjectChange(index, 'tech', e.target.value)}
+                          placeholder="Team members (comma-separated)"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <h3>{project.title}</h3>
+                        <p>{project.description}</p>
+                        <div className="project-tags">
+                          {techItems.map((tech, techIndex) => (
+                            <span key={techIndex} className="tech-tag">{tech}</span>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                    <a href="#" className="project-btn">View Project</a>
+                  </div>
+                </motion.div>
+              );
+            })}
 
           </div>
         </div>
@@ -398,6 +471,101 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
+        /* Edit Controls */
+        .edit-controls {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          z-index: 10;
+          display: flex;
+          gap: 8px;
+        }
+
+        .edit-btn, .save-btn, .cancel-btn {
+          background: rgba(255, 255, 255, 0.95);
+          border: none;
+          border-radius: 8px;
+          padding: 8px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .edit-btn {
+          color: #1e3a8a;
+        }
+
+        .edit-btn:hover {
+          background: #1e3a8a;
+          color: white;
+          transform: scale(1.05);
+        }
+
+        .save-btn {
+          color: #059669;
+        }
+
+        .save-btn:hover {
+          background: #059669;
+          color: white;
+          transform: scale(1.05);
+        }
+
+        .cancel-btn {
+          color: #dc2626;
+        }
+
+        .cancel-btn:hover {
+          background: #dc2626;
+          color: white;
+          transform: scale(1.05);
+        }
+
+        .edit-actions {
+          display: flex;
+          gap: 8px;
+        }
+
+        /* Edit Input Fields */
+        .edit-input {
+          width: 100%;
+          background: rgba(255, 255, 255, 0.95);
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-radius: 8px;
+          padding: 10px 12px;
+          color: #1f2937;
+          font-family: 'Gotham', sans-serif;
+          transition: all 0.2s ease;
+        }
+
+        .edit-input:focus {
+          outline: none;
+          border-color: #1e3a8a;
+          box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .edit-title {
+          font-size: 1.7rem;
+          font-weight: 700;
+          margin-bottom: 10px;
+        }
+
+        .edit-description {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          margin-bottom: 10px;
+          resize: vertical;
+          min-height: 80px;
+        }
+
+        .edit-tech {
+          font-size: 0.9rem;
+          margin-bottom: 16px;
+        }
+
         /* This is the dark gradient overlay at the bottom */
         .project-card::before {
           content: '';
@@ -436,9 +604,35 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         /* New Tags section */
         .project-tags {
           display: flex;
-          flex-wrap: wrap;
+          flex-wrap: nowrap; /* Don't wrap to next line */
           gap: 8px;
           margin-bottom: 20px;
+          overflow-x: auto; /* Enable horizontal scrolling */
+          overflow-y: hidden;
+          padding-bottom: 8px; /* Space for scrollbar */
+          scroll-behavior: smooth;
+          
+          /* Hide scrollbar for cleaner look */
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+        }
+
+        .project-tags::-webkit-scrollbar {
+          height: 4px;
+        }
+
+        .project-tags::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+
+        .project-tags::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 10px;
+        }
+
+        .project-tags::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.5);
         }
 
         .tech-tag {
@@ -449,6 +643,8 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
           border-radius: 99px; /* Pill shape */
           font-size: 0.8rem;
           font-weight: 500;
+          white-space: nowrap; /* Prevent text wrapping inside tags */
+          flex-shrink: 0; /* Prevent tags from shrinking */
         }
 
         /* New Button */

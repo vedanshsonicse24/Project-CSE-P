@@ -109,7 +109,7 @@ export default function App() {
     if (currentPage === "home") {
       return (
         <PageTransition>
-          <HomePage onNavigateToLogin={() => setCurrentPage("login")} />
+          <HomePage onNavigateToLogin={() => setCurrentPage("login")} userRole={userRole} />
         </PageTransition>
       );
     }
