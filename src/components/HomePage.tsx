@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, Edit3 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
@@ -8,9 +8,10 @@ import { useState, useEffect } from "react";
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
+  userRole?: "faculty" | "student" | "hod" | "admin" | "developer" | null;
 }
 
-export function HomePage({ onNavigateToLogin }: HomePageProps) {
+export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Show scroll to top button when scrolling down
@@ -152,8 +153,25 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Stats Section */}
-      <section id="stats" className="py-16 bg-white">
+      <section id="stats" className="py-16 bg-white relative">
         <div className="container mx-auto px-6">
+          {/* Developer Edit Button */}
+          {userRole === "developer" && (
+            <div className="absolute top-4 right-4 z-10">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 bg-white/90 backdrop-blur-sm border-blue-200 text-blue-700 hover:bg-blue-50"
+                onClick={() => {
+                  alert("Content editing coming soon! This will open the stats editor.");
+                }}
+              >
+                <Edit3 className="h-4 w-4" />
+                Edit Stats
+              </Button>
+            </div>
+          )}
+          
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
             style={{ color: '#1e3a8a' }}
@@ -199,7 +217,24 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
       {/* Student Projects moved below Faculty (per request) */}
 
       {/* Faculty Section - Meet Our Faculty */}
-      <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white relative">
+        {/* Developer Edit Button */}
+        {userRole === "developer" && (
+          <div className="absolute top-4 right-4 z-20">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 bg-white/90 backdrop-blur-sm border-blue-200 text-blue-700 hover:bg-blue-50"
+              onClick={() => {
+                alert("Content editing coming soon! This will open the faculty editor.");
+              }}
+            >
+              <Edit3 className="h-4 w-4" />
+              Edit Faculty
+            </Button>
+          </div>
+        )}
+        
         {/* Section Heading */}
         <motion.div
           className="text-center mb-16"
