@@ -337,11 +337,23 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
               const techItems = project.tech.split(',').map(t => t.trim());
               const isEditing = editingProject === index;
               
+              // Use custom backgrounds for projects
+              let backgroundImage;
+              if (index === 0) {
+                backgroundImage = '/assets/green-palna-bg.png';
+              } else if (index === 1) {
+                backgroundImage = '/assets/har-ghar-munga-bg.png';
+              } else if (index === 2) {
+                backgroundImage = '/assets/harihar-pathsala-bg.png';
+              } else {
+                backgroundImage = `https://placehold.co/600x400/${bgColor}/white?text=Project+Image`;
+              }
+              
               return (
                 <motion.div 
                   key={index}
                   className="project-card"
-                  style={{ backgroundImage: `url('https://placehold.co/600x400/${bgColor}/white?text=Project+Image')` }}
+                  style={{ backgroundImage: `url('${backgroundImage}')` }}
                   layout
                   transition={{ duration: 0.3 }}
                 >
@@ -403,7 +415,6 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
                       </>
                     ) : (
                       <>
-                        <h3>{project.title}</h3>
                         <p>{project.description}</p>
                         <div className="project-tags">
                           {techItems.map((tech, techIndex) => (
@@ -573,8 +584,8 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
           bottom: 0;
           left: 0;
           width: 100%;
-          height: 70%;
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+          height: 80%;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.2) 100%);
           z-index: 1; /* Sits below content, above image */
         }
 
