@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
+import { Footer } from "./common/Footer";
 
 interface LoginPageProps {
   onLogin: (role: "faculty" | "student" | "hod" | "admin", username: string) => void;
@@ -330,6 +331,9 @@ export function LoginPage({ onLogin, onNavigateToHome }: LoginPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
