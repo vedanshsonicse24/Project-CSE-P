@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "motion/react";
 interface LoginPageProps {
   onLogin: (role: "faculty" | "student" | "hod" | "admin", username: string, rememberMe?: boolean) => void;
   onNavigateToHome?: () => void;
+  onNavigateToRegister?: (role: "student" | "faculty") => void;
 }
 
 const roleData = [
@@ -40,8 +41,8 @@ const roleData = [
   },
   {
     id: "hod",
-    title: "Developer Portal",
-    heading: "Welcome Developer",
+    title: "Admin Portal",
+    heading: "Welcome Admin",
     description: "Full system access and administrative controls. Oversee department operations, approve requests, manage faculty and students, and make strategic decisions.",
     gradient: "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)",
     shapes: [
@@ -53,13 +54,12 @@ const roleData = [
   },
 ];
 
-export function LoginPage({ onLogin, onNavigateToHome }: LoginPageProps) {
+export function LoginPage({ onLogin, onNavigateToHome, onNavigateToRegister }: LoginPageProps) {
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [facultySubRole, setFacultySubRole] = useState<"teacher" | "admin">("teacher");
 
   const currentRole = roleData[currentRoleIndex];
 
@@ -82,8 +82,8 @@ export function LoginPage({ onLogin, onNavigateToHome }: LoginPageProps) {
         finalRole = "student";
         toast.success(`Successfully logged in as ${currentRole.title}`);
       } else if (currentRole.id === "faculty") {
-        finalRole = facultySubRole === "teacher" ? "faculty" : "admin";
-        toast.success(`Successfully logged in as ${facultySubRole === "teacher" ? "Teacher" : "Admin"}`);
+        finalRole = "faculty";
+        toast.success(`Successfully logged in as Faculty`);
       } else if (currentRole.id === "hod") {
         finalRole = "hod";
         toast.success(`Successfully logged in as ${currentRole.title}`);
@@ -218,43 +218,6 @@ export function LoginPage({ onLogin, onNavigateToHome }: LoginPageProps) {
               </h2>
 
               <form onSubmit={handleSubmit} className="login-form">
-                {/* Faculty Sub-Role Selection */}
-                {currentRole.id === "faculty" && (
-                  <div className="mb-6 space-y-2">
-                    <label className="text-sm" style={{ color: '#666' }}>Login as:</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setFacultySubRole("teacher")}
-                        className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                          facultySubRole === "teacher"
-                            ? "border-orange-500 bg-orange-50 text-orange-700"
-                            : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-                        }`}
-                        style={{
-                          fontWeight: facultySubRole === "teacher" ? "600" : "400",
-                        }}
-                      >
-                        Teacher
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFacultySubRole("admin")}
-                        className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                          facultySubRole === "admin"
-                            ? "border-orange-500 bg-orange-50 text-orange-700"
-                            : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-                        }`}
-                        style={{
-                          fontWeight: facultySubRole === "admin" ? "600" : "400",
-                        }}
-                      >
-                        Admin
-                      </button>
-                    </div>
-                  </div>
-                )}
-
                 {/* Email Input */}
                 <div className="form-input-group">
                   <div className="input-icon">
@@ -309,9 +272,24 @@ export function LoginPage({ onLogin, onNavigateToHome }: LoginPageProps) {
                   {isLoading ? "SIGNING IN..." : "LOGIN"}
                 </Button>
 
-                <p className="demo-text">
-                  Demo: Use any email and password
-                </p>
+                {/* Registration Button */}
+                {onNavigateToRegister && (currentRole.id === "student" || currentRole.id === "faculty") && (
+                  <div className="w-full mt-4">
+                    <p className="text-center text-sm text-gray-600 mb-2">Don't have an account?</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => onNavigateToRegister(currentRole.id as "student" | "faculty")}
+                      style={{ 
+                        borderColor: currentRole.id === "student" ? "#1e3a8a" : "#f97316",
+                        color: currentRole.id === "student" ? "#1e3a8a" : "#f97316"
+                      }}
+                    >
+                      Register as {currentRole.id === "student" ? "Student" : "Faculty"}
+                    </Button>
+                  </div>
+                )}
 
                 {/* Home Button */}
                 {onNavigateToHome && (

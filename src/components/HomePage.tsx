@@ -578,7 +578,16 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
                 </div>
               </div>
               <h3 className="font-bold mb-2" style={{ color: '#1e3a8a' }}>Address</h3>
-              <p className="text-gray-600">SSIPMT Campus, Raipur, Chhattisgarh</p>
+              <p className="text-gray-600">
+                <a 
+                  href="https://www.google.com/maps/place/Shri+Shankaracharya+Institute+Of+Professional+Management+%26+Technology,+Raipur/@21.1346018,81.6660459,17z/data=!3m1!4b1!4m16!1m9!4m8!1m0!1m6!1m2!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!2sP.O,+Old+Dhamtari+Road,+Sejabahar,+Mujgahan,+Chhattisgarh+493661!2m2!1d81.6686208!2d21.1346018!3m5!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!8m2!3d21.1346018!4d81.6686208!16s%2Fm%2F0_x9qhl?entry=ttu&g_ep=EgoyMDI1MTAyNi4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 hover:underline transition-colors cursor-pointer"
+                >
+                  SSIPMT Campus, Raipur, Chhattisgarh
+                </a>
+              </p>
             </motion.div>
           </div>
         </div>
@@ -725,7 +734,14 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
               <div className="space-y-3 text-gray-300">
                 <div className="flex items-start">
                   <MapPin className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>SSIPMT Campus, Raipur, Chhattisgarh, India</span>
+                  <a 
+                    href="https://www.google.com/maps/place/Shri+Shankaracharya+Institute+Of+Professional+Management+%26+Technology,+Raipur/@21.1346018,81.6660459,17z/data=!3m1!4b1!4m16!1m9!4m8!1m0!1m6!1m2!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!2sP.O,+Old+Dhamtari+Road,+Sejabahar,+Mujgahan,+Chhattisgarh+493661!2m2!1d81.6686208!2d21.1346018!3m5!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!8m2!3d21.1346018!4d81.6686208!16s%2Fm%2F0_x9qhl?entry=ttu&g_ep=EgoyMDI1MTAyNi4wIKXMDSoASAFQAw%3D%3D"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white hover:underline transition-colors cursor-pointer"
+                  >
+                    SSIPMT Campus, Raipur, Chhattisgarh, India
+                  </a>
                 </div>
                 <div className="flex items-center">
                   <Phone className="h-5 w-5 mr-2 flex-shrink-0" />
