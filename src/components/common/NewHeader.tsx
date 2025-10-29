@@ -11,10 +11,37 @@ interface NewHeaderProps {
   onNavigateToHome?: () => void;
   onNavigateToFacultyInfo?: () => void;
   onNavigateToAlumni?: () => void;
+  onNavigateToAbout?: () => void;
+  onNavigateToAdmissions?: () => void;
+  onNavigateToLifeAtSSIPMT?: () => void;
+  onNavigateToPrograms?: () => void;
+  onNavigateToApply?: () => void;
+  onNavigateToCSEDepartment?: () => void;
+  onNavigateToResearch?: () => void;
+  onNavigateToContact?: () => void;
   showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
+export function NewHeader({ 
+  userRole, 
+  userName, 
+  onLogout, 
+  onNavigateToLogin, 
+  onNavigateToProfile, 
+  onNavigateToSection, 
+  onNavigateToHome, 
+  onNavigateToFacultyInfo, 
+  onNavigateToAlumni,
+  onNavigateToAbout,
+  onNavigateToAdmissions,
+  onNavigateToLifeAtSSIPMT,
+  onNavigateToPrograms,
+  onNavigateToApply,
+  onNavigateToCSEDepartment,
+  onNavigateToResearch,
+  onNavigateToContact,
+  showHeroVideo 
+}: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
   
@@ -66,7 +93,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           font-family: "GothamBook", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
           margin: 0;
           background-color: #f4f4f4;
-          padding-top: 91px;
+          padding-top: 130px;
         }
 
         .container {
@@ -522,7 +549,12 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
               ) : (
                 <>
                   <a href="#">VISIT</a>
-                  <a href="#">CONTACT US</a>
+                  <a 
+                    href="#" 
+                    onClick={(e) => { e.preventDefault(); onNavigateToContact?.(); }}
+                  >
+                    CONTACT US
+                  </a>
                   <a href="#">DIRECTORY</a>
                   {onNavigateToLogin && (
                     <button 
@@ -707,18 +739,50 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                 // Public navigation
                 <>
                   <div className="main-nav-left">
-                    <a href="#" className="active">WHO WE ARE</a>
-                    <a href="#">EDUCATION & RESEARCH</a>
-                    <a href="#">ADMISSIONS</a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToCSEDepartment?.(); }}
+                    >
+                      WHO WE ARE
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToResearch?.(); }}
+                    >
+                      RESEARCH & EDUCATION
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToAdmissions?.(); }}
+                    >
+                      ADMISSIONS
+                    </a>
                   </div>
                   
                   <div className="main-nav-right">
-                    <a href="#">LIFE AT SSIPMT</a>
-                    <a href="#">SSIPMT PROGRAMS</a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToLifeAtSSIPMT?.(); }}
+                    >
+                      LIFE AT SSIPMT
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToPrograms?.(); }}
+                    >
+                      SSIPMT PROGRAMS
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToContact?.(); }}
+                    >
+                      CONTACT US
+                    </a>
                     <a 
                       href="#" 
                       className="btn-cta"
-                      onMouseMove={handleMouseMove} 
+                      onMouseMove={handleMouseMove}
+                      onClick={(e) => { e.preventDefault(); onNavigateToApply?.(); }}
                     >
                       APPLY
                     </a>

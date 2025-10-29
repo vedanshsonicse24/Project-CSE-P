@@ -9,13 +9,21 @@ import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
 import { FacultyInfoPage } from "./components/pages/FacultyInfoPage";
+import { AboutPage } from "./components/pages/AboutPage";
+import { AdmissionsPage } from "./components/pages/AdmissionsPage";
+import { LifeAtSSIPMTPage } from "./components/pages/LifeAtSSIPMTPage";
+import { ProgramsPage } from "./components/pages/ProgramsPage";
+import { ApplyPage } from "./components/pages/ApplyPage";
+import { CSEDepartmentPage } from "./components/pages/CSEDepartmentPage";
+import { ResearchPage } from "./components/pages/ResearchPage";
+import { ContactPage } from "./components/pages/ContactPage";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
 import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "about" | "admissions" | "life-at-ssipmt" | "programs" | "apply" | "cse-department" | "research" | "contact";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -170,11 +178,75 @@ export default function App() {
       );
     }
 
+    if (currentPage === "about") {
+      return (
+        <PageTransition>
+          <AboutPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "admissions") {
+      return (
+        <PageTransition>
+          <AdmissionsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "life-at-ssipmt") {
+      return (
+        <PageTransition>
+          <LifeAtSSIPMTPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "programs") {
+      return (
+        <PageTransition>
+          <ProgramsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "apply") {
+      return (
+        <PageTransition>
+          <ApplyPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "cse-department") {
+      return (
+        <PageTransition>
+          <CSEDepartmentPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "research") {
+      return (
+        <PageTransition>
+          <ResearchPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "contact") {
+      return (
+        <PageTransition>
+          <ContactPage />
+        </PageTransition>
+      );
+    }
+
     return null;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" style={{ paddingTop: '130px' }}>
       {/* Cookie Consent Banner */}
       <CookieConsentBanner onConsentChange={handleCookieConsentChange} />
       
@@ -195,6 +267,14 @@ export default function App() {
         onNavigateToHome={() => setCurrentPage("home")}
         onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
         onNavigateToAlumni={() => setCurrentPage("alumni")}
+        onNavigateToAbout={() => setCurrentPage("about")}
+        onNavigateToAdmissions={() => setCurrentPage("admissions")}
+        onNavigateToLifeAtSSIPMT={() => setCurrentPage("life-at-ssipmt")}
+        onNavigateToPrograms={() => setCurrentPage("programs")}
+        onNavigateToApply={() => setCurrentPage("apply")}
+        onNavigateToCSEDepartment={() => setCurrentPage("cse-department")}
+        onNavigateToResearch={() => setCurrentPage("research")}
+        onNavigateToContact={() => setCurrentPage("contact")}
         showHeroVideo={currentPage === "home"}
       />
       {renderPage()}
