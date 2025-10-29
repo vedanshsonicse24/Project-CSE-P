@@ -66,7 +66,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           font-family: "GothamBook", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
           margin: 0;
           background-color: #f4f4f4;
-          padding-top: 91px;
+          padding-top: 84px;
         }
 
         .container {
@@ -257,7 +257,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         .main-nav {
           display: flex;
           align-items: center;
-          height: ${userRole ? '70px' : '49px'};
+          height: 42px;
           position: relative;
           z-index: 5;
           max-width: 1400px;
@@ -346,12 +346,12 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           white-space: nowrap;
           color: var(--grey-text);
           font-family: "GothamBook", -apple-system, BlinkMacSystemFont, sans-serif;
-          line-height: ${userRole ? '70px' : '49px'};
+          line-height: 42px;
           letter-spacing: 0.03em;
           position: relative;
           display: flex;
           align-items: center;
-          height: ${userRole ? '70px' : '49px'};
+          height: 42px;
         }
 
         .main-nav a::after {
@@ -465,8 +465,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         <div className="top-bar">
           <nav className="container">
             <div className="top-nav-left">
-              <a href="#">NEWS</a>
-              <a href="#">EVENTS</a>
+              <a href="#">NEWS & EVENTS</a>
               <a href="#">CAREERS</a>
               <div 
                 className="info-dropdown"
@@ -486,10 +485,10 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                     FACULTY INFO
                   </a>
                   <a 
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavigateToAlumni?.();
+                    href="https://ssipmt.edu.in/alumni.php"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
                       setShowInfoDropdown(false);
                     }}
                   >
@@ -521,8 +520,19 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                 </>
               ) : (
                 <>
-                  <a href="#">VISIT</a>
-                  <a href="#">CONTACT US</a>
+                  <a href="#">VIRTUAL TOUR</a>
+                  <a 
+                    href="#contact"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const element = document.getElementById('contact');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }}
+                  >
+                    CONTACT US
+                  </a>
                   <a href="#">DIRECTORY</a>
                   {onNavigateToLogin && (
                     <button 
@@ -716,9 +726,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                     <a href="#">LIFE AT SSIPMT</a>
                     <a href="#">SSIPMT PROGRAMS</a>
                     <a 
-                      href="#" 
-                      className="btn-cta"
-                      onMouseMove={handleMouseMove} 
+                      href="#"
                     >
                       APPLY
                     </a>

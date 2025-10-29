@@ -139,9 +139,6 @@ export function LoginPanel({ selectedRole, onLogin }: LoginPanelProps) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.8 }}
       >
-        <p className="help-text-centered">
-          Demo: Use any email and password to login
-        </p>
       </motion.div>
     </motion.div>
   );

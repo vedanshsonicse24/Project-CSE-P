@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { NewHeader } from "./components/common/NewHeader";
+import { Breadcrumb, getBreadcrumbItems } from "./components/common/Breadcrumb";
 import { CookieConsentBanner } from "./components/common/CookieConsentBanner";
 import { HomePage } from "./components/HomePage";
 import { LoginPage } from "./components/LoginPage";
+import { StudentRegistration } from "./components/student/StudentRegistration";
+import { FacultyRegistration } from "./components/faculty/FacultyRegistration";
 import { FacultyDashboard } from "./components/faculty/FacultyDashboard";
 import { FacultyProfile } from "./components/faculty/FacultyProfile";
 import { StudentDashboard } from "./components/student/StudentDashboard";
@@ -15,7 +18,7 @@ import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -120,7 +123,63 @@ export default function App() {
     if (currentPage === "login") {
       return (
         <PageTransition>
-          <LoginPage onLogin={handleLogin} onNavigateToHome={() => setCurrentPage("home")} />
+          <LoginPage 
+            onLogin={handleLogin} 
+            onNavigateToHome={() => setCurrentPage("home")}
+            onNavigateToRegister={(role) => setCurrentPage(role === "student" ? "student-register" : "faculty-register")}
+          />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "student-register") {
+      return (
+        <PageTransition>
+          <StudentRegistration
+            onBack={() => setCurrentPage("login")}
+            onRegister={(data) => {
+              console.log("Student registration data:", data);
+              // Auto-login after successful registration
+              setUserRole("student");
+              setUserName(data.fullName);
+              setCurrentPage("dashboard");
+              setDashboardSection("dashboard");
+              
+              // Save to cookies if enabled
+              if (cookiesEnabled) {
+                UserCookies.setUserSession("student", data.fullName, undefined, false);
+                PreferenceCookies.setDashboardSection("dashboard");
+              }
+              
+              toast.success(`Welcome ${data.fullName}! Your account has been created successfully.`);
+            }}
+          />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "faculty-register") {
+      return (
+        <PageTransition>
+          <FacultyRegistration
+            onBack={() => setCurrentPage("login")}
+            onRegister={(data) => {
+              console.log("Faculty registration data:", data);
+              // Auto-login after successful registration
+              setUserRole("faculty");
+              setUserName(data.fullName);
+              setCurrentPage("dashboard");
+              setDashboardSection("dashboard");
+              
+              // Save to cookies if enabled
+              if (cookiesEnabled) {
+                UserCookies.setUserSession("faculty", data.fullName, undefined, false);
+                PreferenceCookies.setDashboardSection("dashboard");
+              }
+              
+              toast.success(`Welcome ${data.fullName}! Your account has been created successfully.`);
+            }}
+          />
         </PageTransition>
       );
     }
@@ -200,6 +259,23 @@ export default function App() {
         onNavigateToAlumni={() => setCurrentPage("alumni")}
         showHeroVideo={currentPage === "home"}
       />
+
+      {/* Breadcrumb Navigation */}
+      {currentPage !== "home" && currentPage !== "login" && !userRole && (
+        <Breadcrumb
+          items={getBreadcrumbItems(
+            currentPage,
+            userRole || undefined,
+            dashboardSection,
+            () => setCurrentPage("home"),
+            () => {
+              setCurrentPage("dashboard");
+              setDashboardSection("dashboard");
+            }
+          )}
+        />
+      )}
+
       {renderPage()}
       
       {/* Enhanced Toast Notifications */}
