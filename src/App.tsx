@@ -12,6 +12,14 @@ import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
 import { FacultyInfoPage } from "./components/pages/FacultyInfoPage";
+import { AboutPage } from "./components/pages/AboutPage";
+import { AdmissionsPage } from "./components/pages/AdmissionsPage";
+import { LifeAtSSIPMTPage } from "./components/pages/LifeAtSSIPMTPage";
+import { ProgramsPage } from "./components/pages/ProgramsPage";
+import { ApplyPage } from "./components/pages/ApplyPage";
+import { CSEDepartmentPage } from "./components/pages/CSEDepartmentPage";
+import { ResearchPage } from "./components/pages/ResearchPage";
+import { ContactPage } from "./components/pages/ContactPage";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
 import { NewsAndEventsPage } from "./components/pages/NewsAndEventsPage";
@@ -20,7 +28,7 @@ import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "news-events" | "student-register" | "faculty-register" | "coe";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "about" | "admissions" | "life-at-ssipmt" | "programs" | "apply" | "cse-department" | "research" | "contact" | "news-events" | "student-register" | "faculty-register" | "coe";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -246,6 +254,70 @@ export default function App() {
               <p className="text-gray-600">Coming Soon...</p>
             </div>
           </div>
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "about") {
+      return (
+        <PageTransition>
+          <AboutPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "admissions") {
+      return (
+        <PageTransition>
+          <AdmissionsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "life-at-ssipmt") {
+      return (
+        <PageTransition>
+          <LifeAtSSIPMTPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "programs") {
+      return (
+        <PageTransition>
+          <ProgramsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "apply") {
+      return (
+        <PageTransition>
+          <ApplyPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "cse-department") {
+      return (
+        <PageTransition>
+          <CSEDepartmentPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "research") {
+      return (
+        <PageTransition>
+          <ResearchPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "contact") {
+      return (
+        <PageTransition>
+          <ContactPage />
         </PageTransition>
       );
     }

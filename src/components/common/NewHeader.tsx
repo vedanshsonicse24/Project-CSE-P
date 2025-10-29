@@ -11,13 +11,41 @@ interface NewHeaderProps {
   onNavigateToHome?: () => void;
   onNavigateToFacultyInfo?: () => void;
   onNavigateToAlumni?: () => void;
+  onNavigateToAbout?: () => void;
+  onNavigateToAdmissions?: () => void;
+  onNavigateToLifeAtSSIPMT?: () => void;
+  onNavigateToPrograms?: () => void;
+  onNavigateToApply?: () => void;
+  onNavigateToCSEDepartment?: () => void;
+  onNavigateToResearch?: () => void;
   onNavigateToContact?: () => void;
   onNavigateToNewsEvents?: () => void;
   onNavigateToCOE?: () => void;
   showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, showHeroVideo }: NewHeaderProps) {
+export function NewHeader({ 
+  userRole, 
+  userName, 
+  onLogout, 
+  onNavigateToLogin, 
+  onNavigateToProfile, 
+  onNavigateToSection, 
+  onNavigateToHome, 
+  onNavigateToFacultyInfo, 
+  onNavigateToAlumni,
+  onNavigateToAbout,
+  onNavigateToAdmissions,
+  onNavigateToLifeAtSSIPMT,
+  onNavigateToPrograms,
+  onNavigateToApply,
+  onNavigateToCSEDepartment,
+  onNavigateToResearch,
+  onNavigateToContact,
+  onNavigateToNewsEvents,
+  onNavigateToCOE,
+  showHeroVideo 
+}: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -911,8 +939,19 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                     <a href="#">ADMISSIONS</a>
                   </div>
                   
-                  <div className="main-nav-right">
-                    <a href="#">SSIPMT PROGRAMS</a>
+                                    <div className="main-nav-right">
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToLifeAtSSIPMT?.(); }}
+                    >
+                      LIFE AT SSIPMT
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToPrograms?.(); }}
+                    >
+                      SSIPMT PROGRAMS
+                    </a>
                     <div className="search-container">
                       <div className="search-box">
                         <Search size={16} className="search-box-icon" />
@@ -940,6 +979,19 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                         </div>
                       )}
                     </div>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToContact?.(); }}
+                    >
+                      CONTACT US
+                    </a>
+                    <a 
+                      href="#" 
+                      className="btn-cta"
+                      onClick={(e) => { e.preventDefault(); onNavigateToApply?.(); }}
+                    >
+                      APPLY
+                    </a>
                   </div>
                 </>
               )}
