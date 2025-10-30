@@ -53,7 +53,7 @@ export function AboutPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Professional Hero Section */}
       <motion.section 
-        className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden"
+        className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-br from-gray-100 via-white to-blue-50 text-black overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -80,29 +80,39 @@ export function AboutPage() {
             >
               <GraduationCap className="w-6 h-6" />
               <motion.span 
-                className="text-base font-semibold tracking-wide"
+                className="text-base font-semibold tracking-wide text-white"
                 style={{
                   textShadow: '0 2px 8px rgba(0,0,0,0.4)'
                 }}
                 animate={{ rotateX: [0, 360] }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               >
-                CSE DEPARTMENT
+                Department of Computer Science & Engineering
               </motion.span>
             </motion.div>
 
             <motion.h1 
-              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white"
+              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-black"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              style={{ letterSpacing: '-0.02em', lineHeight: '1.1' }}
+              style={{ letterSpacing: '-0.02em', lineHeight: '1.1', color: 'black' }}
             >
               Who We Are
             </motion.h1>
             
             <motion.p 
-              className="text-xl md:text-2xl text-white mb-10 max-w-4xl mx-auto font-light leading-relaxed"
+              className="text-xl md:text-2xl text-black mb-4 max-w-4xl mx-auto font-semibold leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              style={{ letterSpacing: '0.5px', color: 'black' }}
+            >
+              Shaping Future Innovators at SSIPMT, Raipur
+            </motion.p>
+            
+            <motion.p 
+              className="text-lg md:text-xl text-white/90 mb-10 max-w-4xl mx-auto font-light leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
@@ -149,19 +159,19 @@ export function AboutPage() {
           >
             <motion.div variants={fadeInUp}>
               <div className="mb-8">
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6" style={{ letterSpacing: '-0.01em' }}>
+                <h2 className="text-4xl md:text-5xl font-bold text-black mb-6" style={{ letterSpacing: '-0.01em' }}>
                   Leading the Way in Technical Education
                 </h2>
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-6"></div>
               </div>
               
               <div className="space-y-6">
-                <p className="text-lg text-slate-700 leading-relaxed" style={{ lineHeight: '1.8' }}>
+                <p className="text-lg text-black leading-relaxed" style={{ lineHeight: '1.8' }}>
                   <strong>SSIPMT</strong> is a premier institution dedicated to nurturing future leaders in technology and management. 
                   Established in 2000, we have consistently delivered quality education that combines theoretical 
                   knowledge with practical application.
                 </p>
-                <p className="text-lg text-slate-700 leading-relaxed" style={{ lineHeight: '1.8' }}>
+                <p className="text-lg text-black leading-relaxed" style={{ lineHeight: '1.8' }}>
                   Our state-of-the-art facilities, distinguished faculty, and industry partnerships create an 
                   environment where students can explore, innovate, and excel. We are committed to shaping 
                   professionals who are not only technically proficient but also socially responsible.
@@ -170,15 +180,15 @@ export function AboutPage() {
                 <div className="flex flex-wrap gap-4 pt-4">
                   <div className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-yellow-500" />
-                    <span className="text-slate-700 font-medium">AICTE Approved</span>
+                    <span className="text-black font-medium">AICTE Approved</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Trophy className="w-5 h-5 text-blue-500" />
-                    <span className="text-slate-700 font-medium">Excellence in Education</span>
+                    <span className="text-black font-medium">Excellence in Education</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Award className="w-5 h-5 text-green-500" />
-                    <span className="text-slate-700 font-medium">Industry Recognition</span>
+                    <span className="text-black font-medium">Industry Recognition</span>
                   </div>
                 </div>
               </div>
@@ -208,8 +218,8 @@ export function AboutPage() {
                         <div className="inline-flex p-3 bg-white rounded-lg shadow-md mb-3">
                           <achievement.icon className="w-8 h-8 text-blue-600" />
                         </div>
-                        <div className="text-3xl font-bold text-slate-900 mb-1">{achievement.value}</div>
-                        <div className="text-slate-600 font-medium">{achievement.label}</div>
+                        <div className="text-3xl font-bold text-black mb-1">{achievement.value}</div>
+                        <div className="text-black font-medium">{achievement.label}</div>
                       </div>
                     ))}
                   </div>
@@ -245,13 +255,13 @@ export function AboutPage() {
                 </motion.div>
               </div>
               <h2 
-                className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-4"
+                className="text-5xl md:text-6xl lg:text-7xl font-bold text-black mb-4"
                 style={{ letterSpacing: '-0.01em', fontFamily: 'Poppins, sans-serif' }}
               >
                 Vision & Mission
               </h2>
               <p 
-                className="text-xl md:text-2xl text-slate-700 max-w-3xl mx-auto"
+                className="text-xl md:text-2xl text-black max-w-3xl mx-auto"
                 style={{ letterSpacing: '0.01em', lineHeight: '1.6', fontFamily: 'Roboto, sans-serif' }}
               >
                 Guiding principles that drive excellence in education and innovation
@@ -285,14 +295,14 @@ export function AboutPage() {
                     {/* Institute Vision */}
                     <div className="bg-white p-6 rounded-lg shadow-md">
                       <h4 
-                        className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2"
+                        className="text-2xl font-bold text-black mb-4 flex items-center gap-2"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         <Building2 className="w-6 h-6 text-blue-600" />
                         Institute Vision
                       </h4>
                       <p 
-                        className="text-lg text-slate-800 leading-relaxed text-justify"
+                        className="text-lg text-black leading-relaxed text-justify"
                         style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                       >
                         To be recognized as a leading institution of excellence in technical education and 
@@ -304,14 +314,14 @@ export function AboutPage() {
                     {/* Department Vision */}
                     <div className="bg-gradient-to-br from-blue-100 to-blue-50 p-6 rounded-lg shadow-md border-l-4 border-blue-600">
                       <h4 
-                        className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2"
+                        className="text-2xl font-bold text-black mb-4 flex items-center gap-2"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         <GraduationCap className="w-6 h-6 text-blue-700" />
                         CSE Department Vision
                       </h4>
                       <p 
-                        className="text-lg text-slate-800 leading-relaxed text-justify"
+                        className="text-lg text-black leading-relaxed text-justify"
                         style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                       >
                         To be a leading department in Computer Science and Engineering that produces innovative, 
@@ -348,14 +358,14 @@ export function AboutPage() {
                     {/* Institute Mission */}
                     <div className="bg-white p-6 rounded-lg shadow-md">
                       <h4 
-                        className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2"
+                        className="text-2xl font-bold text-black mb-4 flex items-center gap-2"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         <Building2 className="w-6 h-6 text-blue-600" />
                         Institute Mission
                       </h4>
                       <p 
-                        className="text-lg text-slate-800 leading-relaxed text-justify"
+                        className="text-lg text-black leading-relaxed text-justify"
                         style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                       >
                         To provide world-class technical education that empowers students with knowledge, 
@@ -367,7 +377,7 @@ export function AboutPage() {
                     {/* Department Mission bullets */}
                     <div className="bg-gradient-to-br from-blue-100 to-blue-50 p-6 rounded-lg shadow-md border-l-4 border-blue-600">
                       <h4 
-                        className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2"
+                        className="text-2xl font-bold text-black mb-4 flex items-center gap-2"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         <GraduationCap className="w-6 h-6 text-blue-700" />
@@ -378,7 +388,7 @@ export function AboutPage() {
                         <li className="flex items-start gap-3">
                           <span className="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
                           <p 
-                            className="text-lg text-slate-800 leading-relaxed text-justify"
+                            className="text-lg text-black leading-relaxed text-justify"
                             style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                           >
                             To provide quality education in Computer Science and Engineering with strong emphasis 
@@ -389,7 +399,7 @@ export function AboutPage() {
                         <li className="flex items-start gap-3">
                           <span className="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
                           <p 
-                            className="text-lg text-slate-800 leading-relaxed text-justify"
+                            className="text-lg text-black leading-relaxed text-justify"
                             style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                           >
                             To foster research, innovation, and entrepreneurship through industry partnerships, 
@@ -400,7 +410,7 @@ export function AboutPage() {
                         <li className="flex items-start gap-3">
                           <span className="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
                           <p 
-                            className="text-lg text-slate-800 leading-relaxed text-justify"
+                            className="text-lg text-black leading-relaxed text-justify"
                             style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                           >
                             To develop students' problem-solving abilities, critical thinking, and communication 
@@ -411,7 +421,7 @@ export function AboutPage() {
                         <li className="flex items-start gap-3">
                           <span className="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
                           <p 
-                            className="text-lg text-slate-800 leading-relaxed text-justify"
+                            className="text-lg text-black leading-relaxed text-justify"
                             style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                           >
                             To instill ethical values, social responsibility, and lifelong learning mindset in 
@@ -422,7 +432,7 @@ export function AboutPage() {
                         <li className="flex items-start gap-3">
                           <span className="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
                           <p 
-                            className="text-lg text-slate-800 leading-relaxed text-justify"
+                            className="text-lg text-black leading-relaxed text-justify"
                             style={{ letterSpacing: '0.01em', lineHeight: '1.8', fontFamily: 'Roboto, sans-serif' }}
                           >
                             To continuously update curriculum and teaching methodologies aligned with industry 
@@ -491,7 +501,7 @@ export function AboutPage() {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-center text-gray-900 mb-16"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-center text-black mb-16"
               style={{ letterSpacing: '-0.01em' }}
             >
               Our Journey
@@ -511,8 +521,8 @@ export function AboutPage() {
                       <Card className="hover:shadow-xl transition-shadow">
                         <CardContent className="pt-6">
                           <div className="text-4xl md:text-5xl font-bold text-maroon-600 mb-4" style={{ letterSpacing: '-0.01em' }}>{milestone.year}</div>
-                          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>{milestone.title}</h3>
-                          <p className="text-lg text-gray-600 leading-relaxed text-justify" style={{ letterSpacing: '0.01em', lineHeight: '1.7' }}>{milestone.description}</p>
+                          <h3 className="text-2xl md:text-3xl font-bold text-black mb-3" style={{ letterSpacing: '-0.01em' }}>{milestone.title}</h3>
+                          <p className="text-lg text-black leading-relaxed text-justify" style={{ letterSpacing: '0.01em', lineHeight: '1.7' }}>{milestone.description}</p>
                         </CardContent>
                       </Card>
                     </div>
@@ -540,14 +550,14 @@ export function AboutPage() {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-8"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-black mb-8"
               style={{ letterSpacing: '-0.01em' }}
             >
               Our Leadership 👥
             </motion.h2>
             <motion.p 
               variants={fadeInUp}
-              className="text-xl md:text-2xl lg:text-3xl text-gray-600 mb-16 max-w-3xl mx-auto"
+              className="text-xl md:text-2xl lg:text-3xl text-black mb-16 max-w-3xl mx-auto"
               style={{ letterSpacing: '0.01em', lineHeight: '1.6' }}
             >
               Guided by visionary leaders committed to academic excellence

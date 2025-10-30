@@ -450,6 +450,40 @@ export function ProgramsPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* CTA Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600 to-maroon-600 rounded-2xl p-12 text-white"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl font-bold mb-4">Ready to Begin Your Journey?</h2>
+            <p className="text-xl mb-8 text-white font-medium">
+              Choose your program and take the first step towards a successful career
+            </p>
+            <div className="flex gap-4 justify-center flex-wrap">
+              <Button 
+                size="lg" 
+                variant="secondary"
+                className="bg-white text-maroon-600 hover:bg-gray-100 text-lg px-8 py-6"
+              >
+                Apply Now
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
+              >
+                Download Brochure
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }
