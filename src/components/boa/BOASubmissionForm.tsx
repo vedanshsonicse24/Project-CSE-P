@@ -3,13 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Calendar, FileText, User, Building, GraduationCap } from "lucide-react";
+import { Calendar, FileText, User, Building, GraduationCap, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 export function BOASubmissionForm() {
   const [formData, setFormData] = useState({
     eventName: "",
-    eventDate: "",
+    eventDateFrom: "",
+    eventDateTo: "",
     organizingDept: "",
     teacherInCharge: "",
     studentName: "",
@@ -17,8 +18,8 @@ export function BOASubmissionForm() {
     semester: "",
     rollNo: "",
     section: "",
-    date: "",
-    numLectures: "",
+    numTheoryLectures: "",
+    numPracticalLectures: "",
     classInCharge: "",
     submissionDate: "",
   });
@@ -32,9 +33,9 @@ export function BOASubmissionForm() {
     
     // Validate required fields
     const requiredFields = [
-      "eventName", "eventDate", "organizingDept", "teacherInCharge",
+      "eventName", "eventDateFrom", "eventDateTo", "organizingDept", "teacherInCharge",
       "studentName", "branch", "semester", "rollNo", "section",
-      "date", "numLectures", "classInCharge", "submissionDate"
+      "numTheoryLectures", "numPracticalLectures", "classInCharge", "submissionDate"
     ];
 
     const emptyFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
@@ -50,7 +51,8 @@ export function BOASubmissionForm() {
     // Reset form
     setFormData({
       eventName: "",
-      eventDate: "",
+      eventDateFrom: "",
+      eventDateTo: "",
       organizingDept: "",
       teacherInCharge: "",
       studentName: "",
@@ -58,8 +60,8 @@ export function BOASubmissionForm() {
       semester: "",
       rollNo: "",
       section: "",
-      date: "",
-      numLectures: "",
+      numTheoryLectures: "",
+      numPracticalLectures: "",
       classInCharge: "",
       submissionDate: "",
     });
@@ -101,12 +103,23 @@ export function BOASubmissionForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="eventDate">Date of Event *</Label>
+                  <Label htmlFor="eventDateFrom">Event Date From *</Label>
                   <Input
-                    id="eventDate"
+                    id="eventDateFrom"
                     type="date"
-                    value={formData.eventDate}
-                    onChange={(e) => handleChange("eventDate", e.target.value)}
+                    value={formData.eventDateFrom}
+                    onChange={(e) => handleChange("eventDateFrom", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="eventDateTo">Event Date To *</Label>
+                  <Input
+                    id="eventDateTo"
+                    type="date"
+                    value={formData.eventDateTo}
+                    onChange={(e) => handleChange("eventDateTo", e.target.value)}
                     required
                   />
                 </div>
@@ -131,6 +144,49 @@ export function BOASubmissionForm() {
                     placeholder="Enter teacher name"
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="numTheoryLectures">No. of Theory Lectures to be Benefitted *</Label>
+                  <Input
+                    id="numTheoryLectures"
+                    type="number"
+                    min="0"
+                    value={formData.numTheoryLectures}
+                    onChange={(e) => handleChange("numTheoryLectures", e.target.value)}
+                    placeholder="Enter number"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="numPracticalLectures">No. of Practical Lectures to be Benefitted *</Label>
+                  <Input
+                    id="numPracticalLectures"
+                    type="number"
+                    min="0"
+                    value={formData.numPracticalLectures}
+                    onChange={(e) => handleChange("numPracticalLectures", e.target.value)}
+                    placeholder="Enter number"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="eventPhotos" className="flex items-center gap-2">
+                    <Camera className="h-4 w-4" style={{ color: '#1e3a8a' }} />
+                    Upload Event Photos
+                  </Label>
+                  <Input
+                    id="eventPhotos"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    You can upload multiple photos (JPEG, PNG). Maximum 5 photos allowed.
+                  </p>
                 </div>
               </div>
             </div>
@@ -194,30 +250,6 @@ export function BOASubmissionForm() {
                     value={formData.section}
                     onChange={(e) => handleChange("section", e.target.value)}
                     placeholder="e.g., A"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="date">Date *</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => handleChange("date", e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="numLectures">No. of Lectures to be Benefitted *</Label>
-                  <Input
-                    id="numLectures"
-                    type="number"
-                    min="1"
-                    value={formData.numLectures}
-                    onChange={(e) => handleChange("numLectures", e.target.value)}
-                    placeholder="Enter number"
                     required
                   />
                 </div>

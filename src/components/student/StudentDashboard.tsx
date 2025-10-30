@@ -368,66 +368,39 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
         <CardContent>
           <div className="space-y-3">
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText className="h-6 w-6 text-blue-600 mt-1" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
                   <div>
-                    <p>Tech Fest 2025 - Clubs BOA</p>
-                    <p className="text-sm text-gray-600 mt-1">Submitted on 2025-10-10</p>
-                    <p className="text-xs text-gray-500 mt-1">Sent to: Faculty and HOD</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                        Faculty: Approved
-                      </Badge>
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs">
-                        HOD: Pending
-                      </Badge>
-                    </div>
+                    <p className="font-medium">Tech Fest 2025 - Clubs BOA</p>
+                    <p className="text-sm text-gray-600">Submitted on 2025-10-10</p>
                   </div>
                 </div>
-                <Button size="sm" variant="outline">View</Button>
+                <Badge variant="outline" className="text-black border-gray-300 text-base px-4 py-1">Pending</Badge>
               </div>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText className="h-6 w-6 text-blue-600 mt-1" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
                   <div>
-                    <p>Sports Day - Outdoor Event BOA</p>
-                    <p className="text-sm text-gray-600 mt-1">Submitted on 2025-10-05</p>
-                    <p className="text-xs text-gray-500 mt-1">Sent to: Faculty and HOD</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                        Faculty: Approved
-                      </Badge>
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                        HOD: Approved
-                      </Badge>
-                    </div>
+                    <p className="font-medium">Sports Day - Outdoor Event BOA</p>
+                    <p className="text-sm text-gray-600">Submitted on 2025-10-05</p>
                   </div>
                 </div>
-                <Button size="sm" variant="outline">View</Button>
+                <Badge variant="outline" className="text-black border-gray-300 text-base px-4 py-1">Approved</Badge>
               </div>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText className="h-6 w-6 text-blue-600 mt-1" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
                   <div>
-                    <p>Coding Competition - Event BOA</p>
-                    <p className="text-sm text-gray-600 mt-1">Submitted on 2025-10-12</p>
-                    <p className="text-xs text-gray-500 mt-1">Sent to: Faculty and HOD</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs">
-                        Faculty: Pending
-                      </Badge>
-                      <Badge variant="outline" className="bg-gray-100 text-gray-600 border-gray-300 text-xs">
-                        HOD: Waiting for Faculty
-                      </Badge>
-                    </div>
+                    <p className="font-medium">Coding Competition - Event BOA</p>
+                    <p className="text-sm text-gray-600">Submitted on 2025-10-12</p>
                   </div>
                 </div>
-                <Button size="sm" variant="outline">View</Button>
+                <Badge variant="outline" className="text-black border-gray-300 text-base px-4 py-1">Rejected</Badge>
               </div>
             </div>
           </div>
