@@ -347,6 +347,13 @@ export default function App() {
         onNavigateToHome={() => setCurrentPage("home")}
         onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
         onNavigateToAlumni={() => setCurrentPage("alumni")}
+        onNavigateToAbout={() => setCurrentPage("about")}
+        onNavigateToAdmissions={() => setCurrentPage("admissions")}
+        onNavigateToLifeAtSSIPMT={() => setCurrentPage("life-at-ssipmt")}
+        onNavigateToPrograms={() => setCurrentPage("programs")}
+        onNavigateToApply={() => setCurrentPage("apply")}
+        onNavigateToCSEDepartment={() => setCurrentPage("cse-department")}
+        onNavigateToResearch={() => setCurrentPage("research")}
         onNavigateToContact={() => setCurrentPage("contact")}
         onNavigateToNewsEvents={() => setCurrentPage("news-events")}
         onNavigateToCOE={() => setCurrentPage("coe")}
