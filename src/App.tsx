@@ -9,13 +9,14 @@ import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
 import { FacultyInfoPage } from "./components/pages/FacultyInfoPage";
+import CentreOfExcellence from "./components/pages/CentreOfExcellence";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
 import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "coe";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -106,6 +107,14 @@ export default function App() {
   };
 
   const renderPage = () => {
+    if (currentPage === "coe") {
+      return (
+        <PageTransition>
+          <CentreOfExcellence />
+        </PageTransition>
+      );
+    }
+
     if (currentPage === "home") {
       return (
         <PageTransition>
@@ -195,6 +204,7 @@ export default function App() {
         onNavigateToHome={() => setCurrentPage("home")}
         onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
         onNavigateToAlumni={() => setCurrentPage("alumni")}
+        onNavigateToCoE={() => setCurrentPage("coe")}
         showHeroVideo={currentPage === "home"}
       />
       {renderPage()}

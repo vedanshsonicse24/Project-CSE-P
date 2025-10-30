@@ -11,12 +11,14 @@ interface NewHeaderProps {
   onNavigateToHome?: () => void;
   onNavigateToFacultyInfo?: () => void;
   onNavigateToAlumni?: () => void;
+  onNavigateToCoE?: () => void;
   showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
+export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, onNavigateToCoE, showHeroVideo }: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
+  const [showDirectoryDropdown, setShowDirectoryDropdown] = useState(false);
   
   const handleNavClick = (section: string) => {
     setActiveNavItem(section);
@@ -523,7 +525,25 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                 <>
                   <a href="#">VISIT</a>
                   <a href="#">CONTACT US</a>
-                  <a href="#">DIRECTORY</a>
+                  <div 
+                    className="info-dropdown"
+                    onMouseEnter={() => setShowDirectoryDropdown(true)}
+                    onMouseLeave={() => setShowDirectoryDropdown(false)}
+                  >
+                    <a href="#" style={{ cursor: 'pointer' }}>CLUBS</a>
+                    <div className={`info-dropdown-content ${showDirectoryDropdown ? 'show' : ''}`}>
+                      <a 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onNavigateToCoE?.();
+                          setShowDirectoryDropdown(false);
+                        }}
+                      >
+                        CENTRE OF EXCELLENCE
+                      </a>
+                    </div>
+                  </div>
                   {onNavigateToLogin && (
                     <button 
                       onClick={onNavigateToLogin}
