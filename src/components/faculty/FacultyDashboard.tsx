@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { StatsCard } from "../common/StatsCard";
 import {
   LayoutDashboard,
@@ -37,8 +37,6 @@ import {
 } from "../ui/table";
 import { Input } from "../ui/input";
 import { Toaster } from "../ui/sonner";
-import gsap from "gsap";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 
 interface FacultyDashboardProps {
@@ -103,33 +101,6 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
   const [engageDate, setEngageDate] = useState<string>("");
   const [period, setPeriod] = useState<string>("1");
 
-  // Refs for animation and charts
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const barChartRef = useRef<HTMLDivElement | null>(null);
-  const pieChartRef = useRef<HTMLDivElement | null>(null);
-
-  // Sample chart data for faculty attendance overview
-  const barData = [
-    { name: 'CSE301', attendance: 92 },
-    { name: 'CSE302', attendance: 88 },
-    { name: 'CSE401', attendance: 85 },
-  ];
-
-  const pieData = [
-    { name: 'Present', value: 365, color: '#10b981' },
-    { name: 'Absent', value: 40, color: '#ef4444' },
-    { name: 'On Leave', value: 20, color: '#f59e0b' },
-  ];
-
-  // Simple GSAP entrance animation for dashboard charts/header
-  useEffect(() => {
-    const tl = gsap.timeline({ defaults: { duration: 0.6, ease: 'power2.out' } });
-    if (headerRef.current) tl.from(headerRef.current, { y: -30, opacity: 0 });
-    if (barChartRef.current && pieChartRef.current) {
-      tl.from([barChartRef.current, pieChartRef.current], { y: 20, opacity: 0, stagger: 0.12 });
-    }
-  }, []);
-
   const handleEngageLecture = () => {
     const newLecture: any = {
       id: Date.now(),
@@ -172,48 +143,6 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
         <Card>
           <CardHeader>
             <CardTitle>Today's Schedule</CardTitle>
-    
-    {/* Charts: Bar (class-wise) and Pie (overall distribution) */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div ref={barChartRef}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Class-wise Attendance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 13, fill: '#6b7280' }} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 13, fill: '#6b7280' }} />
-                <Tooltip formatter={(value: number) => `${value}%`} />
-                <Bar dataKey="attendance" radius={[8,8,0,0]} fill="#3b82f6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div ref={pieChartRef}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Attendance Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={pieData} dataKey="value" cx="50%" cy="50%" outerRadius={90} labelLine={false} label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}>
-                  {pieData.map((entry, idx) => (
-                    <Cell key={`cell-${idx}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value: number) => `${value} classes`} />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
