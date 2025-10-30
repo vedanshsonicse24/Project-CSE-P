@@ -143,27 +143,7 @@ export function AdmissionsPage() {
     }
   ];
 
-  const scholarships = [
-    {
-      name: "Merit Scholarship",
-      eligibility: "Top 10% in entrance exam",
-      benefit: "Up to 50% tuition fee waiver"
-    },
-    {
-      name: "Need-Based Scholarship",
-      eligibility: "Annual family income < ₹3 Lakhs",
-      benefit: "Up to 30% tuition fee waiver"
-    },
-    {
-      name: "Sports Scholarship",
-      eligibility: "State/National level sports achievements",
-      benefit: "Up to 40% tuition fee waiver"
-    },
-    {
-      name: "Girl Child Scholarship",
-      eligibility: "All female students",
-      benefit: "₹10,000 per year"
-    }
+  const scholarships: { name: string; eligibility: string; benefit: string; }[] = [
   ];
 
   return (

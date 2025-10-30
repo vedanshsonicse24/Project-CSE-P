@@ -11,11 +11,8 @@ import {
   Award,
   CheckCircle2,
   ArrowRight,
-  Brain,
   Code,
   Database,
-  Globe,
-  Cpu,
   Briefcase,
   TrendingUp,
   DollarSign
@@ -53,57 +50,6 @@ export function ProgramsPage() {
       careers: ["Software Engineer", "Data Scientist", "Cloud Architect", "AI Specialist"],
       avgPackage: "₹6.5 LPA",
       color: "bg-blue-600"
-    },
-    {
-      name: "Artificial Intelligence & Data Science",
-      code: "AI&DS",
-      duration: "4 Years",
-      seats: 60,
-      icon: Brain,
-      description: "Dive deep into AI, machine learning, and big data analytics",
-      highlights: [
-        "Deep Learning & Neural Networks",
-        "Big Data Analytics",
-        "Natural Language Processing",
-        "Industry ML projects"
-      ],
-      careers: ["ML Engineer", "Data Analyst", "AI Researcher", "Business Intelligence Analyst"],
-      avgPackage: "₹7 LPA",
-      color: "bg-purple-600"
-    },
-    {
-      name: "Information Technology",
-      code: "IT",
-      duration: "4 Years",
-      seats: 60,
-      icon: Globe,
-      description: "Build expertise in software systems, networks, and web technologies",
-      highlights: [
-        "Web & Mobile Development",
-        "Cloud Computing",
-        "Cybersecurity fundamentals",
-        "DevOps practices"
-      ],
-      careers: ["IT Consultant", "System Administrator", "Full Stack Developer", "Network Engineer"],
-      avgPackage: "₹6 LPA",
-      color: "bg-green-600"
-    },
-    {
-      name: "Electronics & Communication Engineering",
-      code: "ECE",
-      duration: "4 Years",
-      seats: 60,
-      icon: Cpu,
-      description: "Design and develop electronic systems and communication networks",
-      highlights: [
-        "VLSI Design",
-        "Embedded Systems",
-        "5G Networks",
-        "IoT Applications"
-      ],
-      careers: ["Electronics Engineer", "VLSI Designer", "Network Engineer", "IoT Developer"],
-      avgPackage: "₹5.5 LPA",
-      color: "bg-orange-600"
     }
   ];
 
@@ -115,14 +61,6 @@ export function ProgramsPage() {
       specializations: ["Artificial Intelligence", "Data Science", "Cyber Security"],
       eligibility: "B.Tech/BE in CSE/IT with GATE score",
       description: "Advanced research and specialization in cutting-edge computing domains"
-    },
-    {
-      name: "M.Tech VLSI Design",
-      duration: "2 Years",
-      seats: 18,
-      specializations: ["Digital VLSI", "Analog VLSI", "Mixed Signal Design"],
-      eligibility: "B.Tech/BE in ECE/EE with GATE score",
-      description: "Master chip design and semiconductor technology"
     }
   ];
 
@@ -131,7 +69,7 @@ export function ProgramsPage() {
       name: "PhD Programs",
       duration: "3-5 Years",
       seats: 20,
-      areas: ["Computer Science", "Electronics"],
+      areas: ["Computer Science"],
       eligibility: "M.Tech/ME with minimum 60%",
       description: "Pursue advanced research and contribute to academic knowledge"
     }
@@ -367,23 +305,23 @@ export function ProgramsPage() {
                         <CardContent className="pt-6">
                           <p className="text-gray-700 mb-4">{program.description}</p>
                           
-                          {program.specializations && (
+                          {'specializations' in program && program.specializations && (
                             <div className="mb-4">
                               <h4 className="font-bold text-gray-900 mb-2">Specializations:</h4>
                               <div className="flex flex-wrap gap-2">
-                                {program.specializations.map((spec, idx) => (
+                                {program.specializations.map((spec: string, idx: number) => (
                                   <Badge key={idx} variant="secondary">{spec}</Badge>
                                 ))}
                               </div>
                             </div>
                           )}
 
-                          {'careers' in program && program.careers && (
+                          {'areas' in program && program.areas && (
                             <div className="mb-4">
-                              <h4 className="font-bold text-gray-900 mb-2">Career Paths:</h4>
+                              <h4 className="font-bold text-gray-900 mb-2">Research Areas:</h4>
                               <div className="flex flex-wrap gap-2">
-                                {program.careers.map((career: string, idx: number) => (
-                                  <Badge key={idx} variant="outline">{career}</Badge>
+                                {program.areas.map((area: string, idx: number) => (
+                                  <Badge key={idx} variant="secondary">{area}</Badge>
                                 ))}
                               </div>
                             </div>
