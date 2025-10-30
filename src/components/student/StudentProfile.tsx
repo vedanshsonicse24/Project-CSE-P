@@ -14,6 +14,12 @@ interface Backlog {
   semester: string;
 }
 
+interface AttendanceRecord {
+  subject: string;
+  classesAttended: string;
+  totalClasses: string;
+}
+
 interface SemesterResult {
   subject: string;
   marks: string;
@@ -44,6 +50,7 @@ interface StudentProfileData {
   section: string;
   mentorName: string;
   backlogs: Backlog[];
+  attendanceRecords: AttendanceRecord[];
   
   // Parent Information
   fatherName: string;
@@ -93,6 +100,11 @@ export function StudentProfile() {
     mentorName: "Dr. Rajesh Kumar",
     backlogs: [
       { subject: "Data Structures", semester: "3" }
+    ],
+    attendanceRecords: [
+      { subject: "Machine Learning", classesAttended: "42", totalClasses: "45" },
+      { subject: "Database Systems", classesAttended: "40", totalClasses: "42" },
+      { subject: "Web Development", classesAttended: "38", totalClasses: "40" }
     ],
     
     // Parent Information
@@ -154,6 +166,24 @@ export function StudentProfile() {
   const removeBacklog = (index: number) => {
     const newBacklogs = formData.backlogs.filter((_, i) => i !== index);
     handleInputChange('backlogs', newBacklogs);
+  };
+
+  const addAttendanceRecord = () => {
+    setFormData(prev => ({
+      ...prev,
+      attendanceRecords: [...prev.attendanceRecords, { subject: "", classesAttended: "", totalClasses: "" }]
+    }));
+  };
+
+  const updateAttendanceRecord = (index: number, field: 'subject' | 'classesAttended' | 'totalClasses', value: string) => {
+    const newRecords = [...formData.attendanceRecords];
+    newRecords[index][field] = value;
+    handleInputChange('attendanceRecords', newRecords);
+  };
+
+  const removeAttendanceRecord = (index: number) => {
+    const newRecords = formData.attendanceRecords.filter((_, i) => i !== index);
+    handleInputChange('attendanceRecords', newRecords);
   };
 
   const addSemesterResult = () => {
@@ -376,50 +406,184 @@ export function StudentProfile() {
             {/* Backlogs */}
             <Card className="shadow-lg">
               <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Backlogs
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <BookOpen className="h-5 w-5" />
+                    Backlogs Tracking
+                  </CardTitle>
+                  <div className="bg-white text-orange-700 px-3 py-1 rounded-full font-bold text-lg">
+                    {formData.backlogs.length}
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
-                {formData.backlogs.map((backlog, index) => (
-                  <div key={index} className="space-y-2 p-4 bg-orange-50 rounded-lg border border-orange-200">
-                    <div>
-                      <Label className="text-sm text-gray-700">Subject</Label>
-                      <Input
-                        value={backlog.subject}
-                        onChange={(e) => updateBacklog(index, 'subject', e.target.value)}
-                        placeholder="Subject name"
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm text-gray-700">Semester</Label>
-                      <Input
-                        value={backlog.semester}
-                        onChange={(e) => updateBacklog(index, 'semester', e.target.value)}
-                        placeholder="Semester"
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeBacklog(index)}
-                      className="w-full"
-                    >
-                      Remove
-                    </Button>
+                {formData.backlogs.length === 0 ? (
+                  <div className="text-center py-8">
+                    <BookOpen className="h-12 w-12 text-green-400 mx-auto mb-3" />
+                    <p className="text-gray-600 font-medium">No backlogs! Great job! 🎉</p>
                   </div>
-                ))}
+                ) : (
+                  <>
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-bold text-orange-700">Total Backlogs: {formData.backlogs.length}</span>
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">Track and manage your pending subjects</p>
+                    </div>
+                    {formData.backlogs.map((backlog, index) => (
+                      <div key={index} className="space-y-3 p-4 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg border border-orange-200 hover:border-orange-400 transition-colors">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                            {index + 1}
+                          </div>
+                          <span className="text-sm font-semibold text-gray-700">Backlog #{index + 1}</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-sm text-gray-700 font-medium">Subject Name</Label>
+                            <Input
+                              value={backlog.subject}
+                              onChange={(e) => updateBacklog(index, 'subject', e.target.value)}
+                              placeholder="e.g., Data Structures, Web Development"
+                              className="mt-1 border-orange-200 focus:border-orange-500"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm text-gray-700 font-medium">Semester</Label>
+                            <Input
+                              value={backlog.semester}
+                              onChange={(e) => updateBacklog(index, 'semester', e.target.value)}
+                              placeholder="e.g., 3, 4, 5"
+                              className="mt-1 border-orange-200 focus:border-orange-500"
+                            />
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeBacklog(index)}
+                          className="w-full bg-red-600 hover:bg-red-700 text-white"
+                        >
+                          Remove Backlog
+                        </Button>
+                      </div>
+                    ))}
+                  </>
+                )}
                 <Button
                   type="button"
                   variant="outline"
                   onClick={addBacklog}
-                  className="w-full border-orange-300 text-orange-700 hover:bg-orange-50"
+                  className="w-full border-orange-300 text-orange-700 hover:bg-orange-50 font-medium"
                 >
-                  + Add Backlog
+                  + Add New Backlog
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Attendance Tracking */}
+            <Card className="shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Attendance Tracking
+                  </CardTitle>
+                  <div className="bg-white text-blue-700 px-3 py-1 rounded-full font-bold text-lg">
+                    {formData.attendanceRecords.length}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                {formData.attendanceRecords.length === 0 ? (
+                  <div className="text-center py-8">
+                    <TrendingUp className="h-12 w-12 text-blue-400 mx-auto mb-3" />
+                    <p className="text-gray-600 font-medium">No attendance records yet. Add one to get started! 📊</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-bold text-blue-700">Total Subjects Tracked: {formData.attendanceRecords.length}</span>
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">Monitor and track your subject-wise attendance</p>
+                    </div>
+                    {formData.attendanceRecords.map((record, index) => {
+                      const percentage = record.totalClasses && record.classesAttended 
+                        ? Math.round((parseInt(record.classesAttended) / parseInt(record.totalClasses)) * 100)
+                        : 0;
+                      return (
+                        <div key={index} className="space-y-3 p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-200 hover:border-blue-400 transition-colors">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                                {index + 1}
+                              </div>
+                              <span className="text-sm font-semibold text-gray-700">Subject #{index + 1}</span>
+                            </div>
+                            <div className={`text-lg font-bold ${percentage >= 75 ? 'text-green-600' : percentage >= 65 ? 'text-yellow-600' : 'text-red-600'}`}>
+                              {percentage}%
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                              <Label className="text-sm text-gray-700 font-medium">Subject Name</Label>
+                              <Input
+                                value={record.subject}
+                                onChange={(e) => updateAttendanceRecord(index, 'subject', e.target.value)}
+                                placeholder="e.g., Machine Learning"
+                                className="mt-1 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-700 font-medium">Classes Attended</Label>
+                              <Input
+                                type="number"
+                                value={record.classesAttended}
+                                onChange={(e) => updateAttendanceRecord(index, 'classesAttended', e.target.value)}
+                                placeholder="e.g., 42"
+                                className="mt-1 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-700 font-medium">Total Classes</Label>
+                              <Input
+                                type="number"
+                                value={record.totalClasses}
+                                onChange={(e) => updateAttendanceRecord(index, 'totalClasses', e.target.value)}
+                                placeholder="e.g., 45"
+                                className="mt-1 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div 
+                              className={`h-full transition-all ${percentage >= 75 ? 'bg-green-500' : percentage >= 65 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeAttendanceRecord(index)}
+                            className="w-full bg-red-600 hover:bg-red-700 text-white"
+                          >
+                            Remove Record
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addAttendanceRecord}
+                  className="w-full border-blue-300 text-blue-700 hover:bg-blue-50 font-medium"
+                >
+                  + Add New Attendance Record
                 </Button>
               </CardContent>
             </Card>

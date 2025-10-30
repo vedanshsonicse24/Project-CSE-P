@@ -21,6 +21,10 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Toaster } from "../ui/sonner";
 import { BOASubmissionForm } from "../boa/BOASubmissionForm";
+import { AttendancePageNew } from "../attendance/AttendancePageNew";
+import { StudentAttendanceRedesigned } from "./StudentAttendanceRedesigned";
+import { Timetable } from "../timetable/Timetable";
+import { StudentTimetable } from "../timetable/StudentTimetable";
 
 const sidebarItems: any[] = [];
 
@@ -122,6 +126,25 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
           </CardContent>
         </Card>
 
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveSection('attendance')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-700">
+              <User className="h-5 w-5" />
+              View Attendance
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="text-center">
+                <p className="text-3xl font-bold text-green-600">{studentInfo.attendance}</p>
+                <p className="text-sm text-gray-600">Current Attendance</p>
+              </div>
+              <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => setActiveSection('attendance')}>
+                View Detailed Attendance
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
       </div>
 
@@ -141,6 +164,52 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
                 </div>
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-orange-600" />
+            My Achievements
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-3 text-blue-700">Academic Achievements</h4>
+              <div className="space-y-2">
+                {achievements.academic.map((achievement) => (
+                  <div key={achievement.id} className="flex items-start justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{achievement.title}</p>
+                      <p className="text-xs text-gray-600">{new Date(achievement.date).toLocaleDateString()}</p>
+                    </div>
+                    <Badge className={achievement.status === "Approved" ? "bg-green-500" : "bg-yellow-500"}>
+                      {achievement.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm mb-3 text-purple-700">Extracurricular Achievements</h4>
+              <div className="space-y-2">
+                {achievements.extracurricular.map((achievement) => (
+                  <div key={achievement.id} className="flex items-start justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{achievement.title}</p>
+                      <p className="text-xs text-gray-600">{new Date(achievement.date).toLocaleDateString()}</p>
+                    </div>
+                    <Badge className={achievement.status === "Approved" ? "bg-green-500" : "bg-yellow-500"}>
+                      {achievement.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -508,6 +577,8 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
         return renderDashboard();
       case "profile":
         return renderProfile();
+      case "timetable":
+        return <StudentTimetable />;
       case "cv":
         return renderCV();
       case "achievements":
@@ -518,6 +589,8 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
         return renderMentor();
       case "notifications":
         return renderNotifications();
+      case "attendance":
+        return <StudentAttendanceRedesigned onBack={() => setActiveSection("dashboard")} />;
       default:
         return renderDashboard();
     }
