@@ -1,4 +1,4 @@
-﻿import { Search } from "lucide-react";
+﻿import { Search, ChevronDown } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 interface NewHeaderProps {
@@ -17,6 +17,8 @@ interface NewHeaderProps {
 export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
+  const [facultyDropdownOpen, setFacultyDropdownOpen] = useState(false);
+  const [reportsDropdownOpen, setReportsDropdownOpen] = useState(false);
   
   const handleNavClick = (section: string) => {
     setActiveNavItem(section);
@@ -629,13 +631,45 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                         >
                           STUDENTS
                         </a>
-                        <a 
-                          href="#" 
-                          className={activeNavItem === "faculty" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('faculty'); }}
+                        <div 
+                          className="relative"
+                          onMouseEnter={() => setFacultyDropdownOpen(true)}
+                          onMouseLeave={() => setFacultyDropdownOpen(false)}
                         >
-                          FACULTY
-                        </a>
+                          <a 
+                            href="#" 
+                            className={`${activeNavItem === "faculty" || activeNavItem === "facultydetails" || activeNavItem === "schedule" ? "active" : ""} flex items-center gap-1`} 
+                            onClick={(e) => { e.preventDefault(); }}
+                          >
+                            FACULTY
+                            <ChevronDown className={`h-3 w-3 transition-transform ${facultyDropdownOpen ? 'rotate-180' : ''}`} />
+                          </a>
+                          {facultyDropdownOpen && (
+                            <div className="absolute left-0 top-full mt-1 bg-white rounded shadow-lg py-2 px-3 space-y-1 z-50 min-w-[180px]">
+                              <a 
+                                href="#" 
+                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
+                                onClick={(e) => { e.preventDefault(); handleNavClick('faculty'); setFacultyDropdownOpen(false); }}
+                              >
+                                Faculty Management
+                              </a>
+                              <a 
+                                href="#" 
+                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
+                                onClick={(e) => { e.preventDefault(); handleNavClick('facultydetails'); setFacultyDropdownOpen(false); }}
+                              >
+                                Faculty Details
+                              </a>
+                              <a 
+                                href="#" 
+                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
+                                onClick={(e) => { e.preventDefault(); handleNavClick('schedule'); setFacultyDropdownOpen(false); }}
+                              >
+                                My Schedule
+                              </a>
+                            </div>
+                          )}
+                        </div>
                         <a 
                           href="#" 
                           className={activeNavItem === "lectures" ? "active" : ""} 
@@ -702,18 +736,43 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                         </a>
                         <a 
                           href="#" 
-                          className={activeNavItem === "boa-management" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('boa-management'); }}
+                          className={activeNavItem === "approvals" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('approvals'); }}
                         >
                           BOA MGMT
                         </a>
-                        <a 
-                          href="#" 
-                          className={activeNavItem === "reports" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('reports'); }}
+                        <div 
+                          className="relative"
+                          onMouseEnter={() => setReportsDropdownOpen(true)}
+                          onMouseLeave={() => setReportsDropdownOpen(false)}
                         >
-                          REPORTS
-                        </a>
+                          <a 
+                            href="#" 
+                            className={`${activeNavItem === "reports" || activeNavItem === "achievements" ? "active" : ""} flex items-center gap-1`} 
+                            onClick={(e) => { e.preventDefault(); }}
+                          >
+                            REPORTS
+                            <ChevronDown className={`h-3 w-3 transition-transform ${reportsDropdownOpen ? 'rotate-180' : ''}`} />
+                          </a>
+                          {reportsDropdownOpen && (
+                            <div className="absolute left-0 top-full mt-1 bg-white rounded shadow-lg py-2 px-3 space-y-1 z-50 min-w-[150px]">
+                              <a 
+                                href="#" 
+                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
+                                onClick={(e) => { e.preventDefault(); handleNavClick('reports'); setReportsDropdownOpen(false); }}
+                              >
+                                Reports
+                              </a>
+                              <a 
+                                href="#" 
+                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
+                                onClick={(e) => { e.preventDefault(); handleNavClick('achievements'); setReportsDropdownOpen(false); }}
+                              >
+                                Achievements
+                              </a>
+                            </div>
+                          )}
+                        </div>
                       </>
                     )}
                   </div>

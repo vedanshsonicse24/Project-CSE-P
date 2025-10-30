@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
   LayoutDashboard,
@@ -32,15 +31,6 @@ import {
 import { Input } from "../ui/input";
 import { Toaster } from "../ui/sonner";
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: UserCheck, label: "Attendance", id: "attendance" },
-  { icon: CalendarDays, label: "Timetable", id: "timetable" },
-  { icon: GraduationCap, label: "Student Management", id: "student-management" },
-  { icon: FileText, label: "Grade Behaviour", id: "grading" },
-  { icon: FileText, label: "BOA Approvals", id: "boa" },
-  { icon: Calendar, label: "Engage Lectures", id: "proxy" },
-];
 
 interface FacultyDashboardProps {
   initialSection?: string;
@@ -366,11 +356,6 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
 
   return (
     <div className="flex flex-col">
-      <DashboardSidebar
-        items={sidebarItems}
-        activeItem={activeSection}
-        onItemClick={setActiveSection}
-      />
       <main className="flex-1 p-8 bg-gray-50">
         {renderContent()}
       </main>

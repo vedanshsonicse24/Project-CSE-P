@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
-import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
-  LayoutDashboard,
   Users,
   BookOpen,
-  Calendar,
   FileCheck,
   Upload,
+  Calendar,
   Award,
-  FileText,
   Download,
-  CalendarDays,
 } from "lucide-react";
 import { Timetable } from "../timetable/Timetable";
 import { TeacherTimetable } from "../timetable/TeacherTimetable";
@@ -41,19 +37,6 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import { Toaster } from "../ui/sonner";
-
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: Users, label: "Student Management", id: "students" },
-  { icon: BookOpen, label: "Faculty Management", id: "faculty" },
-  { icon: Users, label: "Faculty Details", id: "facultydetails" },
-  { icon: Calendar, label: "Lecture Management", id: "lectures" },
-  { icon: CalendarDays, label: "Timetable", id: "timetable" },
-  { icon: Calendar, label: "My Schedule", id: "schedule" },
-  { icon: FileCheck, label: "Approvals", id: "approvals" },
-  { icon: Award, label: "Achievements", id: "achievements" },
-  { icon: Download, label: "Reports", id: "reports" },
-];
 
 interface HODDashboardProps {
   isViewOnly?: boolean;
@@ -963,11 +946,6 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
 
   return (
     <div className="flex flex-col">
-      <DashboardSidebar
-        items={sidebarItems}
-        activeItem={activeSection}
-        onItemClick={setActiveSection}
-      />
       <main className="flex-1 p-8 bg-gray-50">
         {renderContent()}
       </main>
