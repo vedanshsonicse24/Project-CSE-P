@@ -24,7 +24,6 @@ import { BOASubmissionForm } from "../boa/BOASubmissionForm";
 import { AttendancePageNew } from "../attendance/AttendancePageNew";
 import { StudentAttendanceRedesigned } from "./StudentAttendanceRedesigned";
 import { Timetable } from "../timetable/Timetable";
-import { StudentTimetable } from "../timetable/StudentTimetable";
 
 const sidebarItems: any[] = [];
 
@@ -578,7 +577,7 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
       case "profile":
         return renderProfile();
       case "timetable":
-        return <StudentTimetable />;
+        return <Timetable userRole="student" />;
       case "cv":
         return renderCV();
       case "achievements":
