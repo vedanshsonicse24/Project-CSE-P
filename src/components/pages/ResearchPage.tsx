@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import WaveSeparator from "../ui/WaveSeparator";
 import { 
   ExternalLink, 
   BookOpen, 
@@ -180,10 +181,10 @@ export function ResearchPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 w-full overflow-x-hidden">
       {/* Hero Section - Enhanced */}
       <motion.section 
-        className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white overflow-hidden w-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -218,7 +219,7 @@ export function ResearchPage() {
           ))}
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 max-w-7xl">
           <motion.div 
             className="max-w-5xl mx-auto text-center"
             initial={{ opacity: 0, y: 50 }}
@@ -324,12 +325,12 @@ export function ResearchPage() {
 
       {/* Quick Navigation Tabs - Sticky */}
       <motion.div 
-        className="sticky top-32 z-40 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200"
+        className="sticky top-32 z-40 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200 w-full"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 1.5 }}
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex items-center justify-center gap-4 py-6">
             <motion.button
               onClick={() => scrollToSection('research')}
@@ -368,12 +369,12 @@ export function ResearchPage() {
       <div id="research-section">
 
       {/* Research Centre & Infrastructure Section - Modern Design */}
-      <section className="py-32 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 relative overflow-hidden">
+      <section className="py-32 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 relative overflow-hidden w-full">
         {/* Background Decoration */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-pink-200/30 to-blue-200/30 rounded-full blur-3xl"></div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 max-w-7xl">
           <motion.div
             className="text-center mb-20"
             initial={{ opacity: 0, y: 40 }}
@@ -484,17 +485,22 @@ export function ResearchPage() {
             </motion.div>
           </div>
         </div>
+        
+        {/* Bottom Wave - Research Hub to Research Areas Transition */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <WaveSeparator theme="white" variant="default" />
+        </div>
       </section>
 
       {/* Research Areas Section - Modern Grid */}
-      <section id="research-areas" className="py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden">
+      <section id="research-areas" className="py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden w-full">
         {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 max-w-7xl">
           <motion.div
             className="text-center mb-20"
             initial={{ opacity: 0, y: 40 }}
@@ -502,7 +508,7 @@ export function ResearchPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-5xl md:text-6xl font-black text-white mb-6">
+            <h2 className="text-5xl md:text-6xl font-black text-black mb-6">
               Research Domains
             </h2>
             <p className="text-2xl text-blue-200 max-w-3xl mx-auto">
@@ -560,11 +566,16 @@ export function ResearchPage() {
             ))}
           </div>
         </div>
+        
+        {/* Bottom Wave - Research Areas to Innovation Projects Transition */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <WaveSeparator theme="light-gray" variant="smooth" />
+        </div>
       </section>
 
       {/* Innovation Projects Section - Card Stack Style */}
-      <section className="py-32 bg-gradient-to-br from-white via-blue-50 to-purple-50 relative">
-        <div className="container mx-auto px-4">
+      <section className="py-32 bg-gradient-to-br from-white via-blue-50 to-purple-50 relative w-full">
+        <div className="container mx-auto px-4 max-w-7xl">
           <motion.div
             className="text-center mb-20"
             initial={{ opacity: 0, y: 40 }}
@@ -654,7 +665,7 @@ export function ResearchPage() {
                       </div>
                     </div>
                     <div className="mt-6">
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl">
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-blue-900 font-semibold rounded-xl border-2 border-blue-600">
                         View Details →
                       </Button>
                     </div>
@@ -667,7 +678,8 @@ export function ResearchPage() {
       </section>
 
       {/* Publications & Achievements Section */}
-      <section className="py-20 container mx-auto px-4">
+      <section className="py-20 w-full">
+        <div className="container mx-auto px-4 max-w-7xl">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 40 }}
@@ -693,7 +705,7 @@ export function ResearchPage() {
           >
             <Card className="h-full border-0 shadow-xl">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                <CardTitle className="text-2xl flex items-center gap-3">
+                <CardTitle className="text-2xl flex items-center gap-3 text-black">
                   <FileText className="w-8 h-8" />
                   Recent Publications
                 </CardTitle>
@@ -730,7 +742,7 @@ export function ResearchPage() {
           >
             <Card className="h-full border-0 shadow-xl">
               <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-                <CardTitle className="text-2xl flex items-center gap-3">
+                <CardTitle className="text-2xl flex items-center gap-3 text-black">
                   <Award className="w-8 h-8" />
                   Conference & Events
                 </CardTitle>
@@ -786,11 +798,12 @@ export function ResearchPage() {
             </Card>
           </motion.div>
         </div>
+        </div>
       </section>
 
       {/* Collaborations & Centres of Excellence Section */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 w-full">
+        <div className="container mx-auto px-4 max-w-7xl">
           <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0, y: 40 }}
@@ -820,10 +833,10 @@ export function ResearchPage() {
                       <Building2 className="w-16 h-16" />
                     </div>
                   </div>
-                  <CardTitle className="text-4xl text-center font-bold">
+                  <CardTitle className="text-4xl text-center font-bold text-black">
                     Centre of Excellence (CoE)
                   </CardTitle>
-                  <p className="text-center text-white font-medium text-lg mt-4">
+                  <p className="text-center text-white font-medium text-lg mt-4 text-black">
                     Research & Development in Computer Science & Engineering
                   </p>
                 </CardHeader>
@@ -898,7 +911,7 @@ export function ResearchPage() {
       <div id="education-section">
 
       {/* Education - CSVTU Syllabus Section - Modern Design */}
-      <section className="py-32 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden">
+      <section className="py-32 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden w-full">
         {/* Animated Grid Background */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -907,7 +920,7 @@ export function ResearchPage() {
           }}></div>
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 max-w-7xl">
           <motion.div
             className="text-center mb-20"
             initial={{ opacity: 0, y: 40 }}
@@ -926,7 +939,7 @@ export function ResearchPage() {
                 <BookOpen className="w-20 h-20 text-white" />
               </div>
             </motion.div>
-            <h2 className="text-5xl md:text-7xl font-black text-white mb-6">
+            <h2 className="text-5xl md:text-7xl font-black text-black mb-6">
               Academic Curriculum
             </h2>
             <p className="text-2xl text-purple-200 max-w-3xl mx-auto">
@@ -945,7 +958,7 @@ export function ResearchPage() {
               <CardContent className="p-12 md:p-16">
                 <div className="space-y-12">
                   <div className="text-center">
-                    <h3 className="text-3xl md:text-4xl font-black text-white mb-6">
+                    <h3 className="text-3xl md:text-4xl font-black text-black mb-6">
                       B.Tech CSE Syllabus
                     </h3>
                     <p className="text-xl text-purple-200 mb-4">
@@ -974,7 +987,7 @@ export function ResearchPage() {
                         whileHover={{ scale: 1.05, y: -5 }}
                       >
                         <div className="relative z-10">
-                          <h4 className="text-2xl font-black text-white mb-3">{item.year}</h4>
+                          <h4 className="text-2xl font-black text-black mb-3">{item.year}</h4>
                           <p className="text-white/90 font-medium text-lg">{item.desc}</p>
                         </div>
                       </motion.div>
@@ -1012,115 +1025,15 @@ export function ResearchPage() {
             </Card>
           </motion.div>
         </div>
+        
+        {/* Bottom Wave - Education Section End */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <WaveSeparator theme="white" variant="inverted" />
+        </div>
       </section>
 
       {/* End Education Section Wrapper */}
       </div>
-
-      {/* Call to Action / Get Involved Section - Modern CTA */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full opacity-20">
-            {[...Array(30)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-white rounded-full"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  scale: [0, 1.5, 0],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  delay: Math.random() * 3,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            className="text-center max-w-5xl mx-auto"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <motion.div
-              className="text-8xl mb-8"
-              animate={{ 
-                rotate: [0, 10, -10, 0],
-                scale: [1, 1.1, 1]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            >
-              ⚡
-            </motion.div>
-
-            <h3 className="text-4xl md:text-6xl font-black mb-6">
-              Ready to Innovate?
-            </h3>
-            <p className="text-xl md:text-2xl text-white/90 font-medium mb-12 leading-relaxed">
-              Join our research community and help shape the future of technology! 
-              Whether you're a student, researcher, or industry partner - let's collaborate!
-            </p>
-            
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  size="lg"
-                  className="bg-white text-blue-600 hover:bg-blue-50 font-bold text-lg px-10 py-7 rounded-2xl shadow-2xl"
-                  onClick={() => window.location.href = 'mailto:cse@ssipmt.com'}
-                >
-                  <Mail className="w-6 h-6 mr-3" />
-                  Submit Research Proposal
-                </Button>
-              </motion.div>
-              
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  size="lg"
-                  className="bg-white text-purple-600 hover:bg-purple-50 font-bold text-lg px-10 py-7 rounded-2xl shadow-2xl"
-                >
-                  <Phone className="w-6 h-6 mr-3" />
-                  +91 771-4004600
-                </Button>
-              </motion.div>
-              
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  size="lg"
-                  className="bg-white text-pink-600 hover:bg-pink-50 font-bold text-lg px-10 py-7 rounded-2xl shadow-2xl"
-                >
-                  <Users className="w-6 h-6 mr-3" />
-                  Collaborate with Us
-                </Button>
-              </motion.div>
-            </div>
-
-            <motion.div 
-              className="inline-block p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/30 shadow-2xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <p className="text-lg font-semibold mb-2">Research Centre Coordinator</p>
-              <p className="text-3xl font-black">Dr. Suman Kumar Swarnkar</p>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 }

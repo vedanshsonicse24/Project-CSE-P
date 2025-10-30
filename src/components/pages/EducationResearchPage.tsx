@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import WaveSeparator from "../ui/WaveSeparator";
 import { 
   BookOpen, 
   Microscope, 
@@ -163,24 +164,28 @@ export function EducationResearchPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
       <motion.section 
-        className="relative py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-maroon-600 text-white overflow-hidden"
+        className="relative py-20 bg-gradient-to-r from-blue-100 via-purple-100 to-red-100 text-gray-900 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-white/40"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto text-center"
             {...fadeInUp}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Education & Research</h1>
-            <p className="text-xl md:text-2xl text-white leading-relaxed">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 drop-shadow-sm">Education & Research</h1>
+            <p className="text-xl md:text-2xl text-gray-800 leading-relaxed font-medium">
               Empowering minds through quality education and breakthrough research
             </p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+        
+        {/* Bottom Wave - Light Theme */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <WaveSeparator theme="white" variant="default" />
+        </div>
       </motion.section>
 
       {/* Academic Programs Overview */}
@@ -221,7 +226,7 @@ export function EducationResearchPage() {
       </section>
 
       {/* Departments */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 relative">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -245,10 +250,10 @@ export function EducationResearchPage() {
                   transition={{ duration: 0.3 }}
                 >
                   <Card className="h-full hover:shadow-2xl transition-all">
-                    <CardHeader className={`${dept.color} text-white`}>
+                    <CardHeader className="bg-gray-100 text-gray-900">
                       <div className="flex items-center gap-3">
-                        <dept.icon className="w-8 h-8" />
-                        <CardTitle className="text-xl">{dept.name}</CardTitle>
+                        <dept.icon className="w-8 h-8 text-blue-600" />
+                        <CardTitle className="text-xl text-gray-900">{dept.name}</CardTitle>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-6">
@@ -275,6 +280,11 @@ export function EducationResearchPage() {
               ))}
             </div>
           </motion.div>
+        </div>
+        
+        {/* Bottom Wave - Departments to Research Transition */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <WaveSeparator theme="white" variant="inverted" />
         </div>
       </section>
 
@@ -334,7 +344,7 @@ export function EducationResearchPage() {
       </section>
 
       {/* Research Achievements */}
-      <section className="py-16 bg-gradient-to-r from-maroon-600 to-maroon-800 text-white">
+      <section className="py-16 bg-gradient-to-r from-gray-200 to-blue-100 text-gray-900 relative">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -345,7 +355,7 @@ export function EducationResearchPage() {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl font-bold text-center mb-12"
+              className="text-4xl font-bold text-center mb-12 text-gray-900"
             >
               Research Achievements
             </motion.h2>
@@ -358,16 +368,21 @@ export function EducationResearchPage() {
                   whileHover={{ scale: 1.05 }}
                 >
                   <div className="flex justify-center mb-4">
-                    <div className="p-4 bg-white/20 rounded-full">
-                      <achievement.icon className="w-10 h-10" />
+                    <div className="p-4 bg-white border border-blue-200 rounded-full shadow-md">
+                      <achievement.icon className="w-10 h-10 text-blue-600" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">{achievement.title}</h3>
-                  <p className="text-white font-medium">{achievement.description}</p>
+                  <h3 className="text-2xl font-bold mb-2 text-gray-900">{achievement.title}</h3>
+                  <p className="text-gray-800 font-medium">{achievement.description}</p>
                 </motion.div>
               ))}
             </div>
           </motion.div>
+        </div>
+        
+        {/* Bottom Wave - Achievements to Facilities Transition */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <WaveSeparator theme="light-gray" variant="smooth" />
         </div>
       </section>
 
@@ -421,28 +436,28 @@ export function EducationResearchPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <motion.div 
-            className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600 to-maroon-600 rounded-2xl p-12 text-white"
+            className="max-w-4xl mx-auto text-center bg-white border-2 border-gray-300 rounded-2xl p-12 text-gray-900 shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold mb-4">Ready to Start Your Journey?</h2>
-            <p className="text-xl mb-8 text-white font-medium">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Ready to Start Your Journey?</h2>
+            <p className="text-xl mb-8 text-gray-800 font-medium">
               Join us in shaping the future of technology and innovation
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Button 
                 size="lg" 
                 variant="secondary"
-                className="bg-white text-maroon-600 hover:bg-gray-100 text-lg px-8 py-6"
+                className="bg-blue-600 text-white hover:bg-blue-700 text-lg px-8 py-6"
               >
                 Explore Programs
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-lg px-8 py-6"
               >
                 Research Opportunities
               </Button>
