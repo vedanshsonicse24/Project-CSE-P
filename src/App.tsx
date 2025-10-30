@@ -8,6 +8,7 @@ import { StudentRegistration } from "./components/student/StudentRegistration";
 import { FacultyRegistration } from "./components/faculty/FacultyRegistration";
 import { FacultyDashboard } from "./components/faculty/FacultyDashboard";
 import { FacultyProfile } from "./components/faculty/FacultyProfile";
+import { HODProfile } from "./components/hod/HODProfile";
 import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
@@ -20,7 +21,7 @@ import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register" | "attendance-demo";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "hod-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register" | "attendance-demo";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -210,6 +211,14 @@ export default function App() {
       );
     }
 
+    if (currentPage === "hod-profile" && userRole === "hod") {
+      return (
+        <PageTransition>
+          <HODProfile />
+        </PageTransition>
+      );
+    }
+
     if (currentPage === "attendance-demo") {
       return (
         <PageTransition>
@@ -258,6 +267,8 @@ export default function App() {
             ? () => setCurrentPage("student-profile") 
             : userRole === "faculty" 
             ? () => setCurrentPage("faculty-profile")
+            : userRole === "hod"
+            ? () => setCurrentPage("hod-profile")
             : undefined
         }
         onNavigateToSection={userRole ? handleNavigateToSection : undefined}

@@ -594,18 +594,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                     )}
                     {userRole === 'student' && (
                       <>
-                        <a 
-                          href="#" 
-                          className={activeNavItem === "profile" ? "active" : ""} 
-                          onClick={(e) => { 
-                            e.preventDefault(); 
-                            if (onNavigateToProfile) {
-                              onNavigateToProfile();
-                            }
-                          }}
-                        >
-                          PROFILE
-                        </a>
+                        {/* Navigation profile link removed for student portal per request. Top-right header PROFILE button remains. */}
                         <a 
                           href="#" 
                           className={activeNavItem === "cv" ? "active" : ""} 
@@ -675,7 +664,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                           className={activeNavItem === "lectures" ? "active" : ""} 
                           onClick={(e) => { e.preventDefault(); handleNavClick('lectures'); }}
                         >
-                          LECTURES
+                          LECTURE MGMT
                         </a>
                       </>
                     )}
