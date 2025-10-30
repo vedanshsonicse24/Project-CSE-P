@@ -16,6 +16,7 @@ import { ProgramsPage } from "./components/pages/ProgramsPage";
 import { ApplyPage } from "./components/pages/ApplyPage";
 import { CSEDepartmentPage } from "./components/pages/CSEDepartmentPage";
 import { ResearchPage } from "./components/pages/ResearchPage";
+import { NewsEventsPage } from "./components/pages/NewsEventsPage";
 import { ContactPage } from "./components/pages/ContactPage";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
@@ -23,7 +24,7 @@ import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "about" | "admissions" | "life-at-ssipmt" | "programs" | "apply" | "cse-department" | "research" | "contact";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "about" | "admissions" | "life-at-ssipmt" | "programs" | "apply" | "cse-department" | "research" | "news-events" | "contact";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -234,6 +235,14 @@ export default function App() {
       );
     }
 
+    if (currentPage === "news-events") {
+      return (
+        <PageTransition>
+          <NewsEventsPage />
+        </PageTransition>
+      );
+    }
+
     if (currentPage === "contact") {
       return (
         <PageTransition>
@@ -274,6 +283,7 @@ export default function App() {
         onNavigateToApply={() => setCurrentPage("apply")}
         onNavigateToCSEDepartment={() => setCurrentPage("cse-department")}
         onNavigateToResearch={() => setCurrentPage("research")}
+        onNavigateToNewsEvents={() => setCurrentPage("news-events")}
         onNavigateToContact={() => setCurrentPage("contact")}
         showHeroVideo={currentPage === "home"}
       />

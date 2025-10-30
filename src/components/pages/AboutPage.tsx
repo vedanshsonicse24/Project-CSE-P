@@ -53,7 +53,7 @@ export function AboutPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Professional Hero Section */}
       <motion.section 
-        className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-br from-gray-100 via-white to-blue-50 text-black overflow-hidden"
+        className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-blue-50 text-black overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -73,17 +73,14 @@ export function AboutPage() {
           >
             {/* Professional Department Badge */}
             <motion.div
-              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 shadow-xl"
+              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-blue-100 backdrop-blur-sm rounded-full border border-blue-200 shadow-xl"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <GraduationCap className="w-6 h-6" />
+              <GraduationCap className="w-6 h-6 text-black" />
               <motion.span 
-                className="text-base font-semibold tracking-wide text-white"
-                style={{
-                  textShadow: '0 2px 8px rgba(0,0,0,0.4)'
-                }}
+                className="text-base font-semibold tracking-wide text-black"
                 animate={{ rotateX: [0, 360] }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               >
@@ -96,7 +93,7 @@ export function AboutPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              style={{ letterSpacing: '-0.02em', lineHeight: '1.1', color: 'black' }}
+              style={{ letterSpacing: '-0.02em', lineHeight: '1.1' }}
             >
               Who We Are
             </motion.h1>
@@ -106,13 +103,13 @@ export function AboutPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              style={{ letterSpacing: '0.5px', color: 'black' }}
+              style={{ letterSpacing: '0.5px' }}
             >
               Shaping Future Innovators at SSIPMT, Raipur
             </motion.p>
             
             <motion.p 
-              className="text-lg md:text-xl text-white/90 mb-10 max-w-4xl mx-auto font-light leading-relaxed"
+              className="text-lg md:text-xl text-black mb-10 max-w-4xl mx-auto font-light leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
@@ -129,7 +126,7 @@ export function AboutPage() {
             >
               <Button 
                 size="lg" 
-                className="bg-white text-slate-900 hover:bg-blue-50 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
               >
                 Discover Our Legacy
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -137,7 +134,7 @@ export function AboutPage() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-white text-white hover:bg-white/10 rounded-xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300"
               >
                 Join Our Community
                 <Users className="w-5 h-5 ml-2" />

@@ -18,6 +18,7 @@ interface NewHeaderProps {
   onNavigateToApply?: () => void;
   onNavigateToCSEDepartment?: () => void;
   onNavigateToResearch?: () => void;
+  onNavigateToNewsEvents?: () => void;
   onNavigateToContact?: () => void;
   showHeroVideo?: boolean;
 }
@@ -39,6 +40,7 @@ export function NewHeader({
   onNavigateToApply,
   onNavigateToCSEDepartment,
   onNavigateToResearch,
+  onNavigateToNewsEvents,
   onNavigateToContact,
   showHeroVideo 
 }: NewHeaderProps) {
@@ -492,8 +494,12 @@ export function NewHeader({
         <div className="top-bar">
           <nav className="container">
             <div className="top-nav-left">
-              <a href="#">NEWS</a>
-              <a href="#">EVENTS</a>
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); onNavigateToNewsEvents?.(); }}
+              >
+                NEWS & EVENTS
+              </a>
               <a href="#">CAREERS</a>
               <div 
                 className="info-dropdown"
@@ -750,6 +756,12 @@ export function NewHeader({
                       onClick={(e) => { e.preventDefault(); onNavigateToResearch?.(); }}
                     >
                       RESEARCH & EDUCATION
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToNewsEvents?.(); }}
+                    >
+                      NEWS & EVENTS
                     </a>
                     <a 
                       href="#" 
