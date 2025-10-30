@@ -715,24 +715,6 @@ export function FacultyInfoPage() {
           <button className="apply-button">Apply</button>
         </div>
 
-        {/* Bottom Navigation Bar */}
-        <div className="bottom-nav">
-          <div className="bottom-nav-content">
-            <div className="nav-links">
-              <a href="#" className="nav-link">NEWS</a>
-              <a href="#" className="nav-link">EVENTS</a>
-              <a href="#" className="nav-link">CAREERS</a>
-              <a href="#" className="nav-link">INFO FOR</a>
-            </div>
-            <div className="nav-links">
-              <a href="#" className="nav-link">VISIT</a>
-              <a href="#" className="nav-link">CONTACT US</a>
-              <a href="#" className="nav-link">DIRECTORY</a>
-              <a href="#" className="nav-link">LOGIN</a>
-            </div>
-          </div>
-        </div>
-
         {/* Contact Footer */}
         <div className="contact-footer">
           <div className="contact-content">

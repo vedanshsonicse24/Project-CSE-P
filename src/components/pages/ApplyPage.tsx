@@ -109,9 +109,7 @@ export function ApplyPage() {
     "B.Tech Information Technology",
     "B.Tech Electronics & Communication",
     "M.Tech Computer Science",
-    "M.Tech VLSI Design",
-    "MCA",
-    "MBA"
+    "M.Tech VLSI Design"
   ];
 
   const states = [

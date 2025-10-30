@@ -55,7 +55,7 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
     {
       name: "Information Technology",
       description: "Innovation in information systems and digital solutions",
-      courses: ["B.Tech IT", "M.Tech IT", "MCA"],
+      courses: ["B.Tech IT", "M.Tech IT"],
       image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
     },
     {
@@ -645,7 +645,7 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Welcome to CSE Department Portal
+              Thank you for visiting the CSE Department Portal
             </motion.h1>
             <motion.p 
               className="text-xl mb-8 max-w-2xl mx-auto"
@@ -654,8 +654,8 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              A comprehensive platform for faculty, students, and administrators
-              to streamline academic operations and enhance learning experiences.
+              a comprehensive platform for faculty, students, and administrators
+              to streamline academic operations and enhance learning experiences
             </motion.p>
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -671,7 +671,7 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
                 className="text-white hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: '#f97316' }}
               >
-                Login to Continue
+                Login to continue your journey
               </Button>
             </motion.div>
           </div>
@@ -683,23 +683,23 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <motion.div
+              className="text-center"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex items-center mb-4">
+              <div className="flex justify-center mb-4">
                 <img
                   src="https://ssipmt.edu.in/assets/images/logo/logo.jpg?v2"
                   alt="SSIPMT Logo"
-                  className="h-12 w-12 rounded-full mr-3"
+                  className="h-32 w-40"
                 />
-                <h3 className="text-xl font-bold">SSIPMT</h3>
               </div>
               <p className="text-gray-300 mb-4">
                 Excellence in technical education and research, fostering innovation and leadership for a better tomorrow.
               </p>
-              <div className="flex space-x-4">
+              <div className="flex justify-center space-x-4">
                 <motion.a 
                   href="#" 
                   className="text-gray-300 hover:text-white transition-colors"
@@ -736,7 +736,6 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul className="space-y-2">
                 <li><button onClick={() => scrollToSection('home')} className="text-gray-300 hover:text-white transition-colors text-left">Home</button></li>
-                <li><button onClick={() => scrollToSection('departments')} className="text-gray-300 hover:text-white transition-colors text-left">Departments</button></li>
                 <li><button onClick={() => scrollToSection('faculty')} className="text-gray-300 hover:text-white transition-colors text-left">Faculty</button></li>
                 <li><button onClick={() => scrollToSection('announcements')} className="text-gray-300 hover:text-white transition-colors text-left">Announcements</button></li>
                 <li><button onClick={() => scrollToSection('contact')} className="text-gray-300 hover:text-white transition-colors text-left">Contact</button></li>
@@ -752,10 +751,8 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
               <h3 className="text-lg font-bold mb-4">Programs</h3>
               <ul className="space-y-2 text-gray-300">
                 <li>B.Tech Computer Science</li>
-                <li>B.Tech Information Technology</li>
                 <li>M.Tech CSE</li>
-                <li>MCA</li>
-                <li>Research Programs</li>
+                <li>PHD</li>
               </ul>
             </motion.div>
 

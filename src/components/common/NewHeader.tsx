@@ -58,7 +58,7 @@ export function NewHeader({
     { name: "Who We Are", key: "about" },
     { name: "Education & Research", key: "education" },
     { name: "Admissions", key: "admissions" },
-    { name: "SSIPMT Programs", key: "programs" },
+    { name: "CSE Programs", key: "programs" },
     { name: "Faculty Info", key: "faculty" },
     { name: "Alumni", key: "alumni" },
     { name: "Contact", key: "contact" },
@@ -722,7 +722,7 @@ export function NewHeader({
               ) : (
                 <>
                   <a 
-                    href="https://tourmkr.com/F1yU45CLVU/44753896p&40.42h&69.6t" 
+                    href="https://tourmkr.com/F1yU45CLVU/44749218p&339.7h&90.08t" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
@@ -942,15 +942,9 @@ export function NewHeader({
                                     <div className="main-nav-right">
                     <a 
                       href="#" 
-                      onClick={(e) => { e.preventDefault(); onNavigateToLifeAtSSIPMT?.(); }}
-                    >
-                      LIFE AT SSIPMT
-                    </a>
-                    <a 
-                      href="#" 
                       onClick={(e) => { e.preventDefault(); onNavigateToPrograms?.(); }}
                     >
-                      SSIPMT PROGRAMS
+                      CSE PROGRAMS
                     </a>
                     <div className="search-container">
                       <div className="search-box">
@@ -979,19 +973,6 @@ export function NewHeader({
                         </div>
                       )}
                     </div>
-                    <a 
-                      href="#" 
-                      onClick={(e) => { e.preventDefault(); onNavigateToContact?.(); }}
-                    >
-                      CONTACT US
-                    </a>
-                    <a 
-                      href="#" 
-                      className="btn-cta"
-                      onClick={(e) => { e.preventDefault(); onNavigateToApply?.(); }}
-                    >
-                      APPLY
-                    </a>
                   </div>
                 </>
               )}

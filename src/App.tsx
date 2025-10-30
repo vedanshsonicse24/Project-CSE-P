@@ -347,13 +347,7 @@ export default function App() {
         onNavigateToHome={() => setCurrentPage("home")}
         onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
         onNavigateToAlumni={() => setCurrentPage("alumni")}
-        onNavigateToContact={() => {
-          setCurrentPage("home");
-          setTimeout(() => {
-            const contactSection = document.getElementById("contact");
-            contactSection?.scrollIntoView({ behavior: "smooth" });
-          }, 100);
-        }}
+        onNavigateToContact={() => setCurrentPage("contact")}
         onNavigateToNewsEvents={() => setCurrentPage("news-events")}
         onNavigateToCOE={() => setCurrentPage("coe")}
         showHeroVideo={currentPage === "home"}
