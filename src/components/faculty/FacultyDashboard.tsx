@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StatsCard } from "../common/StatsCard";
 import {
   LayoutDashboard,
@@ -37,6 +37,8 @@ import {
 } from "../ui/table";
 import { Input } from "../ui/input";
 import { Toaster } from "../ui/sonner";
+import gsap from 'gsap';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 
 interface FacultyDashboardProps {
@@ -127,6 +129,32 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
     setPeriod("1");
   };
 
+  // Charts data & refs for dashboard visuals
+  const barChartRef = useRef<HTMLDivElement | null>(null);
+  const pieChartRef = useRef<HTMLDivElement | null>(null);
+
+  const barData = classes.map((c) => ({
+    name: c.code,
+    students: c.students,
+    avgAttendance: Math.max(60, Math.min(98, 82 + c.id * 3)),
+  }));
+
+  const pieData = [
+    { name: 'Excellent', value: mentees.filter(m => m.performance === 'Excellent').length, color: '#10b981' },
+    { name: 'Good', value: mentees.filter(m => m.performance === 'Good').length, color: '#f59e0b' },
+    { name: 'Average', value: mentees.filter(m => m.performance === 'Average').length, color: '#ef4444' },
+  ];
+
+  useEffect(() => {
+    const tl = gsap.timeline();
+    if (barChartRef.current) {
+      tl.from(barChartRef.current, { scaleY: 0, transformOrigin: 'bottom', duration: 0.8, ease: 'elastic.out(1, 0.3)' });
+    }
+    if (pieChartRef.current) {
+      tl.from(pieChartRef.current, { scale: 0.6, opacity: 0, duration: 0.7, ease: 'back.out(1.7)' }, '-=0.4');
+    }
+  }, []);
+
   const renderDashboard = () => (
     <div className="space-y-6">
       <div>
@@ -136,6 +164,48 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
           <StatsCard title="Total Students" value="125" icon={Users} bgColor="bg-green-50" iconColor="text-green-600" />
           <StatsCard title="Mentees" value="3" icon={UserCheck} bgColor="bg-purple-50" iconColor="text-purple-600" />
           <StatsCard title="Engage Lectures" value="2" icon={Calendar} bgColor="bg-orange-50" iconColor="text-orange-600" />
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div ref={barChartRef}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Class Sizes & Avg Attendance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="avgAttendance" fill="#10b981" radius={[8,8,0,0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div ref={pieChartRef}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Mentee Performance Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie data={pieData} dataKey="value" outerRadius={100} label>
+                    {pieData.map((entry, idx) => (
+                      <Cell key={idx} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
