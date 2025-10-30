@@ -150,27 +150,27 @@ export function AdmissionsPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
       <motion.section 
-        className="relative py-20 bg-gradient-to-r from-maroon-600 to-maroon-800 text-white overflow-hidden"
+        className="relative py-20 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-gray-900 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-white/60"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto text-center"
             {...fadeInUp}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Admissions 2025</h1>
-            <p className="text-xl md:text-2xl text-gray-100 leading-relaxed mb-8">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-black">Admissions 2025</h1>
+            <p className="text-xl md:text-2xl text-black leading-relaxed mb-8">
               Begin your journey to excellence at SSIPMT
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-maroon-600 hover:bg-gray-100 text-lg px-8 py-6">
+            <Button size="lg" variant="secondary" className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-6">
               Apply Now <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
       </motion.section>
 
       {/* Important Notice */}
@@ -180,8 +180,8 @@ export function AdmissionsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Alert className="border-maroon-600 bg-maroon-50">
-            <Info className="h-5 w-5 text-maroon-600" />
+          <Alert className="border-blue-600 bg-blue-50">
+            <Info className="h-5 w-5 text-blue-600" />
             <AlertDescription className="text-lg">
               <strong>Applications for 2025-26 are now open!</strong> Submit your application before 30th June 2025.
               Limited seats available. Early applications get priority.
@@ -214,14 +214,14 @@ export function AdmissionsPage() {
                 whileHover={{ y: -8 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="h-full hover:shadow-xl transition-all relative">
-                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-maroon-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">
+                <Card className="h-full hover:shadow-xl transition-all relative bg-white border border-gray-200">
+                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-white text-black border-2 border-blue-600 rounded-full flex items-center justify-center font-bold text-xl shadow-lg">
                     {step.step}
                   </div>
                   <CardContent className="pt-8">
                     <div className="flex justify-center mb-4">
-                      <div className="p-4 bg-maroon-100 rounded-full">
-                        <step.icon className="w-8 h-8 text-maroon-600" />
+                      <div className="p-4 bg-blue-100 rounded-full">
+                        <step.icon className="w-8 h-8 text-blue-600" />
                       </div>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{step.title}</h3>
@@ -239,7 +239,7 @@ export function AdmissionsPage() {
       </section>
 
       {/* Eligibility Criteria */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -260,10 +260,10 @@ export function AdmissionsPage() {
                   key={index}
                   variants={fadeInUp}
                 >
-                  <Card className={`h-full border-l-4 ${item.color} hover:shadow-lg transition-shadow`}>
+                  <Card className={`h-full border-l-4 ${item.color} hover:shadow-lg transition-shadow bg-white`}>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <GraduationCap className="w-6 h-6 text-maroon-600" />
+                        <GraduationCap className="w-6 h-6 text-blue-600" />
                         {item.program}
                       </CardTitle>
                     </CardHeader>
@@ -286,7 +286,7 @@ export function AdmissionsPage() {
       </section>
 
       {/* Important Dates */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-4xl mx-auto"
@@ -309,19 +309,19 @@ export function AdmissionsPage() {
                   whileHover={{ x: 8 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="hover:shadow-lg transition-shadow">
+                  <Card className="hover:shadow-lg transition-shadow bg-white border border-gray-200">
                     <CardContent className="pt-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="p-3 bg-maroon-100 rounded-lg">
-                            <Calendar className="w-6 h-6 text-maroon-600" />
+                          <div className="p-3 bg-blue-100 rounded-lg">
+                            <Calendar className="w-6 h-6 text-blue-600" />
                           </div>
                           <div>
                             <h3 className="text-lg font-bold text-gray-900">{item.event}</h3>
                             <p className="text-gray-600">{item.date}</p>
                           </div>
                         </div>
-                        <Badge variant={item.status === "upcoming" ? "secondary" : "default"}>
+                        <Badge variant={item.status === "upcoming" ? "secondary" : "default"} className="bg-blue-100 text-blue-800">
                           {item.status}
                         </Badge>
                       </div>
@@ -335,7 +335,7 @@ export function AdmissionsPage() {
       </section>
 
       {/* Required Documents */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-4xl mx-auto"
@@ -351,18 +351,18 @@ export function AdmissionsPage() {
               Required Documents
             </motion.h2>
             <motion.div variants={fadeInUp}>
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-white border border-gray-200">
                 <CardContent className="pt-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     {requiredDocuments.map((doc, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                        <CheckCircle2 className="w-5 h-5 text-maroon-600 flex-shrink-0 mt-0.5" />
+                      <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{doc}</span>
                       </div>
                     ))}
                   </div>
                   <div className="mt-6 text-center">
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2 border-blue-600 text-blue-600 hover:bg-blue-50">
                       <Download className="w-4 h-4" />
                       Download Document Checklist
                     </Button>
@@ -375,7 +375,7 @@ export function AdmissionsPage() {
       </section>
 
       {/* Fee Structure */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -398,7 +398,7 @@ export function AdmissionsPage() {
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="hover:shadow-xl transition-all border-t-4 border-maroon-600">
+                  <Card className="hover:shadow-xl transition-all border-t-4 border-blue-600 bg-white">
                     <CardHeader>
                       <CardTitle>{item.program}</CardTitle>
                     </CardHeader>
@@ -414,7 +414,7 @@ export function AdmissionsPage() {
                         </div>
                         <div className="border-t pt-3 flex justify-between items-center">
                           <span className="font-bold text-gray-900">Total</span>
-                          <span className="font-bold text-2xl text-maroon-600">{item.total}</span>
+                          <span className="font-bold text-2xl text-blue-600">{item.total}</span>
                         </div>
                         <div className="text-center text-sm text-gray-500">{item.duration}</div>
                       </div>
@@ -427,49 +427,8 @@ export function AdmissionsPage() {
         </div>
       </section>
 
-      {/* Scholarships */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-maroon-600 text-white">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="max-w-6xl mx-auto"
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-          >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-4xl font-bold text-center mb-12"
-            >
-              Scholarships Available
-            </motion.h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {scholarships.map((scholarship, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeInUp}
-                  whileHover={{ y: -8 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Card className="h-full bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all">
-                    <CardContent className="pt-6 text-center">
-                      <Award className="w-12 h-12 mx-auto mb-4" />
-                      <h3 className="text-xl font-bold mb-3">{scholarship.name}</h3>
-                      <p className="text-sm text-gray-200 mb-3">{scholarship.eligibility}</p>
-                      <Badge variant="secondary" className="bg-white text-maroon-600">
-                        {scholarship.benefit}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Contact for Admissions */}
-      <section className="py-16">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-4xl mx-auto"
@@ -478,15 +437,15 @@ export function AdmissionsPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Card className="border-2 border-maroon-600 hover:shadow-2xl transition-shadow">
-              <CardHeader className="bg-maroon-600 text-white">
-                <CardTitle className="text-2xl text-center">Need Help with Admissions?</CardTitle>
+            <Card className="border-2 border-blue-600 hover:shadow-2xl transition-shadow bg-white">
+              <CardHeader className="bg-white border-b border-gray-200">
+                <CardTitle className="text-2xl text-center text-black">Need Help with Admissions?</CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="grid md:grid-cols-3 gap-6 text-center">
                   <div className="flex flex-col items-center gap-3">
-                    <div className="p-4 bg-maroon-100 rounded-full">
-                      <Phone className="w-6 h-6 text-maroon-600" />
+                    <div className="p-4 bg-blue-100 rounded-full">
+                      <Phone className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">Call Us</div>
@@ -494,8 +453,8 @@ export function AdmissionsPage() {
                     </div>
                   </div>
                   <div className="flex flex-col items-center gap-3">
-                    <div className="p-4 bg-maroon-100 rounded-full">
-                      <Mail className="w-6 h-6 text-maroon-600" />
+                    <div className="p-4 bg-blue-100 rounded-full">
+                      <Mail className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">Email Us</div>
@@ -503,19 +462,14 @@ export function AdmissionsPage() {
                     </div>
                   </div>
                   <div className="flex flex-col items-center gap-3">
-                    <div className="p-4 bg-maroon-100 rounded-full">
-                      <MapPin className="w-6 h-6 text-maroon-600" />
+                    <div className="p-4 bg-blue-100 rounded-full">
+                      <MapPin className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">Visit Us</div>
                       <div className="text-gray-600">Mon-Sat, 9 AM - 5 PM</div>
                     </div>
                   </div>
-                </div>
-                <div className="mt-8 text-center">
-                  <Button size="lg" className="bg-maroon-600 hover:bg-maroon-700 text-white">
-                    Schedule a Campus Tour
-                  </Button>
                 </div>
               </CardContent>
             </Card>

@@ -771,8 +771,8 @@ export function NewHeader({
         <div className="main-header-container">
           <div className="main-header-bar">
             <nav className="main-nav">
-              {userRole ? (
-                // Logged in navigation with portal-specific buttons
+              {userRole && !showHeroVideo ? (
+                // Logged in navigation with portal-specific buttons (only when NOT on home page)
                 <>
                   <div className="main-nav-left">
                     <a 
@@ -931,7 +931,7 @@ export function NewHeader({
                   </div>
                 </>
               ) : (
-                // Public navigation
+                // Public navigation (shown when not logged in OR when on home page)
                 <>
                   <div className="main-nav-left">
                     <a 

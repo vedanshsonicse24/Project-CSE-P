@@ -18,14 +18,19 @@ interface WaveSeparatorProps {
   /**
    * Predefined color themes for light theme design
    */
-  theme?: 'white' | 'light-blue' | 'light-gray' | 'custom';
+  theme?: 'white' | 'light-blue' | 'light-gray' | 'dark' | 'custom';
+  /**
+   * Add padding for better spacing, especially for dark themes
+   */
+  withPadding?: boolean;
 }
 
 const WaveSeparator: React.FC<WaveSeparatorProps> = ({ 
   fillColor = "#ffffff", 
   className = "w-full h-auto",
   variant = "default",
-  theme = "custom"
+  theme = "custom",
+  withPadding = false
 }) => {
   const getThemeColor = () => {
     switch (theme) {
@@ -35,6 +40,8 @@ const WaveSeparator: React.FC<WaveSeparatorProps> = ({
         return "#dbeafe";
       case 'light-gray':
         return "#f9fafb";
+      case 'dark':
+        return "#1f2937";
       case 'custom':
       default:
         return fillColor;
@@ -55,12 +62,14 @@ const WaveSeparator: React.FC<WaveSeparatorProps> = ({
   };
 
   return (
-    <svg viewBox="0 0 1440 120" className={className}>
-      <path 
-        fill={getThemeColor()} 
-        d={getWavePath()}
-      />
-    </svg>
+    <div className={withPadding ? "py-4" : ""}>
+      <svg viewBox="0 0 1440 120" className={className}>
+        <path 
+          fill={getThemeColor()} 
+          d={getWavePath()}
+        />
+      </svg>
+    </div>
   );
 };
 

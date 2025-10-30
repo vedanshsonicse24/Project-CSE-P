@@ -17,8 +17,27 @@ import {
   TrendingUp,
   DollarSign
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export function ProgramsPage() {
+interface ProgramsPageProps {
+  defaultTab?: string;
+}
+
+export function ProgramsPage({ defaultTab = "btech" }: ProgramsPageProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  // Update active tab when defaultTab prop changes
+  useEffect(() => {
+    setActiveTab(defaultTab);
+    // Scroll to top when tab changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [defaultTab]);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
@@ -102,28 +121,28 @@ export function ProgramsPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
       <motion.section 
-        className="relative py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-maroon-600 text-white overflow-hidden"
+        className="relative py-20 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-gray-900 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-white/60"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto text-center"
             {...fadeInUp}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">SSIPMT Programs</h1>
-            <p className="text-xl md:text-2xl text-white font-medium leading-relaxed">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-black">SSIPMT Programs</h1>
+            <p className="text-xl md:text-2xl text-black font-medium leading-relaxed">
               Choose from our diverse range of programs designed for future leaders
             </p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
       </motion.section>
 
       {/* Program Features */}
-      <section className="py-16 container mx-auto px-4">
+      <section className="py-16 container mx-auto px-4 bg-white">
         <motion.div 
           className="max-w-6xl mx-auto"
           variants={stagger}
@@ -145,11 +164,11 @@ export function ProgramsPage() {
                 whileHover={{ y: -8 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="h-full text-center hover:shadow-xl transition-all">
+                <Card className="h-full text-center hover:shadow-xl transition-all bg-white border border-gray-200">
                   <CardContent className="pt-8">
                     <div className="flex justify-center mb-4">
-                      <div className="p-4 bg-maroon-100 rounded-full">
-                        <feature.icon className="w-8 h-8 text-maroon-600" />
+                      <div className="p-4 bg-blue-100 rounded-full">
+                        <feature.icon className="w-8 h-8 text-blue-600" />
                       </div>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
@@ -163,7 +182,7 @@ export function ProgramsPage() {
       </section>
 
       {/* Programs Tabs */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -172,7 +191,7 @@ export function ProgramsPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Tabs defaultValue="btech" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-3 mb-12 h-auto">
                 <TabsTrigger value="btech" className="text-lg py-4">B.Tech Programs</TabsTrigger>
                 <TabsTrigger value="mtech" className="text-lg py-4">M.Tech Programs</TabsTrigger>
@@ -194,7 +213,7 @@ export function ProgramsPage() {
                       whileHover={{ scale: 1.01 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Card className="overflow-hidden hover:shadow-2xl transition-all">
+                      <Card className="overflow-hidden hover:shadow-2xl transition-all bg-white border border-gray-200">
                         <div className={`${program.color} p-6 text-white`}>
                           <div className="flex items-start justify-between flex-wrap gap-4">
                             <div className="flex items-center gap-4">
@@ -236,7 +255,7 @@ export function ProgramsPage() {
                               <ul className="space-y-2">
                                 {program.highlights.map((highlight, idx) => (
                                   <li key={idx} className="flex items-start gap-2 text-gray-700">
-                                    <div className="w-1.5 h-1.5 bg-maroon-600 rounded-full mt-2"></div>
+                                    <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2"></div>
                                     {highlight}
                                   </li>
                                 ))}
@@ -244,22 +263,22 @@ export function ProgramsPage() {
                             </div>
                             <div>
                               <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                <Briefcase className="w-5 h-5 text-maroon-600" />
+                                <Briefcase className="w-5 h-5 text-blue-600" />
                                 Career Opportunities
                               </h4>
                               <div className="flex flex-wrap gap-2">
                                 {program.careers.map((career, idx) => (
-                                  <Badge key={idx} variant="outline">{career}</Badge>
+                                  <Badge key={idx} variant="outline" className="border-blue-300 text-blue-700 bg-blue-50">{career}</Badge>
                                 ))}
                               </div>
                             </div>
                           </div>
 
                           <div className="flex gap-4">
-                            <Button className="bg-maroon-600 hover:bg-maroon-700">
+                            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-black">
                               Apply Now <ArrowRight className="ml-2 w-4 h-4" />
                             </Button>
-                            <Button variant="outline">
+                            <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
                               View Curriculum
                             </Button>
                           </div>
@@ -270,22 +289,21 @@ export function ProgramsPage() {
                 </motion.div>
               </TabsContent>
 
-              {/* M.Tech Programs */}
               <TabsContent value="mtech">
                 <motion.div 
-                  className="grid md:grid-cols-2 gap-8"
+                  className="grid md:grid-cols-1 gap-8 max-w-2xl mx-auto"
                   variants={stagger}
                   initial="initial"
                   animate="animate"
                 >
-                  {[...mtechPrograms, otherPrograms[0]].map((program, index) => (
+                  {mtechPrograms.map((program, index) => (
                     <motion.div
                       key={index}
                       variants={fadeInUp}
                       whileHover={{ y: -8 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Card className="h-full hover:shadow-xl transition-all border-t-4 border-purple-600">
+                      <Card className="h-full hover:shadow-xl transition-all border-t-4 border-purple-600 bg-white">
                         <CardHeader className="bg-purple-50">
                           <CardTitle className="flex items-center gap-2">
                             <GraduationCap className="w-6 h-6 text-purple-600" />
@@ -305,34 +323,21 @@ export function ProgramsPage() {
                         <CardContent className="pt-6">
                           <p className="text-gray-700 mb-4">{program.description}</p>
                           
-                          {'specializations' in program && program.specializations && (
-                            <div className="mb-4">
-                              <h4 className="font-bold text-gray-900 mb-2">Specializations:</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {program.specializations.map((spec: string, idx: number) => (
-                                  <Badge key={idx} variant="secondary">{spec}</Badge>
-                                ))}
-                              </div>
+                          <div className="mb-4">
+                            <h4 className="font-bold text-gray-900 mb-2">Specializations:</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {program.specializations.map((spec: string, idx: number) => (
+                                <Badge key={idx} variant="secondary" className="bg-blue-100 text-blue-800">{spec}</Badge>
+                              ))}
                             </div>
-                          )}
-
-                          {'areas' in program && program.areas && (
-                            <div className="mb-4">
-                              <h4 className="font-bold text-gray-900 mb-2">Research Areas:</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {program.areas.map((area: string, idx: number) => (
-                                  <Badge key={idx} variant="secondary">{area}</Badge>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                          </div>
 
                           <div className="p-3 bg-gray-50 rounded-lg mb-4">
                             <div className="text-sm text-gray-600">Eligibility</div>
                             <div className="font-semibold text-gray-900">{program.eligibility}</div>
                           </div>
 
-                          <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                          <Button className="w-full bg-purple-600 hover:bg-purple-700 text-black">
                             Apply Now
                           </Button>
                         </CardContent>
@@ -357,10 +362,10 @@ export function ProgramsPage() {
                       whileHover={{ y: -8 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Card className="h-full hover:shadow-xl transition-all border-t-4 border-maroon-600">
-                        <CardHeader className="bg-maroon-50">
+                      <Card className="h-full hover:shadow-xl transition-all border-t-4 border-blue-600 bg-white">
+                        <CardHeader className="bg-blue-50">
                           <CardTitle className="flex items-center gap-2">
-                            <GraduationCap className="w-6 h-6 text-maroon-600" />
+                            <GraduationCap className="w-6 h-6 text-blue-600" />
                             {program.name}
                           </CardTitle>
                           <div className="flex gap-4 text-sm text-gray-600 mt-2">
@@ -384,7 +389,7 @@ export function ProgramsPage() {
                               <h4 className="font-bold text-gray-900 mb-2">Research Areas:</h4>
                               <div className="flex flex-wrap gap-2">
                                 {program.areas.map((area, idx) => (
-                                  <Badge key={idx} variant="secondary">{area}</Badge>
+                                  <Badge key={idx} variant="secondary" className="bg-blue-100 text-blue-800">{area}</Badge>
                                 ))}
                               </div>
                             </div>
@@ -395,7 +400,7 @@ export function ProgramsPage() {
                             <div className="font-semibold text-gray-900">{program.eligibility}</div>
                           </div>
 
-                          <Button className="w-full bg-maroon-600 hover:bg-maroon-700">
+                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-black">
                             Apply Now
                           </Button>
                         </CardContent>
@@ -410,31 +415,31 @@ export function ProgramsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <motion.div 
-            className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600 to-maroon-600 rounded-2xl p-12 text-white"
+            className="max-w-4xl mx-auto text-center bg-white border-2 border-blue-600 rounded-2xl p-12 text-gray-900 shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold mb-4">Ready to Begin Your Journey?</h2>
-            <p className="text-xl mb-8 text-white font-medium">
+            <h2 className="text-4xl font-bold mb-4 text-black">Ready to Begin Your Journey?</h2>
+            <p className="text-xl mb-8 text-black font-medium">
               Choose your program and take the first step towards a successful career
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Button 
                 size="lg" 
                 variant="secondary"
-                className="bg-white text-maroon-600 hover:bg-gray-100 text-lg px-8 py-6"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-black hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-6"
               >
                 Apply Now
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
+                className="border-2 border-blue-600 text-black hover:bg-blue-50 text-lg px-8 py-6"
               >
                 Download Brochure
               </Button>

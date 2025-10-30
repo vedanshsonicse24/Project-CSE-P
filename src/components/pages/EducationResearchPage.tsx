@@ -161,22 +161,23 @@ export function EducationResearchPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-blue-50">
       {/* Hero Section */}
       <motion.section 
-        className="relative py-20 bg-gradient-to-r from-blue-100 via-purple-100 to-red-100 text-gray-900 overflow-hidden"
+        className="relative py-20 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-gray-900 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="absolute inset-0 bg-white/40"></div>
+        <div className="absolute inset-0 bg-white/60"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto text-center"
             {...fadeInUp}
           >
+            <img src="/assets/cse-logo-black.svg" alt="CSE Logo" className="h-20 w-auto mx-auto mb-8" />
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 drop-shadow-sm">Education & Research</h1>
-            <p className="text-xl md:text-2xl text-gray-800 leading-relaxed font-medium">
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium">
               Empowering minds through quality education and breakthrough research
             </p>
           </motion.div>
@@ -184,12 +185,12 @@ export function EducationResearchPage() {
         
         {/* Bottom Wave - Light Theme */}
         <div className="absolute bottom-0 left-0 right-0">
-          <WaveSeparator theme="white" variant="default" />
+          <WaveSeparator theme="white" variant="default" withPadding={true} />
         </div>
       </motion.section>
 
       {/* Academic Programs Overview */}
-      <section className="py-16 container mx-auto px-4">
+      <section className="py-16 container mx-auto px-4 bg-white">
         <motion.div 
           className="max-w-6xl mx-auto"
           variants={stagger}
@@ -206,14 +207,14 @@ export function EducationResearchPage() {
 
           {courses.map((category, idx) => (
             <motion.div key={idx} variants={fadeInUp} className="mb-12">
-              <h3 className="text-2xl font-bold text-maroon-600 mb-6">{category.level} Programs</h3>
+              <h3 className="text-2xl font-bold text-blue-700 mb-6">{category.level} Programs</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {category.programs.map((program, pidx) => (
-                  <Card key={pidx} className="hover:shadow-lg transition-shadow border-l-4 border-maroon-600">
+                  <Card key={pidx} className="hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-blue-300 border-l-4 border-l-blue-600 bg-white">
                     <CardContent className="pt-6">
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="text-lg font-bold text-gray-900">{program.name}</h4>
-                        <Badge variant="secondary">{program.seats} Seats</Badge>
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">{program.seats} Seats</Badge>
                       </div>
                       <p className="text-gray-600">Duration: {program.duration}</p>
                     </CardContent>
@@ -226,7 +227,7 @@ export function EducationResearchPage() {
       </section>
 
       {/* Departments */}
-      <section className="py-16 bg-gray-50 relative">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50 relative">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -246,11 +247,11 @@ export function EducationResearchPage() {
                 <motion.div
                   key={index}
                   variants={fadeInUp}
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="h-full hover:shadow-2xl transition-all">
-                    <CardHeader className="bg-gray-100 text-gray-900">
+                  <Card className="h-full hover:shadow-2xl transition-all duration-300 bg-white border border-gray-200">
+                    <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-900">
                       <div className="flex items-center gap-3">
                         <dept.icon className="w-8 h-8 text-blue-600" />
                         <CardTitle className="text-xl text-gray-900">{dept.name}</CardTitle>
@@ -262,7 +263,7 @@ export function EducationResearchPage() {
                         <h4 className="font-bold text-gray-900 mb-2">Programs Offered:</h4>
                         <div className="flex flex-wrap gap-2">
                           {dept.programs.map((prog, i) => (
-                            <Badge key={i} variant="outline">{prog}</Badge>
+                            <Badge key={i} variant="outline" className="border-blue-300 text-blue-700 bg-blue-50">{prog}</Badge>
                           ))}
                         </div>
                       </div>
@@ -284,12 +285,12 @@ export function EducationResearchPage() {
         
         {/* Bottom Wave - Departments to Research Transition */}
         <div className="absolute bottom-0 left-0 right-0">
-          <WaveSeparator theme="white" variant="inverted" />
+          <WaveSeparator theme="white" variant="inverted" withPadding={true} />
         </div>
       </section>
 
       {/* Research Excellence */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -313,7 +314,7 @@ export function EducationResearchPage() {
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="h-full hover:shadow-xl transition-all border-t-4 border-blue-600">
+                  <Card className="h-full hover:shadow-xl transition-all duration-300 border-t-4 border-blue-600 bg-white">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="p-3 bg-blue-100 rounded-lg flex-shrink-0">
@@ -324,11 +325,11 @@ export function EducationResearchPage() {
                           <p className="text-gray-600 mb-4">{area.description}</p>
                           <div className="flex gap-4 text-sm">
                             <div className="flex items-center gap-1">
-                              <Target className="w-4 h-4 text-maroon-600" />
+                              <Target className="w-4 h-4 text-blue-600" />
                               <span className="font-semibold">{area.projects}</span> Projects
                             </div>
                             <div className="flex items-center gap-1">
-                              <FileText className="w-4 h-4 text-maroon-600" />
+                              <FileText className="w-4 h-4 text-blue-600" />
                               <span className="font-semibold">{area.publications}</span> Publications
                             </div>
                           </div>
@@ -344,7 +345,7 @@ export function EducationResearchPage() {
       </section>
 
       {/* Research Achievements */}
-      <section className="py-16 bg-gradient-to-r from-gray-200 to-blue-100 text-gray-900 relative">
+      <section className="py-16 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-gray-900 relative">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -368,12 +369,12 @@ export function EducationResearchPage() {
                   whileHover={{ scale: 1.05 }}
                 >
                   <div className="flex justify-center mb-4">
-                    <div className="p-4 bg-white border border-blue-200 rounded-full shadow-md">
+                    <div className="p-4 bg-white border-2 border-blue-200 rounded-full shadow-lg">
                       <achievement.icon className="w-10 h-10 text-blue-600" />
                     </div>
                   </div>
                   <h3 className="text-2xl font-bold mb-2 text-gray-900">{achievement.title}</h3>
-                  <p className="text-gray-800 font-medium">{achievement.description}</p>
+                  <p className="text-gray-700 font-medium">{achievement.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -382,12 +383,12 @@ export function EducationResearchPage() {
         
         {/* Bottom Wave - Achievements to Facilities Transition */}
         <div className="absolute bottom-0 left-0 right-0">
-          <WaveSeparator theme="light-gray" variant="smooth" />
+          <WaveSeparator theme="dark" variant="smooth" withPadding={true} />
         </div>
       </section>
 
       {/* Facilities */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <motion.div 
             className="max-w-6xl mx-auto"
@@ -408,19 +409,19 @@ export function EducationResearchPage() {
                 <motion.div
                   key={index}
                   variants={fadeInUp}
-                  whileHover={{ x: 8 }}
+                  whileHover={{ x: 8, scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="h-full hover:shadow-lg transition-all">
+                  <Card className="h-full hover:shadow-xl transition-all duration-300 bg-white border border-gray-200">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4">
-                        <div className="p-3 bg-maroon-100 rounded-lg flex-shrink-0">
-                          <Library className="w-6 h-6 text-maroon-600" />
+                        <div className="p-3 bg-blue-100 rounded-lg flex-shrink-0">
+                          <Library className="w-6 h-6 text-blue-600" />
                         </div>
                         <div>
                           <h3 className="text-lg font-bold text-gray-900 mb-2">{facility.name}</h3>
                           <p className="text-gray-600 mb-2">{facility.description}</p>
-                          <Badge variant="secondary">{facility.capacity}</Badge>
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">{facility.capacity}</Badge>
                         </div>
                       </div>
                     </CardContent>
@@ -433,31 +434,31 @@ export function EducationResearchPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <motion.div 
-            className="max-w-4xl mx-auto text-center bg-white border-2 border-gray-300 rounded-2xl p-12 text-gray-900 shadow-xl"
+            className="max-w-4xl mx-auto text-center bg-white border-2 border-gray-200 rounded-2xl p-12 text-gray-900 shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl font-bold mb-4 text-gray-900">Ready to Start Your Journey?</h2>
-            <p className="text-xl mb-8 text-gray-800 font-medium">
+            <p className="text-xl mb-8 text-gray-700 font-medium">
               Join us in shaping the future of technology and innovation
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Button 
                 size="lg" 
                 variant="secondary"
-                className="bg-blue-600 text-white hover:bg-blue-700 text-lg px-8 py-6"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-6 shadow-lg"
               >
                 Explore Programs
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-lg px-8 py-6"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-lg px-8 py-6 shadow-lg"
               >
                 Research Opportunities
               </Button>

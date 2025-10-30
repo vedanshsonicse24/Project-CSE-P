@@ -37,6 +37,7 @@ export default function App() {
   const [userName, setUserName] = useState<string>("");
   const [dashboardSection, setDashboardSection] = useState<string>("dashboard");
   const [cookiesEnabled, setCookiesEnabled] = useState<boolean>(false);
+  const [programTab, setProgramTab] = useState<string>("btech");
 
   // Check for existing user session and restore from cookies
   useEffect(() => {
@@ -124,6 +125,16 @@ export default function App() {
         <PageTransition>
           <HomePage 
             onNavigateToLogin={() => setCurrentPage("login")} 
+            onNavigateToPrograms={(programType) => {
+              if (programType) {
+                setProgramTab(programType);
+              }
+              setCurrentPage("programs");
+              // Scroll to top when navigating to programs page
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }, 100);
+            }}
             userRole={userRole}
           />
         </PageTransition>
@@ -285,7 +296,7 @@ export default function App() {
     if (currentPage === "programs") {
       return (
         <PageTransition>
-          <ProgramsPage />
+          <ProgramsPage defaultTab={programTab} />
         </PageTransition>
       );
     }
@@ -344,16 +355,56 @@ export default function App() {
             : undefined
         }
         onNavigateToSection={userRole ? handleNavigateToSection : undefined}
-        onNavigateToHome={() => setCurrentPage("home")}
-        onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
-        onNavigateToAlumni={() => setCurrentPage("alumni")}
-        onNavigateToAbout={() => setCurrentPage("about")}
-        onNavigateToAdmissions={() => setCurrentPage("admissions")}
+        onNavigateToHome={() => {
+          setCurrentPage("home");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
+        onNavigateToFacultyInfo={() => {
+          setCurrentPage("faculty-info");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
+        onNavigateToAlumni={() => {
+          setCurrentPage("alumni");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
+        onNavigateToAbout={() => {
+          setCurrentPage("about");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
+        onNavigateToAdmissions={() => {
+          setCurrentPage("admissions");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
         onNavigateToLifeAtSSIPMT={() => setCurrentPage("life-at-ssipmt")}
-        onNavigateToPrograms={() => setCurrentPage("programs")}
+        onNavigateToPrograms={() => {
+          setCurrentPage("programs");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
         onNavigateToApply={() => setCurrentPage("apply")}
-        onNavigateToCSEDepartment={() => setCurrentPage("cse-department")}
-        onNavigateToResearch={() => setCurrentPage("research")}
+        onNavigateToCSEDepartment={() => {
+          setCurrentPage("cse-department");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
+        onNavigateToResearch={() => {
+          setCurrentPage("research");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
         onNavigateToContact={() => setCurrentPage("contact")}
         onNavigateToNewsEvents={() => setCurrentPage("news-events")}
         onNavigateToCOE={() => setCurrentPage("coe")}

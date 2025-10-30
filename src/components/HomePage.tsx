@@ -9,10 +9,11 @@ import { toast } from "sonner";
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
+  onNavigateToPrograms?: (programType?: string) => void;
   userRole?: "faculty" | "student" | "hod" | "admin" | "developer" | null;
 }
 
-export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
+export function HomePage({ onNavigateToLogin, onNavigateToPrograms, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [editingProject, setEditingProject] = useState<number | null>(null);
   const [editedProjects, setEditedProjects] = useState([
@@ -954,9 +955,30 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
             >
               <h3 className="text-lg font-bold mb-4">Programs</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>B.Tech Computer Science</li>
-                <li>M.Tech CSE</li>
-                <li>PHD</li>
+                <li>
+                  <button 
+                    onClick={() => onNavigateToPrograms?.('btech')}
+                    className="hover:text-white transition-colors cursor-pointer text-left w-full"
+                  >
+                    B.Tech Programs
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => onNavigateToPrograms?.('mtech')}
+                    className="hover:text-white transition-colors cursor-pointer text-left w-full"
+                  >
+                    M.Tech Programs
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => onNavigateToPrograms?.('other')}
+                    className="hover:text-white transition-colors cursor-pointer text-left w-full"
+                  >
+                    PhD Programs
+                  </button>
+                </li>
               </ul>
             </motion.div>
 
