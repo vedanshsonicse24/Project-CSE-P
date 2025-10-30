@@ -73,9 +73,15 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
   ];
 
   const [engageLectures, setEngageLectures] = useState([
-    { id: 1, date: "2025-10-10", class: "CSE301", takenBy: "Dr. Sharma", reason: "Conference" },
-    { id: 2, date: "2025-10-12", class: "CSE302", takenBy: "Prof. Gupta", reason: "Personal Leave" },
+    { id: 1, date: "2025-10-10", class: "CSE301", semester: "6", section: "A", takenBy: "Dr. Sharma", reason: "Conference" },
+    { id: 2, date: "2025-10-12", class: "CSE302", semester: "6", section: "B", takenBy: "Prof. Gupta", reason: "Personal Leave" },
   ]);
+
+  // "To Engage" sample list (copied structure from HOD's Engaged Lectures)
+  const toEngage = [
+    { id: 1, date: "2025-11-01", semester: "6", section: "A", originalFaculty: "Dr. Sharma", proxyFaculty: "Dr. Kumar", reason: "Conference" },
+    { id: 2, date: "2025-11-03", semester: "6", section: "B", originalFaculty: "Prof. Gupta", proxyFaculty: "Dr. Verma", reason: "Personal" },
+  ];
 
   // Minimal faculty list for assign engage form
   const faculty = [
@@ -289,14 +295,50 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
 
   const renderEngage = () => (
     <div className="space-y-6">
-      <h2>Engage Lecture History</h2>
+
+      {/* To Engage (copied from HOD Engaged Lectures) */}
       <Card>
+        <CardHeader>
+          <CardTitle>To Engage</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Semester</TableHead>
+                <TableHead>Section</TableHead>
+                <TableHead>Original Faculty</TableHead>
+                <TableHead>Engaged Faculty</TableHead>
+                <TableHead>Reason</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {toEngage.map((swap) => (
+                <TableRow key={swap.id}>
+                  <TableCell>{swap.date}</TableCell>
+                  <TableCell>{swap.semester}</TableCell>
+                  <TableCell>{swap.section}</TableCell>
+                  <TableCell>{swap.originalFaculty}</TableCell>
+                  <TableCell>{swap.proxyFaculty}</TableCell>
+                  <TableCell>{swap.reason}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Engage Lecture History</CardTitle>
+        </CardHeader>
         <CardContent className="pt-6">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
-                <TableHead>Class</TableHead>
+                <TableHead>Semester</TableHead>
+                <TableHead>Section</TableHead>
                 <TableHead>Taken By</TableHead>
                 <TableHead>Reason</TableHead>
               </TableRow>
@@ -305,7 +347,8 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
               {engageLectures.map((lecture) => (
                 <TableRow key={lecture.id}>
                   <TableCell>{lecture.date}</TableCell>
-                  <TableCell>{lecture.class}</TableCell>
+                  <TableCell>{lecture.semester}</TableCell>
+                  <TableCell>{lecture.section}</TableCell>
                   <TableCell>{lecture.takenBy}</TableCell>
                   <TableCell>{lecture.reason}</TableCell>
                 </TableRow>
