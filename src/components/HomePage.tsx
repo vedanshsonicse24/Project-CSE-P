@@ -1,10 +1,11 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, Edit3 } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, Edit3, Edit2, Save, X } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
@@ -13,6 +14,36 @@ interface HomePageProps {
 
 export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [editingProject, setEditingProject] = useState<number | null>(null);
+  const [editedProjects, setEditedProjects] = useState([
+    {
+      id: 1,
+      title: "Green Palna",
+      description: "Green Palna encourages environmental responsibility and health awareness by distributing saplings and promoting plant-based nutrition for sustainable living.",
+      contributors: "6 Students",
+      duration: "3 Months",
+      backgroundImage: "./assets/green-palna-bg.png",
+      projectLink: "#"
+    },
+    {
+      id: 2,
+      title: "Har Ghar Munga",
+      description: "Project Har Ghar Munga promotes sustainability and fights anemia by planting drumstick saplings and encouraging the use of moringa and fenugreek in diets.",
+      contributors: "6 Students",
+      duration: "4 Months",
+      backgroundImage: "./assets/har-ghar-munga-bg.png",
+      projectLink: "#"
+    },
+    {
+      id: 3,
+      title: "Harihar Pathsala",
+      description: "Harihar Pathsala promotes health, nutrition, and eco-awareness by giving children saplings to plant and spreading TB prevention and nutrition education.",
+      contributors: "8 Students",
+      duration: "5 Months",
+      backgroundImage: "./assets/harihar-pathsala-bg.png",
+      projectLink: "#"
+    }
+  ]);
 
   // Show scroll to top button when scrolling down
   useEffect(() => {
@@ -23,6 +54,14 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Load saved projects from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('studentProjects');
+    if (saved) {
+      setEditedProjects(JSON.parse(saved));
+    }
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -30,6 +69,32 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleEditProject = (id: number) => {
+    setEditingProject(id);
+  };
+
+  const handleSaveProject = (id: number) => {
+    localStorage.setItem('studentProjects', JSON.stringify(editedProjects));
+    setEditingProject(null);
+    toast.success('Project updated successfully!');
+  };
+
+  const handleCancelEdit = () => {
+    // Reload from localStorage or reset to original
+    const saved = localStorage.getItem('studentProjects');
+    if (saved) {
+      setEditedProjects(JSON.parse(saved));
+    }
+    setEditingProject(null);
+  };
+
+  const handleProjectChange = (id: number, field: 'title' | 'description' | 'contributors' | 'duration' | 'projectLink', value: string) => {
+    const updated = editedProjects.map(project => 
+      project.id === id ? { ...project, [field]: value } : project
+    );
+    setEditedProjects(updated);
   };
 
   const announcements = [
@@ -322,63 +387,93 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
         `}</style>
       </section>
 
-      {/* --- Student Projects Section --- */}
+      {/* Student Projects Section */}
       <div className="projects-section">
-        <div className="container">
+        <div className="container mx-auto px-6">
           <h2 className="section-title">Student Projects</h2>
-          
           <div className="projects-grid">
             
-            {/* Card 1 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/34495e/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>E-Commerce Platform</h3>
-                <p>A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">React</span>
-                  <span className="tech-tag">Node.js</span>
-                  <span className="tech-tag">MongoDB</span>
+            {editedProjects.map((project, index) => (
+              <motion.div 
+                key={project.id}
+                className="project-card" 
+                style={{ backgroundImage: `url(${project.backgroundImage})` }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <div className="project-content">
+                  {editingProject === project.id ? (
+                    // Edit Mode
+                    <div className="edit-form">
+                      <div className="edit-controls">
+                        <button onClick={() => handleSaveProject(project.id)} className="save-btn">
+                          <Save size={16} />
+                        </button>
+                        <button onClick={handleCancelEdit} className="cancel-btn">
+                          <X size={16} />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={project.title}
+                        onChange={(e) => handleProjectChange(project.id, 'title', e.target.value)}
+                        className="edit-title"
+                      />
+                      <textarea
+                        value={project.description}
+                        onChange={(e) => handleProjectChange(project.id, 'description', e.target.value)}
+                        className="edit-description"
+                        rows={3}
+                      />
+                      <div className="edit-stats">
+                        <input
+                          type="text"
+                          value={project.contributors}
+                          onChange={(e) => handleProjectChange(project.id, 'contributors', e.target.value)}
+                          className="edit-stat"
+                          placeholder="Contributors"
+                        />
+                        <input
+                          type="text"
+                          value={project.duration}
+                          onChange={(e) => handleProjectChange(project.id, 'duration', e.target.value)}
+                          className="edit-stat"
+                          placeholder="Duration"
+                        />
+                      </div>
+                      <input
+                        type="url"
+                        value={project.projectLink}
+                        onChange={(e) => handleProjectChange(project.id, 'projectLink', e.target.value)}
+                        className="edit-link"
+                        placeholder="Project Link"
+                      />
+                    </div>
+                  ) : (
+                    // View Mode
+                    <>
+                      {(userRole === 'admin' || userRole === 'hod') && (
+                        <button 
+                          onClick={() => handleEditProject(project.id)}
+                          className="edit-btn"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                      )}
+                      <h3 className="project-title">{project.title}</h3>
+                      <p className="project-description">{project.description}</p>
+                      <div className="project-stats">
+                        <span className="stat">{project.contributors}</span>
+                        <span className="stat">{project.duration}</span>
+                      </div>
+                      <a href={project.projectLink} className="project-btn">View Project</a>
+                    </>
+                  )}
                 </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/8e44ad/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>AI Health Scanner</h3>
-                <p>A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">TensorFlow</span>
-                  <span className="tech-tag">Keras</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/2c3e50/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>Campus Connect App</h3>
-                <p>A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">Flutter</span>
-                  <span className="tech-tag">Firebase</span>
-                  <span className="tech-tag">Dart</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
+              </motion.div>
+            ))}
 
           </div>
         </div>
@@ -388,7 +483,7 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
         /* --- Student Projects Section --- */
         .projects-section {
           padding: 60px 20px;
-          background-color: #f4f4f4; /* Updated background to match body */
+          background-color: #f4f4f4;
           text-align: center;
         }
 
@@ -409,92 +504,201 @@ export function HomePage({ onNavigateToLogin, userRole }: HomePageProps) {
         }
 
         .project-card {
-          position: relative; /* Needed for the gradient overlay */
-          border-radius: 16px; /* More rounded corners */
-          overflow: hidden; /* Clips the image to the border-radius */
-          min-height: 450px; /* Gives the card a uniform height */
-          
-          /* Background image (set via inline style in JSX) */
+          position: relative;
+          border-radius: 16px;
+          overflow: hidden;
+          min-height: 450px;
           background-size: cover;
           background-position: center;
-          
-          /* Flex to push content to the bottom */
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end; /* Aligns content to the bottom */
-
-          color: #ffffff; /* All text inside is white */
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
+          cursor: pointer;
         }
 
         .project-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+          transform: translateY(-8px);
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* This is the dark gradient overlay at the bottom */
-        .project-card::before {
-          content: '';
+        .project-content {
           position: absolute;
           bottom: 0;
           left: 0;
-          width: 100%;
-          height: 70%;
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
-          z-index: 1; /* Sits below content, above image */
+          right: 0;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.1));
+          color: white;
+          padding: 30px 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          min-height: 100%;
         }
 
-        /* Wrapper for all text content */
-        .project-card-content {
-          position: relative;
-          z-index: 2; /* Sits on top of the gradient */
-          padding: 24px;
+        .edit-btn {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          backdrop-filter: blur(10px);
         }
 
-        .project-card h3 {
-          font-size: 1.7rem; /* Larger title */
+        .edit-btn:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        .edit-form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          height: 100%;
+          justify-content: space-between;
+        }
+
+        .edit-controls {
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+
+        .save-btn, .cancel-btn {
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          border-radius: 50%;
+          width: 35px;
+          height: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .save-btn:hover {
+          background: rgba(34, 197, 94, 0.3);
+        }
+
+        .cancel-btn:hover {
+          background: rgba(239, 68, 68, 0.3);
+        }
+
+        .edit-title {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          color: white;
+          font-size: 1.6rem;
           font-weight: 700;
-          color: #ffffff;
-          margin-top: 0;
-          margin-bottom: 8px;
+          font-family: 'Gotham', sans-serif;
+          backdrop-filter: blur(10px);
+        }
+
+        .edit-title::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .edit-description {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          color: white;
+          font-size: 0.95rem;
+          line-height: 1.6;
+          resize: vertical;
+          min-height: 80px;
+          backdrop-filter: blur(10px);
+          font-family: inherit;
+        }
+
+        .edit-description::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .edit-stats {
+          display: flex;
+          gap: 10px;
+        }
+
+        .edit-stat {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 8px 12px;
+          color: white;
+          font-size: 0.85rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .edit-stat::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .edit-link {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          color: white;
+          font-size: 0.9rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .edit-link::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .project-title {
+          font-size: 1.6rem;
+          font-weight: 700;
+          margin-bottom: 12px;
           font-family: 'Gotham', sans-serif;
         }
 
-        .project-card p {
+        .project-description {
           font-size: 0.95rem;
           line-height: 1.6;
-          color: #e0e0e0; /* Slightly off-white for description */
-          margin-bottom: 16px;
+          margin-bottom: 20px;
+          opacity: 0.9;
         }
 
-        /* New Tags section */
-        .project-tags {
+        .project-stats {
           display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
+          gap: 15px;
           margin-bottom: 20px;
         }
 
-        .tech-tag {
-          background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
-          backdrop-filter: blur(5px); /* Frosted glass effect */
-          color: #ffffff;
-          padding: 5px 12px;
-          border-radius: 99px; /* Pill shape */
-          font-size: 0.8rem;
+        .stat {
+          background: rgba(255, 255, 255, 0.2);
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 0.85rem;
           font-weight: 500;
+          backdrop-filter: blur(10px);
         }
 
-        /* New Button */
         .project-btn {
-          display: block;
-          background: #ffffff;
-          color: #000000;
+          align-self: flex-start;
+          background-color: white;
+          color: #333;
+          padding: 12px 24px;
+          border-radius: 25px;
           text-decoration: none;
-          padding: 12px 20px;
-          border-radius: 99px; /* Pill shape */
-          text-align: center;
+          font-size: 0.9rem;
           font-weight: 600;
           transition: transform 0.2s ease, background-color 0.2s ease;
           font-family: 'Gotham', sans-serif;

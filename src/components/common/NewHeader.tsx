@@ -934,9 +934,25 @@ export function NewHeader({
                 // Public navigation
                 <>
                   <div className="main-nav-left">
-                    <a href="#" className="active">WHO WE ARE</a>
-                    <a href="#">EDUCATION & RESEARCH</a>
-                    <a href="#">ADMISSIONS</a>
+                    <a 
+                      href="#" 
+                      className="active"
+                      onClick={(e) => { e.preventDefault(); onNavigateToCSEDepartment?.(); }}
+                    >
+                      WHO WE ARE
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToResearch?.(); }}
+                    >
+                      EDUCATION & RESEARCH
+                    </a>
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigateToAdmissions?.(); }}
+                    >
+                      ADMISSIONS
+                    </a>
                   </div>
                   
                                     <div className="main-nav-right">
