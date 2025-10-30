@@ -142,17 +142,13 @@ export function EducationResearchPage() {
     {
       level: "Undergraduate",
       programs: [
-        { name: "B.Tech Computer Science & Engineering", duration: "4 Years", seats: 120 },
-        { name: "B.Tech Information Technology", duration: "4 Years", seats: 60 },
-        { name: "B.Tech AI & Data Science", duration: "4 Years", seats: 60 },
-        { name: "B.Tech Electronics & Communication", duration: "4 Years", seats: 60 }
+        { name: "B.Tech Computer Science & Engineering", duration: "4 Years", seats: 120 }
       ]
     },
     {
       level: "Postgraduate",
       programs: [
         { name: "M.Tech Computer Science", duration: "2 Years", seats: 18 },
-        { name: "M.Tech VLSI Design", duration: "2 Years", seats: 18 },
         { name: "MCA", duration: "2 Years", seats: 60 },
         { name: "MBA", duration: "2 Years", seats: 120 }
       ]
@@ -160,8 +156,7 @@ export function EducationResearchPage() {
     {
       level: "Doctoral",
       programs: [
-        { name: "PhD Computer Science", duration: "3-5 Years", seats: 10 },
-        { name: "PhD Electronics", duration: "3-5 Years", seats: 8 }
+        { name: "PhD Computer Science", duration: "3-5 Years", seats: 10 }
       ]
     }
   ];

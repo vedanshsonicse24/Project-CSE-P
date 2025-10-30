@@ -53,57 +53,6 @@ export function ProgramsPage() {
       careers: ["Software Engineer", "Data Scientist", "Cloud Architect", "AI Specialist"],
       avgPackage: "₹6.5 LPA",
       color: "bg-blue-600"
-    },
-    {
-      name: "Artificial Intelligence & Data Science",
-      code: "AI&DS",
-      duration: "4 Years",
-      seats: 60,
-      icon: Brain,
-      description: "Dive deep into AI, machine learning, and big data analytics",
-      highlights: [
-        "Deep Learning & Neural Networks",
-        "Big Data Analytics",
-        "Natural Language Processing",
-        "Industry ML projects"
-      ],
-      careers: ["ML Engineer", "Data Analyst", "AI Researcher", "Business Intelligence Analyst"],
-      avgPackage: "₹7 LPA",
-      color: "bg-purple-600"
-    },
-    {
-      name: "Information Technology",
-      code: "IT",
-      duration: "4 Years",
-      seats: 60,
-      icon: Globe,
-      description: "Build expertise in software systems, networks, and web technologies",
-      highlights: [
-        "Web & Mobile Development",
-        "Cloud Computing",
-        "Cybersecurity fundamentals",
-        "DevOps practices"
-      ],
-      careers: ["IT Consultant", "System Administrator", "Full Stack Developer", "Network Engineer"],
-      avgPackage: "₹6 LPA",
-      color: "bg-green-600"
-    },
-    {
-      name: "Electronics & Communication Engineering",
-      code: "ECE",
-      duration: "4 Years",
-      seats: 60,
-      icon: Cpu,
-      description: "Design and develop electronic systems and communication networks",
-      highlights: [
-        "VLSI Design",
-        "Embedded Systems",
-        "5G Networks",
-        "IoT Applications"
-      ],
-      careers: ["Electronics Engineer", "VLSI Designer", "Network Engineer", "IoT Developer"],
-      avgPackage: "₹5.5 LPA",
-      color: "bg-orange-600"
     }
   ];
 
@@ -115,14 +64,6 @@ export function ProgramsPage() {
       specializations: ["Artificial Intelligence", "Data Science", "Cyber Security"],
       eligibility: "B.Tech/BE in CSE/IT with GATE score",
       description: "Advanced research and specialization in cutting-edge computing domains"
-    },
-    {
-      name: "M.Tech VLSI Design",
-      duration: "2 Years",
-      seats: 18,
-      specializations: ["Digital VLSI", "Analog VLSI", "Mixed Signal Design"],
-      eligibility: "B.Tech/BE in ECE/EE with GATE score",
-      description: "Master chip design and semiconductor technology"
     }
   ];
 
@@ -506,40 +447,6 @@ export function ProgramsPage() {
                 </motion.div>
               </TabsContent>
             </Tabs>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600 to-maroon-600 rounded-2xl p-12 text-white"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl font-bold mb-4">Ready to Begin Your Journey?</h2>
-            <p className="text-xl mb-8 text-white font-medium">
-              Choose your program and take the first step towards a successful career
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <Button 
-                size="lg" 
-                variant="secondary"
-                className="bg-white text-maroon-600 hover:bg-gray-100 text-lg px-8 py-6"
-              >
-                Apply Now
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
-              >
-                Download Brochure
-              </Button>
-            </div>
           </motion.div>
         </div>
       </section>

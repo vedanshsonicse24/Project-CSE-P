@@ -481,47 +481,6 @@ export function AdmissionsPage() {
         </div>
       </section>
 
-      {/* Scholarships */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-maroon-600 text-white">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="max-w-6xl mx-auto"
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-          >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-4xl font-bold text-center mb-12"
-            >
-              Scholarships Available
-            </motion.h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {scholarships.map((scholarship, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeInUp}
-                  whileHover={{ y: -8 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Card className="h-full bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all">
-                    <CardContent className="pt-6 text-center">
-                      <Award className="w-12 h-12 mx-auto mb-4" />
-                      <h3 className="text-xl font-bold mb-3">{scholarship.name}</h3>
-                      <p className="text-sm text-gray-200 mb-3">{scholarship.eligibility}</p>
-                      <Badge variant="secondary" className="bg-white text-maroon-600">
-                        {scholarship.benefit}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Contact for Admissions */}
       <section className="py-16">
         <div className="container mx-auto px-4">
