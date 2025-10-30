@@ -1,9 +1,11 @@
 ﻿import { Search } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { NotificationIcon } from "./NotificationIcon";
 
 interface NewHeaderProps {
-  userRole?: "faculty" | "student" | "hod" | "admin";
+  userRole?: "faculty" | "student" | "hod" | "admin" | "student_admin";
   userName?: string;
+  userEmail?: string;
   onLogout?: () => void;
   onNavigateToLogin?: () => void;
   onNavigateToProfile?: () => void;
@@ -14,7 +16,7 @@ interface NewHeaderProps {
   showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
+export function NewHeader({ userRole, userName, userEmail, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
   
@@ -459,6 +461,28 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           padding: 20px;
           max-width: 800px;
         }
+
+        /* Email display in tier two header for students */
+        .tier-two-email {
+          display: flex;
+          align-items: center;
+          height: 42px;
+          font-size: 12px;
+          color: #6b7280;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          white-space: nowrap;
+          padding: 0 12px;
+          border-left: 2px solid #e5e7eb;
+          margin-left: 8px;
+          font-family: "GothamBook", -apple-system, BlinkMacSystemFont, sans-serif;
+          transition: color 0.3s ease, border-left-color 0.3s ease;
+        }
+
+        .tier-two-email:hover {
+          color: #1f2937;
+          border-left-color: #d1d5db;
+        }
       `}</style>
 
       <header className={showHeroVideo && isScrolled ? "site-header scrolled" : "site-header"}>
@@ -500,14 +524,18 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
             <div className="top-nav-right">
               {userRole ? (
                 <>
-                  <span className="user-welcome">Welcome, {userName || 'User'}</span>
-                  {onNavigateToProfile && (
-                    <button 
-                      onClick={onNavigateToProfile}
-                      className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
-                    >
-                      PROFILE
-                    </button>
+                  {userRole !== 'student' && userRole !== 'student_admin' && (
+                    <>
+                      <span className="user-welcome">Welcome, {userName || 'User'}</span>
+                      {onNavigateToProfile && (
+                        <button 
+                          onClick={onNavigateToProfile}
+                          className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
+                        >
+                          PROFILE
+                        </button>
+                      )}
+                    </>
                   )}
                   {onLogout && (
                     <button 
@@ -613,10 +641,10 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                         </a>
                         <a 
                           href="#" 
-                          className={activeNavItem === "achievements" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('achievements'); }}
+                          className={activeNavItem === "boa" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('boa'); }}
                         >
-                          ACHIEVEMENTS
+                          UPLOAD BOA
                         </a>
                       </>
                     )}
@@ -677,18 +705,21 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                       <>
                         <a 
                           href="#" 
-                          className={activeNavItem === "boa" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('boa'); }}
+                          className={activeNavItem === "timetable" ? "active" : ""} 
+                          onClick={(e) => { e.preventDefault(); handleNavClick('timetable'); }}
                         >
-                          UPLOAD BOA
+                          TIMETABLE
                         </a>
-                        <a 
-                          href="#" 
-                          className={activeNavItem === "notifications" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('notifications'); }}
-                        >
-                          NOTIFICATIONS
-                        </a>
+                        <NotificationIcon
+                          onClick={() => handleNavClick('notifications')}
+                          hasNotifications={false}
+                          notificationCount={0}
+                        />
+                        {userEmail && (
+                          <span className="tier-two-email" title={userEmail}>
+                            {userEmail}
+                          </span>
+                        )}
                       </>
                     )}
                     {userRole === 'hod' && (
@@ -714,6 +745,15 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                         >
                           REPORTS
                         </a>
+                      </>
+                    )}
+                    {userRole === 'student_admin' && (
+                      <>
+                        {userEmail && (
+                          <span className="tier-two-email" title={userEmail}>
+                            {userEmail}
+                          </span>
+                        )}
                       </>
                     )}
                   </div>

@@ -1,0 +1,76 @@
+/* NotificationIcon Component Styles */
+
+.notification-icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+.notification-icon-wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.notification-icon-wrapper:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.4);
+  outline-offset: 2px;
+}
+
+.notification-bell-icon {
+  color: white;
+  transform-origin: 50% 50%;
+  transition: transform 0.2s ease;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  animation: badge-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .notification-icon-wrapper {
+    padding: 6px;
+  }
+
+  .notification-bell-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .notification-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    top: -6px;
+    right: -6px;
+  }
+}

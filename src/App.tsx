@@ -27,6 +27,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>("home");
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [userName, setUserName] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
   const [dashboardSection, setDashboardSection] = useState<string>("dashboard");
   const [cookiesEnabled, setCookiesEnabled] = useState<boolean>(false);
 
@@ -42,6 +43,9 @@ export default function App() {
       if (session.userRole && session.userName) {
         setUserRole(session.userRole);
         setUserName(session.userName);
+        if (session.userEmail) {
+          setUserEmail(session.userEmail);
+        }
         setCurrentPage("dashboard");
         
         // Restore dashboard section preference
@@ -55,15 +59,16 @@ export default function App() {
     }
   }, []);
 
-  const handleLogin = (role: "faculty" | "student" | "hod" | "admin", username: string, rememberMe = false) => {
+  const handleLogin = (role: "faculty" | "student" | "hod" | "admin", username: string, email?: string, rememberMe = false) => {
     setUserRole(role);
     setUserName(username);
+    setUserEmail(email || "");
     setCurrentPage("dashboard");
     setDashboardSection("dashboard");
     
     // Save to cookies if enabled
     if (cookiesEnabled) {
-      UserCookies.setUserSession(role, username, undefined, rememberMe);
+      UserCookies.setUserSession(role, username, email, rememberMe);
       PreferenceCookies.setDashboardSection("dashboard");
       
       if (rememberMe) {
@@ -75,6 +80,7 @@ export default function App() {
   const handleLogout = () => {
     setUserRole(null);
     setUserName("");
+    setUserEmail("");
     setCurrentPage("home");
     setDashboardSection("dashboard");
     
@@ -250,7 +256,8 @@ export default function App() {
       {/* New Two-Tier Header */}
       <NewHeader 
         userRole={userRole || undefined} 
-        userName={userName || undefined} 
+        userName={userName || undefined}
+        userEmail={userEmail || undefined}
         onLogout={userRole ? handleLogout : undefined}
         onNavigateToLogin={!userRole ? () => setCurrentPage("login") : undefined}
         onNavigateToProfile={

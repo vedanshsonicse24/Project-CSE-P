@@ -26,6 +26,7 @@ export const COOKIE_CONFIG = {
 export const COOKIE_KEYS = {
   USER_ROLE: 'sankhya_user_role',
   USER_NAME: 'sankhya_user_name',
+  USER_EMAIL: 'sankhya_user_email',
   USER_ID: 'sankhya_user_id',
   REMEMBER_LOGIN: 'sankhya_remember_login',
   THEME_PREFERENCE: 'sankhya_theme',
@@ -37,13 +38,13 @@ export const COOKIE_KEYS = {
 // User session management
 export const UserCookies = {
   // Set user session
-  setUserSession: (userRole: string, userName: string, userId?: string, remember = false) => {
+  setUserSession: (userRole: string, userName: string, userEmail?: string, remember = false) => {
     const config = remember ? COOKIE_CONFIG.longTerm : COOKIE_CONFIG.session;
     
     Cookies.set(COOKIE_KEYS.USER_ROLE, userRole, config);
     Cookies.set(COOKIE_KEYS.USER_NAME, userName, config);
-    if (userId) {
-      Cookies.set(COOKIE_KEYS.USER_ID, userId, config);
+    if (userEmail) {
+      Cookies.set(COOKIE_KEYS.USER_EMAIL, userEmail, config);
     }
     Cookies.set(COOKIE_KEYS.REMEMBER_LOGIN, remember.toString(), config);
   },
@@ -53,7 +54,7 @@ export const UserCookies = {
     return {
       userRole: Cookies.get(COOKIE_KEYS.USER_ROLE) as "faculty" | "student" | "hod" | "admin" | undefined,
       userName: Cookies.get(COOKIE_KEYS.USER_NAME),
-      userId: Cookies.get(COOKIE_KEYS.USER_ID),
+      userEmail: Cookies.get(COOKIE_KEYS.USER_EMAIL),
       rememberLogin: Cookies.get(COOKIE_KEYS.REMEMBER_LOGIN) === 'true',
     };
   },
@@ -62,7 +63,7 @@ export const UserCookies = {
   clearUserSession: () => {
     Cookies.remove(COOKIE_KEYS.USER_ROLE);
     Cookies.remove(COOKIE_KEYS.USER_NAME);
-    Cookies.remove(COOKIE_KEYS.USER_ID);
+    Cookies.remove(COOKIE_KEYS.USER_EMAIL);
     Cookies.remove(COOKIE_KEYS.REMEMBER_LOGIN);
   },
 

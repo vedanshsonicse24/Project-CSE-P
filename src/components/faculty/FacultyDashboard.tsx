@@ -15,8 +15,10 @@ import {
 import { Timetable } from "../timetable/Timetable";
 import { TeacherTimetable } from "../timetable/TeacherTimetable";
 import { AttendancePage } from "../timetable/AttendancePage";
+import { AttendancePageNew } from "../attendance/AttendancePageNew";
 import { BOAManagement } from "../boa/BOAManagement";
 import { StudentManagement } from "../student/StudentManagement";
+import { FacultyAttendanceRedesigned } from "./FacultyAttendanceRedesigned";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -144,6 +146,23 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
           </CardContent>
         </Card>
       </div>
+
+      <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 cursor-pointer hover:shadow-lg transition-shadow">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-700">
+            <UserCheck className="h-5 w-5" />
+            Mark Attendance
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <p className="text-sm text-gray-600">Mark attendance for your classes and manage student records.</p>
+            <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setActiveSection('attendance')}>
+              Go to Attendance
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
@@ -344,7 +363,7 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
       case "dashboard":
         return renderDashboard();
       case "attendance":
-        return <TeacherTimetable onMarkAttendance={handleMarkAttendance} />;
+        return <FacultyAttendanceRedesigned onBack={() => setActiveSection("dashboard")} />;
       case "timetable":
         return <Timetable userRole="faculty" />;
       case "student-management":
