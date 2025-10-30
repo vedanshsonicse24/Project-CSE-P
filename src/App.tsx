@@ -361,7 +361,14 @@ export default function App() {
       />
 
       {/* Breadcrumb Navigation */}
-      {currentPage !== "home" && currentPage !== "login" && currentPage !== "coe" && !userRole && (
+      {currentPage !== "home" && 
+       currentPage !== "login" && 
+       currentPage !== "coe" && 
+       currentPage !== "cse-department" && 
+       currentPage !== "research" && 
+       currentPage !== "admissions" && 
+       currentPage !== "programs" && 
+       !userRole && (
         <Breadcrumb
           items={getBreadcrumbItems(
             currentPage,
