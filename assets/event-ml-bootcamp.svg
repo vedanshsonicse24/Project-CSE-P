@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="100%" height="100%" fill="#fff" />
+  <defs><linearGradient id="mb" x1="0" x2="1"><stop offset="0%" stop-color="#7cc6ff"/><stop offset="100%" stop-color="#1f7fd9"/></linearGradient></defs>
+  <circle cx="120" cy="140" r="80" fill="url(#mb)" opacity="0.95" />
+  <g transform="translate(240,80)" fill="#062a63" font-family="Poppins, Arial">
+    <text font-size="36" font-weight="700">ML Bootcamp</text>
+    <text y="36" font-size="14" fill="#4b5563">Hands-on models, pipelines & deployment</text>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="100%" height="100%" fill="#f6f9ff" />
+  <defs>
+    <linearGradient id="eh" x1="0" x2="1"><stop offset="0%" stop-color="#0b57d0"/><stop offset="100%" stop-color="#2b8cf6"/></linearGradient>
+  </defs>
+  <rect x="40" y="40" width="720" height="420" rx="20" fill="url(#eh)" opacity="0.12" />
+  <g transform="translate(60,60)" fill="#062a63" font-family="Poppins, Arial">
+    <text x="20" y="80" font-size="38" font-weight="700">AI Hackathon</text>
+    <text x="20" y="120" font-size="16" fill="#4b5563">48-hour rapid prototyping — models, demos & prizes</text>
+  </g>
+  <g transform="translate(520,160)">
+    <rect width="200" height="120" rx="12" fill="#fff" opacity="0.9"/>
+    <text x="20" y="42" font-family="Poppins, Arial" font-weight="700" fill="#0b57d0">Teams</text>
+    <text x="20" y="72" font-family="Poppins, Arial" fill="#334155">Mentors & Judges</text>
+  </g>
+</svg>

@@ -21,6 +21,7 @@ interface NewHeaderProps {
   onNavigateToContact?: () => void;
   onNavigateToNewsEvents?: () => void;
   onNavigateToCOE?: () => void;
+  onNavigateToCSA?: () => void;
   showHeroVideo?: boolean;
 }
 
@@ -44,6 +45,7 @@ export function NewHeader({
   onNavigateToContact,
   onNavigateToNewsEvents,
   onNavigateToCOE,
+  onNavigateToCSA,
   showHeroVideo 
 }: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
@@ -88,6 +90,16 @@ export function NewHeader({
         break;
       case "news":
         onNavigateToNewsEvents?.();
+        break;
+      case "education":
+        // Education & Research
+        onNavigateToResearch?.();
+        break;
+      case "admissions":
+        onNavigateToAdmissions?.();
+        break;
+      case "programs":
+        onNavigateToPrograms?.();
         break;
       default:
         onNavigateToSection?.(sectionKey);
@@ -577,6 +589,11 @@ export function NewHeader({
           width: 100%;
         }
 
+        .main-nav a:not(.btn-cta):active {
+          transform: translateY(1px);
+          transition: all 0.1s ease;
+        }
+
         .btn-cta {
           border: 2px solid var(--maroon-color);
           color: var(--maroon-color);
@@ -742,7 +759,11 @@ export function NewHeader({
                   >
                     <a href="#" style={{ cursor: 'pointer' }}>CLUBS</a>
                     <div className={`clubs-dropdown-content ${showClubsDropdown ? 'show' : ''}`}>
-                      <a href="#" onClick={(e) => { e.preventDefault(); setShowClubsDropdown(false); }}>
+                      <a href="#" onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowClubsDropdown(false); 
+                        onNavigateToCSA?.();
+                      }}>
                         C.S.A.
                       </a>
                       <a href="#" onClick={(e) => { 
@@ -936,20 +957,34 @@ export function NewHeader({
                   <div className="main-nav-left">
                     <a 
                       href="#" 
-                      className="active"
-                      onClick={(e) => { e.preventDefault(); onNavigateToCSEDepartment?.(); }}
+                      className={activeNavItem === "who-we-are" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("who-we-are");
+                        onNavigateToCSEDepartment?.(); 
+                      }}
                     >
                       WHO WE ARE
                     </a>
                     <a 
                       href="#" 
-                      onClick={(e) => { e.preventDefault(); onNavigateToResearch?.(); }}
+                      className={activeNavItem === "education" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("education");
+                        onNavigateToResearch?.(); 
+                      }}
                     >
                       EDUCATION & RESEARCH
                     </a>
                     <a 
                       href="#" 
-                      onClick={(e) => { e.preventDefault(); onNavigateToAdmissions?.(); }}
+                      className={activeNavItem === "admissions" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("admissions");
+                        onNavigateToAdmissions?.(); 
+                      }}
                     >
                       ADMISSIONS
                     </a>
@@ -958,7 +993,12 @@ export function NewHeader({
                                     <div className="main-nav-right">
                     <a 
                       href="#" 
-                      onClick={(e) => { e.preventDefault(); onNavigateToPrograms?.(); }}
+                      className={activeNavItem === "programs" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("programs");
+                        onNavigateToPrograms?.(); 
+                      }}
                     >
                       CSE PROGRAMS
                     </a>
@@ -981,7 +1021,8 @@ export function NewHeader({
                             <div
                               key={section.key}
                               className="search-dropdown-item"
-                              onClick={() => handleSearchSelect(section.key)}
+                              onMouseDown={() => handleSearchSelect(section.key)}
+                              onClick={(e) => e.preventDefault()}
                             >
                               {section.name}
                             </div>

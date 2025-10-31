@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="100%" height="100%" fill="#fff" />
+  <defs><linearGradient id="ar" x1="0" x2="1"><stop offset="0%" stop-color="#ff7a18"/><stop offset="100%" stop-color="#ffb86b"/></linearGradient></defs>
+  <circle cx="660" cy="120" r="80" fill="url(#ar)" opacity="0.12" />
+  <g transform="translate(60,120)" fill="#3b2b10" font-family="Poppins, Arial">
+    <text font-size="34" font-weight="700">AR/VR Innovation Jam</text>
+    <text y="36" font-size="14" fill="#4b5563">Immersive apps, prototypes & experiences</text>
+  </g>
+</svg>

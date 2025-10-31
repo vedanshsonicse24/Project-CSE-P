@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="100%" height="100%" fill="#fff" />
+  <defs><linearGradient id="iot" x1="0" x2="1"><stop offset="0%" stop-color="#0f766e"/><stop offset="100%" stop-color="#34d399"/></linearGradient></defs>
+  <rect x="40" y="40" rx="20" width="720" height="420" fill="url(#iot)" opacity="0.08" />
+  <g transform="translate(60,80)" fill="#064e47" font-family="Poppins, Arial">
+    <text font-size="34" font-weight="700">IoT & Edge Lab</text>
+    <text y="36" font-size="14" fill="#475569">Edge devices, sensors & real-time systems</text>
+  </g>
+</svg>

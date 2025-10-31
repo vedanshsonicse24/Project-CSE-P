@@ -844,7 +844,7 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, userRole }: 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-6">
             <motion.h1 
-              className="text-5xl mb-4"
+              className="text-5xl mb-4 font-bold"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
@@ -853,13 +853,13 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, userRole }: 
               Thank you for visiting the CSE Department Portal
             </motion.h1>
             <motion.p 
-              className="text-xl mb-8 max-w-2xl mx-auto"
+              className="text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
               initial={{ y: 30, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              a comprehensive platform for faculty, students, and administrators
+              A comprehensive platform for faculty, students, and administrators
               to streamline academic operations and enhance learning experiences
             </motion.p>
             <motion.div

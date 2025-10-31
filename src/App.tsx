@@ -22,13 +22,14 @@ import { ResearchPage } from "./components/pages/ResearchPage";
 import { ContactPage } from "./components/pages/ContactPage";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
-import { NewsAndEventsPage } from "./components/pages/NewsAndEventsPage";
-import { COEPage } from "./components/pages/COEPage";
+import { NewsEventsPage } from "./components/pages/NewsEventsPage";
+import CentreOfExcellence from "./components/pages/CentreOfExcellence";
+import CsaPage from "./components/pages/CsaPage";
 import { UserCookies, PreferenceCookies, CookieUtils } from "./utils/cookies";
 import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "about" | "admissions" | "life-at-ssipmt" | "programs" | "apply" | "cse-department" | "research" | "contact" | "news-events" | "student-register" | "faculty-register" | "coe";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "about" | "admissions" | "life-at-ssipmt" | "programs" | "apply" | "cse-department" | "research" | "contact" | "news-events" | "student-register" | "faculty-register" | "coe" | "csa";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -243,7 +244,7 @@ export default function App() {
     if (currentPage === "news-events") {
       return (
         <PageTransition>
-          <NewsAndEventsPage />
+          <NewsEventsPage />
         </PageTransition>
       );
     }
@@ -251,7 +252,7 @@ export default function App() {
     if (currentPage === "coe") {
       return (
         <PageTransition>
-          <COEPage />
+          <CentreOfExcellence />
         </PageTransition>
       );
     }
@@ -333,6 +334,14 @@ export default function App() {
       );
     }
 
+    if (currentPage === "csa") {
+      return (
+        <PageTransition>
+          <CsaPage />
+        </PageTransition>
+      );
+    }
+
     return null;
   };
 
@@ -406,20 +415,32 @@ export default function App() {
           }, 100);
         }}
         onNavigateToContact={() => setCurrentPage("contact")}
-        onNavigateToNewsEvents={() => setCurrentPage("news-events")}
+        onNavigateToNewsEvents={() => {
+          setCurrentPage("news-events");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
         onNavigateToCOE={() => setCurrentPage("coe")}
+        onNavigateToCSA={() => {
+          setCurrentPage("csa");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}
         showHeroVideo={currentPage === "home"}
       />
 
       {/* Breadcrumb Navigation */}
-      {currentPage !== "home" && 
-       currentPage !== "login" && 
-       currentPage !== "coe" && 
-       currentPage !== "cse-department" && 
-       currentPage !== "research" && 
-       currentPage !== "admissions" && 
-       currentPage !== "programs" && 
-       !userRole && (
+  {currentPage !== "home" && 
+   currentPage !== "login" && 
+   currentPage !== "coe" && 
+   currentPage !== "cse-department" && 
+   currentPage !== "research" && 
+   currentPage !== "admissions" && 
+   currentPage !== "programs" && 
+   currentPage !== "csa" && 
+   !userRole && (
         <Breadcrumb
           items={getBreadcrumbItems(
             currentPage,
