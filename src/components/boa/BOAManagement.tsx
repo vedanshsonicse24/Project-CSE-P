@@ -26,16 +26,17 @@ type BOAStatus = "pending" | "approved" | "rejected";
 interface BOARequest {
   id: string;
   eventName: string;
-  eventDate: string;
+  eventDateFrom: string;
+  eventDateTo: string;
   organizingDept: string;
   teacherInCharge: string;
+  numTheoryLectures: number;
+  numPracticalLectures: number;
   studentName: string;
   branch: string;
   semester: string;
   rollNo: string;
   section: string;
-  date: string;
-  numLectures: number;
   classInCharge: string;
   submissionDate: string;
   status: BOAStatus;
@@ -48,16 +49,17 @@ const sampleRequests: BOARequest[] = [
   {
     id: "BOA001",
     eventName: "National Coding Championship 2024",
-    eventDate: "2024-10-10",
+    eventDateFrom: "2024-10-10",
+    eventDateTo: "2024-10-12",
     organizingDept: "CSE Department",
     teacherInCharge: "Dr. Sharma",
+    numTheoryLectures: 2,
+    numPracticalLectures: 1,
     studentName: "Amit Kumar",
     branch: "Computer Science",
     semester: "6th",
     rollNo: "21CS001",
     section: "A",
-    date: "2024-10-10",
-    numLectures: 3,
     classInCharge: "Prof. Gupta",
     submissionDate: "2024-10-12",
     status: "pending",
@@ -65,16 +67,17 @@ const sampleRequests: BOARequest[] = [
   {
     id: "BOA002",
     eventName: "Tech Symposium 2024",
-    eventDate: "2024-10-08",
+    eventDateFrom: "2024-10-08",
+    eventDateTo: "2024-10-08",
     organizingDept: "ECE Department",
     teacherInCharge: "Dr. Patel",
+    numTheoryLectures: 1,
+    numPracticalLectures: 1,
     studentName: "Priya Sharma",
     branch: "Computer Science",
     semester: "6th",
     rollNo: "21CS002",
     section: "A",
-    date: "2024-10-08",
-    numLectures: 2,
     classInCharge: "Prof. Gupta",
     submissionDate: "2024-10-09",
     status: "approved",
@@ -84,16 +87,17 @@ const sampleRequests: BOARequest[] = [
   {
     id: "BOA003",
     eventName: "Sports Meet",
-    eventDate: "2024-10-05",
+    eventDateFrom: "2024-10-05",
+    eventDateTo: "2024-10-07",
     organizingDept: "Sports Department",
     teacherInCharge: "Mr. Singh",
+    numTheoryLectures: 3,
+    numPracticalLectures: 1,
     studentName: "Rahul Verma",
     branch: "Computer Science",
     semester: "6th",
     rollNo: "21CS003",
     section: "B",
-    date: "2024-10-05",
-    numLectures: 4,
     classInCharge: "Dr. Kumar",
     submissionDate: "2024-10-06",
     status: "rejected",
@@ -218,8 +222,12 @@ export function BOAManagement() {
               <TableCell>{request.studentName}</TableCell>
               <TableCell>{request.rollNo}</TableCell>
               <TableCell>{request.eventName}</TableCell>
-              <TableCell>{new Date(request.eventDate).toLocaleDateString()}</TableCell>
-              <TableCell>{request.numLectures}</TableCell>
+              <TableCell>
+                {new Date(request.eventDateFrom).toLocaleDateString()} - {new Date(request.eventDateTo).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                {request.numTheoryLectures + request.numPracticalLectures} (T:{request.numTheoryLectures} P:{request.numPracticalLectures})
+              </TableCell>
               <TableCell>{request.teacherInCharge}</TableCell>
               <TableCell>{request.classInCharge}</TableCell>
               <TableCell>{getStatusBadge(request.status)}</TableCell>
@@ -315,7 +323,7 @@ export function BOAManagement() {
           {selectedRequest && (
             <div className="space-y-6">
               <div className="space-y-3">
-                <h4 className="border-l-4 pl-3" style={{ borderColor: "#1e3a8a", color: "#1e3a8a" }}>
+                <h4 className="border-l-4 pl-3 text-black font-semibold" style={{ borderColor: "#1e3a8a" }}>
                   Event Details
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -324,8 +332,12 @@ export function BOAManagement() {
                     <p>{selectedRequest.eventName}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Event Date</p>
-                    <p>{new Date(selectedRequest.eventDate).toLocaleDateString()}</p>
+                    <p className="text-gray-600">Event Date From</p>
+                    <p>{new Date(selectedRequest.eventDateFrom).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Event Date To</p>
+                    <p>{new Date(selectedRequest.eventDateTo).toLocaleDateString()}</p>
                   </div>
                   <div>
                     <p className="text-gray-600">Organizing Department</p>
@@ -335,27 +347,19 @@ export function BOAManagement() {
                     <p className="text-gray-600">Teacher In-charge</p>
                     <p>{selectedRequest.teacherInCharge}</p>
                   </div>
-                </div>
-                <div className="mt-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => {
-                      if (selectedRequest) {
-                        setPhotoRequest(selectedRequest);
-                        setIsPhotoDialogOpen(true);
-                      }
-                    }}
-                    className="gap-1"
-                  >
-                    <Eye className="h-4 w-4" />
-                    View Event Photos
-                  </Button>
+                  <div>
+                    <p className="text-gray-600">Theory Lectures to be Benefited</p>
+                    <p>{selectedRequest.numTheoryLectures}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Practical Lectures to be Benefited</p>
+                    <p>{selectedRequest.numPracticalLectures}</p>
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <h4 className="border-l-4 pl-3" style={{ borderColor: "#1e3a8a", color: "#1e3a8a" }}>
+                <h4 className="border-l-4 pl-3 text-black font-semibold" style={{ borderColor: "#1e3a8a" }}>
                   Student Details
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -379,15 +383,11 @@ export function BOAManagement() {
                     <p className="text-gray-600">Section</p>
                     <p>{selectedRequest.section}</p>
                   </div>
-                  <div>
-                    <p className="text-gray-600">No. of Lectures</p>
-                    <p>{selectedRequest.numLectures}</p>
-                  </div>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <h4 className="border-l-4 pl-3" style={{ borderColor: "#1e3a8a", color: "#1e3a8a" }}>
+                <h4 className="border-l-4 pl-3 text-black font-semibold" style={{ borderColor: "#1e3a8a" }}>
                   Approval Information
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">

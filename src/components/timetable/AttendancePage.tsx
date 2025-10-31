@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { UserCheck, UserX, ArrowLeft, BookOpen, Users, Clock, Check, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Users, Clock, Check, X } from 'lucide-react';
 import { students as initialStudents } from './data';
 import { Student } from './types';
 import { Button } from '../ui/button';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface AttendancePageProps {
   slotId: string;
@@ -55,7 +55,7 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
   };
 
   const presentCount = Object.values(attendance).filter(Boolean).length;
-  const absentCount = students.length - presentCount;
+  const absentCount = Object.keys(attendance).length - presentCount;
 
   return (
     <div 
@@ -69,10 +69,11 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl p-6 backdrop-blur-md"
+          className="rounded-2xl p-6"
           style={{
             background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(8, 145, 178, 0.2) 100%)',
-            border: '1px solid rgba(59, 130, 246, 0.3)'
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            backdropFilter: 'blur(12px)'
           }}
         >
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -80,7 +81,7 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-6 w-6 text-white" />
-                <h2 className="text-white">Data Structures & Algorithms</h2>
+                <h2 className="text-white font-semibold text-xl">Data Structures & Algorithms</h2>
               </div>
               <div className="flex items-center gap-2 text-gray-300">
                 <Users className="h-4 w-4" />
@@ -96,22 +97,22 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
             <div className="flex gap-4">
               <div 
                 className="px-6 py-3 rounded-lg"
-                style={{ 
-                  backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                style={{
+                  background: 'rgba(34, 197, 94, 0.2)',
                   border: '1px solid rgba(34, 197, 94, 0.3)'
                 }}
               >
-                <div className="text-2xl text-green-300">{presentCount}</div>
+                <div className="text-2xl text-green-300 font-bold">{presentCount}</div>
                 <div className="text-xs text-green-200">Present</div>
               </div>
               <div 
                 className="px-6 py-3 rounded-lg"
-                style={{ 
-                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                style={{
+                  background: 'rgba(239, 68, 68, 0.2)',
                   border: '1px solid rgba(239, 68, 68, 0.3)'
                 }}
               >
-                <div className="text-2xl text-red-300">{absentCount}</div>
+                <div className="text-2xl text-red-300 font-bold">{absentCount}</div>
                 <div className="text-xs text-red-200">Absent</div>
               </div>
             </div>
@@ -123,7 +124,7 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex gap-3"
+          className="flex gap-2"
         >
           <Button
             onClick={markAllPresent}
@@ -154,19 +155,19 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
             const isPresent = attendance[student.rollNo] === true;
             
             let cardStyle = {
-              backgroundColor: 'rgba(55, 65, 81, 0.3)',
+              background: 'rgba(55, 65, 81, 0.3)',
               border: '2px solid rgba(75, 85, 99, 0.5)'
             };
             
             if (isMarked) {
               if (isPresent) {
                 cardStyle = {
-                  backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                  background: 'rgba(34, 197, 94, 0.2)',
                   border: '2px solid rgba(34, 197, 94, 0.5)'
                 };
               } else {
                 cardStyle = {
-                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                  background: 'rgba(239, 68, 68, 0.2)',
                   border: '2px solid rgba(239, 68, 68, 0.5)'
                 };
               }
@@ -183,7 +184,7 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
               >
                 <div className="space-y-3">
                   <div>
-                    <p className="text-white">{student.name}</p>
+                    <p className="text-white font-normal">{student.name}</p>
                     <p className="text-xs text-gray-400">{student.rollNo}</p>
                   </div>
                   
