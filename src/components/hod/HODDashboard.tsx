@@ -150,21 +150,36 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
             <CardTitle>Pending Approvals</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {pendingApprovals.map((approval) => (
-                <div key={approval.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm">{approval.type} - {approval.student}</p>
-                    <p className="text-xs text-gray-600">{approval.roll} • {approval.date}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-green-600">Approve</Button>
-                    <Button size="sm" variant="outline" className="text-red-600">Reject</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Button className="w-full mt-4" variant="outline">View All</Button>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Application</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Roll</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pendingApprovals.map((approval) => {
+                  const displayType = ["CV", "Achievement"].includes(approval.type) ? "BOA" : approval.type;
+                  return (
+                    <TableRow key={approval.id}>
+                      <TableCell>{displayType}</TableCell>
+                      <TableCell>{approval.student}</TableCell>
+                      <TableCell>{approval.roll}</TableCell>
+                      <TableCell>{approval.date}</TableCell>
+                      <TableCell>
+                        <span className={`text-sm ${approval.status === 'Approved' ? 'text-green-600' : approval.status === 'Rejected' ? 'text-red-600' : 'text-yellow-600'}`}>
+                          {approval.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            {/* Removed 'View All' / 'View Details' button per request */}
           </CardContent>
         </Card>
       </div>

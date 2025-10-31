@@ -239,11 +239,9 @@ export function StudentManagement() {
   const [attendanceFilter, setAttendanceFilter] = useState<string[]>([]);
   const [showBacklogs, setShowBacklogs] = useState(false);
   
-  // Monthly attendance dropdown states
+  // Monthly attendance dropdown states (semester & section removed)
   const [showMonthlyDropdown, setShowMonthlyDropdown] = useState(false);
   const [monthlyFilters, setMonthlyFilters] = useState({
-    semester: "3",
-    section: "A",
     month: "October",
     year: "2025",
   });
@@ -354,28 +352,91 @@ export function StudentManagement() {
   };
 
   const handleExport = () => {
-    const headers = ["Roll No", "Name", "Semester", "Section", "Attendance %", "CGPA"];
-    const rows = filteredStudents.map((s) => [
-      s.roll,
-      s.name,
-      s.semester,
-      s.section,
-      s.percent,
-      s.averageCGPA,
-    ]);
+    // Export overview + detailed View Details fields for each student
+    const headers = [
+      "Roll No",
+      "Name",
+      "Semester",
+      "Section",
+      "Attendance %",
+      "CGPA",
+      // View Details fields
+      "Enrollment Number",
+      "Date of Birth",
+      "Contact Number",
+      "Address",
+      "LinkedIn",
+      "GitHub",
+      "Active In",
+      "Mentor Name",
+      "Achievements",
+      "Backlogs",
+      "Father Name",
+      "Father Contact",
+      "Father Occupation",
+      "Mother Name",
+      "Mother Contact",
+      "Mother Occupation",
+      "Research Papers",
+      "Projects Made",
+    ];
 
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    // Helper to escape CSV values and wrap in quotes when needed
+    const esc = (val: any) => {
+      if (val === null || val === undefined) return "";
+      const text = typeof val === "string" ? val : String(val);
+      // double quotes inside field must be escaped by doubling
+      return `"${text.replace(/"/g, '""')}"`;
+    };
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "students_export.csv");
+    const rows = filteredStudents.map((s) => {
+      const achievements = (s.achievements || []).join(" | ");
+      const backlogs = (s.backs || [])
+        .map((b) => `${b.subject} (Sem ${b.semester})`)
+        .join(" | ");
+
+      return [
+        esc(s.roll),
+        esc(s.name),
+        esc(s.semester),
+        esc(s.section),
+        esc(s.percent + "%"),
+        esc(s.averageCGPA),
+        esc(s.enrollmentNumber),
+        esc(new Date(s.dateOfBirth).toLocaleDateString()),
+        esc(s.contactNumber),
+        esc(s.address),
+        esc(s.linkedIn),
+        esc(s.github),
+        esc(s.designation),
+        esc(s.mentorName),
+        esc(achievements),
+        esc(backlogs),
+        esc(s.fatherName),
+        esc(s.fatherContact),
+        esc(s.fatherOccupation),
+        esc(s.motherName),
+        esc(s.motherContact),
+        esc(s.motherOccupation),
+        esc(s.researchPapers),
+        esc(s.projectsMade),
+      ].join(",");
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  // Build dynamic filename from selected page filters
+  const semPart = semesterFilter && semesterFilter !== "all" ? semesterFilter : "all";
+  const secPart = sectionFilter && sectionFilter !== "all" ? sectionFilter : "all";
+  const filename = `student_details_${semPart}_${secPart}.csv`;
+  link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success("Student data exported successfully!");
+    toast.success("Student data (with details) exported successfully!");
   };
 
   const handleExportStudent = (student: Student) => {
@@ -567,51 +628,7 @@ export function StudentManagement() {
                 style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB" }}
               >
                 <div className="p-4 space-y-3">
-                  <div>
-                    <Label className="text-sm" style={{ color: "#333" }}>
-                      Semester
-                    </Label>
-                    <Select
-                      value={monthlyFilters.semester}
-                      onValueChange={(value: string) =>
-                        setMonthlyFilters({ ...monthlyFilters, semester: value })
-                      }
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[3, 4, 5, 6, 7, 8].map((sem) => (
-                          <SelectItem key={sem} value={sem.toString()}>
-                            {sem}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm" style={{ color: "#333" }}>
-                      Section
-                    </Label>
-                    <Select
-                      value={monthlyFilters.section}
-                      onValueChange={(value: string) =>
-                        setMonthlyFilters({ ...monthlyFilters, section: value })
-                      }
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {["A", "B", "C", "D"].map((sec) => (
-                          <SelectItem key={sec} value={sec}>
-                            {sec}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Semester and Section dropdowns removed as requested */}
 
                   <div>
                     <Label className="text-sm" style={{ color: "#333" }}>
