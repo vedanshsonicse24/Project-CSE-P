@@ -21,21 +21,18 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Toaster } from "../ui/sonner";
 import { BOASubmissionForm } from "../boa/BOASubmissionForm";
+import { AttendancePageNew } from "../attendance/AttendancePageNew";
+import { StudentAttendanceRedesigned } from "./StudentAttendanceRedesigned";
+import { Timetable } from "../timetable/Timetable";
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: User, label: "Profile", id: "profile" },
-  { icon: Upload, label: "Upload CV", id: "cv" },
-  { icon: Award, label: "Achievements", id: "achievements" },
-  { icon: FileText, label: "BOA Upload", id: "boa" },
-  { icon: Bell, label: "Notifications", id: "notifications" },
-];
+const sidebarItems: any[] = [];
 
 interface StudentDashboardProps {
   initialSection?: string;
+  onNavigateToProfile?: () => void;
 }
 
-export function StudentDashboard({ initialSection = "dashboard" }: StudentDashboardProps) {
+export function StudentDashboard({ initialSection = "dashboard", onNavigateToProfile }: StudentDashboardProps) {
   const [activeSection, setActiveSection] = useState(initialSection);
 
   // Update active section when prop changes
@@ -128,6 +125,25 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
           </CardContent>
         </Card>
 
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveSection('attendance')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-700">
+              <User className="h-5 w-5" />
+              View Attendance
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="text-center">
+                <p className="text-3xl font-bold text-green-600">{studentInfo.attendance}</p>
+                <p className="text-sm text-gray-600">Current Attendance</p>
+              </div>
+              <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => setActiveSection('attendance')}>
+                View Detailed Attendance
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
       </div>
 
@@ -147,6 +163,52 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
                 </div>
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-orange-600" />
+            My Achievements
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-3 text-blue-700">Academic Achievements</h4>
+              <div className="space-y-2">
+                {achievements.academic.map((achievement) => (
+                  <div key={achievement.id} className="flex items-start justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{achievement.title}</p>
+                      <p className="text-xs text-gray-600">{new Date(achievement.date).toLocaleDateString()}</p>
+                    </div>
+                    <Badge className={achievement.status === "Approved" ? "bg-green-500" : "bg-yellow-500"}>
+                      {achievement.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm mb-3 text-purple-700">Extracurricular Achievements</h4>
+              <div className="space-y-2">
+                {achievements.extracurricular.map((achievement) => (
+                  <div key={achievement.id} className="flex items-start justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{achievement.title}</p>
+                      <p className="text-xs text-gray-600">{new Date(achievement.date).toLocaleDateString()}</p>
+                    </div>
+                    <Badge className={achievement.status === "Approved" ? "bg-green-500" : "bg-yellow-500"}>
+                      {achievement.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -188,7 +250,7 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
               <Input placeholder="O+" />
             </div>
           </div>
-          <Button className="mt-6">Update Profile</Button>
+          <Button className="mt-6" onClick={onNavigateToProfile}>Update Profile</Button>
         </CardContent>
       </Card>
 
@@ -374,66 +436,39 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
         <CardContent>
           <div className="space-y-3">
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText className="h-6 w-6 text-blue-600 mt-1" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
                   <div>
-                    <p>Tech Fest 2025 - Clubs BOA</p>
-                    <p className="text-sm text-gray-600 mt-1">Submitted on 2025-10-10</p>
-                    <p className="text-xs text-gray-500 mt-1">Sent to: Faculty and HOD</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                        Faculty: Approved
-                      </Badge>
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs">
-                        HOD: Pending
-                      </Badge>
-                    </div>
+                    <p className="font-medium">Tech Fest 2025 - Clubs BOA</p>
+                    <p className="text-sm text-gray-600">Submitted on 2025-10-10</p>
                   </div>
                 </div>
-                <Button size="sm" variant="outline">View</Button>
+                <Badge variant="outline" className="text-black border-gray-300 text-base px-4 py-1">Pending</Badge>
               </div>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText className="h-6 w-6 text-blue-600 mt-1" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
                   <div>
-                    <p>Sports Day - Outdoor Event BOA</p>
-                    <p className="text-sm text-gray-600 mt-1">Submitted on 2025-10-05</p>
-                    <p className="text-xs text-gray-500 mt-1">Sent to: Faculty and HOD</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                        Faculty: Approved
-                      </Badge>
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                        HOD: Approved
-                      </Badge>
-                    </div>
+                    <p className="font-medium">Sports Day - Outdoor Event BOA</p>
+                    <p className="text-sm text-gray-600">Submitted on 2025-10-05</p>
                   </div>
                 </div>
-                <Button size="sm" variant="outline">View</Button>
+                <Badge variant="outline" className="text-black border-gray-300 text-base px-4 py-1">Approved</Badge>
               </div>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText className="h-6 w-6 text-blue-600 mt-1" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
                   <div>
-                    <p>Coding Competition - Event BOA</p>
-                    <p className="text-sm text-gray-600 mt-1">Submitted on 2025-10-12</p>
-                    <p className="text-xs text-gray-500 mt-1">Sent to: Faculty and HOD</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs">
-                        Faculty: Pending
-                      </Badge>
-                      <Badge variant="outline" className="bg-gray-100 text-gray-600 border-gray-300 text-xs">
-                        HOD: Waiting for Faculty
-                      </Badge>
-                    </div>
+                    <p className="font-medium">Coding Competition - Event BOA</p>
+                    <p className="text-sm text-gray-600">Submitted on 2025-10-12</p>
                   </div>
                 </div>
-                <Button size="sm" variant="outline">View</Button>
+                <Badge variant="outline" className="text-black border-gray-300 text-base px-4 py-1">Rejected</Badge>
               </div>
             </div>
           </div>
@@ -541,6 +576,8 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
         return renderDashboard();
       case "profile":
         return renderProfile();
+      case "timetable":
+        return <Timetable userRole="student" />;
       case "cv":
         return renderCV();
       case "achievements":
@@ -551,6 +588,8 @@ export function StudentDashboard({ initialSection = "dashboard" }: StudentDashbo
         return renderMentor();
       case "notifications":
         return renderNotifications();
+      case "attendance":
+        return <StudentAttendanceRedesigned onBack={() => setActiveSection("dashboard")} />;
       default:
         return renderDashboard();
     }

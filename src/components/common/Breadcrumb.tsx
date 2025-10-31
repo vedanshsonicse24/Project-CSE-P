@@ -97,11 +97,6 @@ export function getBreadcrumbItems(
     return items;
   }
 
-  if (currentPage === "news-events") {
-    items.push({ label: "News & Events" });
-    return items;
-  }
-
   if (currentPage === "alumni") {
     items.push({ label: "Alumni" });
     return items;
