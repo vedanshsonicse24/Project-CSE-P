@@ -242,8 +242,6 @@ export function StudentManagement() {
   // Monthly attendance dropdown states
   const [showMonthlyDropdown, setShowMonthlyDropdown] = useState(false);
   const [monthlyFilters, setMonthlyFilters] = useState({
-    semester: "3",
-    section: "A",
     month: "October",
     year: "2025",
   });
@@ -354,14 +352,62 @@ export function StudentManagement() {
   };
 
   const handleExport = () => {
-    const headers = ["Roll No", "Name", "Semester", "Section", "Attendance %", "CGPA"];
+    // Define comprehensive headers including all fields from View Details page
+    const headers = [
+      "Roll No",
+      "Name",
+      "Enrollment Number",
+      "Semester",
+      "Section",
+      "Attendance %",
+      "CGPA",
+      "Date of Birth",
+      "Email",
+      "Contact Number",
+      "Address",
+      "LinkedIn",
+      "GitHub",
+      "Designation",
+      "Research Papers",
+      "Projects Made",
+      "Father Name",
+      "Father Contact",
+      "Father Occupation",
+      "Mother Name",
+      "Mother Contact",
+      "Mother Occupation",
+      "Mentor Name",
+      "Achievements",
+      "Backlogs"
+    ];
+
+    // Map all student data including View Details fields
     const rows = filteredStudents.map((s) => [
       s.roll,
       s.name,
+      s.enrollmentNumber,
       s.semester,
       s.section,
       s.percent,
       s.averageCGPA,
+      s.dateOfBirth,
+      s.email,
+      s.contactNumber,
+      `"${s.address}"`, // Wrap in quotes to handle commas
+      s.linkedIn,
+      s.github,
+      s.designation,
+      s.researchPapers,
+      s.projectsMade,
+      s.fatherName,
+      s.fatherContact,
+      s.fatherOccupation,
+      s.motherName,
+      s.motherContact,
+      s.motherOccupation,
+      s.mentorName,
+      `"${s.achievements.join('; ')}"`, // Join achievements with semicolon and wrap in quotes
+      `"${s.backs.map(b => `${b.subject} (Sem ${b.semester})`).join('; ')}"` // Format backlogs and wrap in quotes
     ]);
 
     const csvContent =
@@ -371,7 +417,13 @@ export function StudentManagement() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "students_export.csv");
+    
+    // Create dynamic filename based on filters
+    const semesterPart = semesterFilter !== "all" ? semesterFilter : "all";
+    const sectionPart = sectionFilter !== "all" ? sectionFilter : "all";
+    const filename = `student_details_${semesterPart}_${sectionPart}.csv`;
+    
+    link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -567,52 +619,6 @@ export function StudentManagement() {
                 style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB" }}
               >
                 <div className="p-4 space-y-3">
-                  <div>
-                    <Label className="text-sm" style={{ color: "#333" }}>
-                      Semester
-                    </Label>
-                    <Select
-                      value={monthlyFilters.semester}
-                      onValueChange={(value: string) =>
-                        setMonthlyFilters({ ...monthlyFilters, semester: value })
-                      }
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[3, 4, 5, 6, 7, 8].map((sem) => (
-                          <SelectItem key={sem} value={sem.toString()}>
-                            {sem}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm" style={{ color: "#333" }}>
-                      Section
-                    </Label>
-                    <Select
-                      value={monthlyFilters.section}
-                      onValueChange={(value: string) =>
-                        setMonthlyFilters({ ...monthlyFilters, section: value })
-                      }
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {["A", "B", "C", "D"].map((sec) => (
-                          <SelectItem key={sec} value={sec}>
-                            {sec}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
                   <div>
                     <Label className="text-sm" style={{ color: "#333" }}>
                       Month

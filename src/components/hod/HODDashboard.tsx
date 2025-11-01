@@ -87,10 +87,10 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
   ];
 
   const pendingApprovals = [
-    { id: 1, type: "CV", student: "Amit Kumar", roll: "21CS001", date: "2025-10-12", status: "Pending", facultyApproval: "N/A" },
-    { id: 2, type: "Achievement", student: "Priya Sharma", roll: "21CS002", date: "2025-10-13", status: "Pending", facultyApproval: "N/A" },
-    { id: 3, type: "BOA - Clubs", student: "Sneha Patel", roll: "21CS004", date: "2025-10-14", status: "Pending", facultyApproval: "Approved" },
-    { id: 4, type: "BOA - Event", student: "Rahul Verma", roll: "21CS003", date: "2025-10-13", status: "Pending", facultyApproval: "Approved" },
+    { id: 1, type: "BOA", student: "Amit Kumar", roll: "21CS001", date: "2025-10-12", status: "Pending", facultyApproval: "N/A", class: "3A" },
+    { id: 2, type: "BOA", student: "Priya Sharma", roll: "21CS002", date: "2025-10-13", status: "Approved", facultyApproval: "N/A", class: "3B" },
+    { id: 3, type: "BOA", student: "Sneha Patel", roll: "21CS004", date: "2025-10-14", status: "Pending", facultyApproval: "Approved", class: "6A" },
+    { id: 4, type: "BOA", student: "Rahul Verma", roll: "21CS003", date: "2025-10-13", status: "Rejected", facultyApproval: "Approved", class: "6B" },
   ];
 
   const boaSubmissions = {
@@ -150,21 +150,45 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
             <CardTitle>Pending Approvals</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {pendingApprovals.map((approval) => (
-                <div key={approval.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm">{approval.type} - {approval.student}</p>
-                    <p className="text-xs text-gray-600">{approval.roll} • {approval.date}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-green-600">Approve</Button>
-                    <Button size="sm" variant="outline" className="text-red-600">Reject</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Button className="w-full mt-4" variant="outline">View All</Button>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Roll No</TableHead>
+                  <TableHead>Class</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pendingApprovals.map((approval) => (
+                  <TableRow key={approval.id}>
+                    <TableCell>
+                      <Badge variant="outline">{approval.type}</Badge>
+                    </TableCell>
+                    <TableCell>{approval.student}</TableCell>
+                    <TableCell>{approval.roll}</TableCell>
+                    <TableCell>{approval.class}</TableCell>
+                    <TableCell>{approval.date}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={
+                          approval.status === "Approved"
+                            ? "bg-green-50 text-green-700 border-green-200"
+                            : approval.status === "Rejected"
+                            ? "bg-red-50 text-red-700 border-red-200"
+                            : "bg-yellow-50 text-yellow-700 border-yellow-200"
+                        }
+                      >
+                        {approval.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>
