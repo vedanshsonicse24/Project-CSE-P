@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { NewHeader } from "./components/common/NewHeader";
 import { CookieConsentBanner } from "./components/common/CookieConsentBanner";
 import { Footer } from "./components/common/Footer";
@@ -37,11 +38,73 @@ type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profil
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [currentPage, setCurrentPage] = useState<Page>("home");
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [userName, setUserName] = useState<string>("");
   const [dashboardSection, setDashboardSection] = useState<string>("dashboard");
   const [cookiesEnabled, setCookiesEnabled] = useState<boolean>(false);
+
+  // React Router navigation helpers (component scope)
+  const pageToPath = (page: Page) => {
+    switch (page) {
+      case 'home': return '/';
+      case 'login': return '/login';
+      case 'dashboard': return '/dashboard';
+      case 'student-profile': return '/student-profile';
+      case 'faculty-profile': return '/faculty-profile';
+      case 'hod-profile': return '/hod-profile';
+      case 'faculty-info': return '/faculty-info';
+      case 'student-register': return '/register/student';
+      case 'faculty-register': return '/register/faculty';
+      case 'attendance-demo': return '/attendance-demo';
+      case 'about': return '/about';
+      case 'admissions': return '/admissions';
+      case 'apply': return '/apply';
+      case 'coe': return '/coe';
+      case 'csa': return '/csa';
+      case 'contact': return '/contact';
+      case 'cse-department': return '/cse-department';
+      case 'education-research': return '/education-research';
+      case 'life-at-ssipmt': return '/life-at-ssipmt';
+      case 'news-events': return '/news-events';
+      case 'programs': return '/programs';
+      case 'research': return '/research';
+      case 'alumni': return '/alumni';
+      default: return '/';
+    }
+  };
+
+  const pathToPage = (path: string): Page => {
+    const p = path.split('?')[0];
+    switch (p) {
+      case '/': return 'home';
+      case '/login': return 'login';
+      case '/dashboard': return 'dashboard';
+      case '/student-profile': return 'student-profile';
+      case '/faculty-profile': return 'faculty-profile';
+      case '/hod-profile': return 'hod-profile';
+      case '/faculty-info': return 'faculty-info';
+      case '/register/student': return 'student-register';
+      case '/register/faculty': return 'faculty-register';
+      case '/attendance-demo': return 'attendance-demo';
+      case '/about': return 'about';
+      case '/admissions': return 'admissions';
+      case '/apply': return 'apply';
+      case '/coe': return 'coe';
+      case '/csa': return 'csa';
+      case '/contact': return 'contact';
+      case '/cse-department': return 'cse-department';
+      case '/education-research': return 'education-research';
+      case '/life-at-ssipmt': return 'life-at-ssipmt';
+      case '/news-events': return 'news-events';
+      case '/programs': return 'programs';
+      case '/research': return 'research';
+      case '/alumni': return 'alumni';
+      default: return 'home';
+    }
+  };
 
   // Check for existing user session and restore from cookies
   useEffect(() => {
@@ -83,6 +146,12 @@ export default function App() {
         toast.success("Login saved! You'll stay logged in for 30 days.");
       }
     }
+    // Replace the login entry in history so Back/Forward won't return to it
+    try {
+      navigate(pageToPath('dashboard'), { replace: true });
+    } catch (err) {
+      // fallback: no-op
+    }
   };
 
   const handleLogout = () => {
@@ -90,13 +159,36 @@ export default function App() {
     setUserName("");
     setCurrentPage("home");
     setDashboardSection("dashboard");
-    
     // Clear cookies if enabled
     if (cookiesEnabled) {
       UserCookies.clearUserSession();
       toast.success("Logged out successfully!");
     }
+    // Ensure history navigates to home and clears sensitive entries
+    try {
+      navigate(pageToPath('home'), { replace: true });
+    } catch (err) {}
   };
+
+  // Sync currentPage with location changes (Back/Forward buttons)
+  useEffect(() => {
+    const mapped = pathToPage(location.pathname);
+    if (mapped !== currentPage) {
+      setCurrentPage(mapped);
+    }
+    // preserve dashboardSection for dashboard route if present
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  // If user is authenticated and somehow lands on /login (back/forward), redirect to dashboard
+  useEffect(() => {
+    if (userRole && location.pathname === pageToPath('login')) {
+      try {
+        navigate(pageToPath('dashboard'), { replace: true });
+      } catch (err) {}
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userRole, location.pathname]);
 
   const handleNavigateToSection = (section: string) => {
     setDashboardSection(section);
@@ -125,7 +217,17 @@ export default function App() {
 
   // Helper function to navigate and scroll to top
   const navigateToPage = (page: Page) => {
-    setCurrentPage(page);
+    // push to browser history and update location
+    try {
+      const path = pageToPath(page);
+      navigate(path);
+    } catch (err) {
+      // fallback: just set the state
+      console.warn('navigateToPage: router navigate failed, falling back to state navigation');
+      setCurrentPage(page);
+    }
+
+    // ensure view scrolls to top
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
   };
 
@@ -178,6 +280,8 @@ export default function App() {
               }
               
               toast.success(`Welcome ${data.fullName}! Your account has been created successfully.`);
+              // Replace history so the registration/login route is not reachable via Back
+              try { navigate(pageToPath('dashboard'), { replace: true }); } catch (err) {}
             }}
           />
         </PageTransition>
@@ -204,6 +308,8 @@ export default function App() {
               }
               
               toast.success(`Welcome ${data.fullName}! Your account has been created successfully.`);
+              // Replace history so the registration/login route is not reachable via Back
+              try { navigate(pageToPath('dashboard'), { replace: true }); } catch (err) {}
             }}
           />
         </PageTransition>

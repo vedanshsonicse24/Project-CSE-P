@@ -24,6 +24,11 @@ export function BOASubmissionForm() {
     submissionDate: "",
   });
 
+  // Track uploaded event photos separately (File objects)
+  const [eventPhotos, setEventPhotos] = useState<File[] | null>(null);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -42,6 +47,18 @@ export function BOASubmissionForm() {
     
     if (emptyFields.length > 0) {
       toast.error("Please fill in all required fields");
+      return;
+    }
+
+    // Ensure at least one event photo is uploaded
+    if (!eventPhotos || eventPhotos.length === 0) {
+      toast.error("Please upload at least one event photo");
+      return;
+    }
+
+    // Ensure there are no photo validation errors
+    if (photoError) {
+      toast.error(photoError);
       return;
     }
 
@@ -65,6 +82,12 @@ export function BOASubmissionForm() {
       classInCharge: "",
       submissionDate: "",
     });
+
+    // Reset photos
+    setEventPhotos(null);
+    // revoke previews
+    photoPreviews.forEach(url => URL.revokeObjectURL(url));
+    setPhotoPreviews([]);
   };
 
   return (
@@ -175,7 +198,7 @@ export function BOASubmissionForm() {
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="eventPhotos" className="flex items-center gap-2">
                     <Camera className="h-4 w-4" style={{ color: '#1e3a8a' }} />
-                    Upload Event Photos
+                    Upload Event Photos <span className="text-black">*</span>
                   </Label>
                   <Input
                     id="eventPhotos"
@@ -183,10 +206,54 @@ export function BOASubmissionForm() {
                     accept="image/*"
                     multiple
                     className="cursor-pointer"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      // clear previous errors
+                      setPhotoError(null);
+                      // revoke old previews
+                      photoPreviews.forEach(url => URL.revokeObjectURL(url));
+
+                      if (!files || files.length === 0) {
+                        setEventPhotos(null);
+                        setPhotoPreviews([]);
+                        return;
+                      }
+
+                      const arr: File[] = Array.from(files).slice(0, 5); // limit to 5
+
+                      // Validate sizes (< 1 MB per file)
+                      const oversized = arr.filter(f => f.size > 1024 * 1024);
+                      if (oversized.length > 0) {
+                        setEventPhotos(null);
+                        setPhotoPreviews([]);
+                        setPhotoError("Photo size must be below 1 MB.");
+                        return;
+                      }
+
+                      // All good: store files and create previews
+                      setEventPhotos(arr);
+                      const previews = arr.map((f) => URL.createObjectURL(f));
+                      setPhotoPreviews(previews);
+                    }}
+                    required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    You can upload multiple photos (JPEG, PNG). Maximum 5 photos allowed.
+                    You can upload multiple photos (JPEG, PNG). Maximum 5 photos allowed. {eventPhotos && eventPhotos.length > 0 ? `Selected: ${eventPhotos.length}` : "(No photos selected)"}
+                    {photoError && <span className="text-sm text-red-600 block mt-1">{photoError}</span>}
                   </p>
+                  {/* Previews */}
+                  {photoPreviews.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      {photoPreviews.map((src, idx) => (
+                        <img
+                          key={idx}
+                          src={src}
+                          alt={`preview-${idx}`}
+                          className="h-20 w-20 object-cover rounded-md border"
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -293,6 +360,7 @@ export function BOASubmissionForm() {
               type="submit"
               className="w-full text-white"
               style={{ backgroundColor: '#10B981' }}
+              disabled={!eventPhotos || eventPhotos.length === 0 || !!photoError}
             >
               Submit BOA Request
             </Button>

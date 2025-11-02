@@ -121,11 +121,11 @@ export function StudentRegistration({ onBack, onRegister }: StudentRegistrationP
   };
 
   const validateForm = (): boolean => {
-    // Check required fields
+    // Check required fields (mentorName is optional)
     const requiredFields: (keyof StudentRegistrationData)[] = [
       'fullName', 'rollNumber', 'enrollmentNumber', 'dateOfBirth', 'gender',
       'email', 'password', 'confirmPassword', 'phoneNumber', 'address',
-      'semester', 'section', 'mentorName', 'fatherName', 'fatherPhone',
+      'semester', 'section', 'fatherName', 'fatherPhone',
       'fatherOccupation', 'motherName', 'motherPhone', 'motherOccupation', 'profilePicture'
     ];
 
@@ -437,13 +437,12 @@ export function StudentRegistration({ onBack, onRegister }: StudentRegistrationP
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="mentorName">Mentor Name <span className="text-red-500">*</span></Label>
+                    <Label htmlFor="mentorName">Mentor Name</Label>
                     <Input
                       id="mentorName"
-                      placeholder="Enter your mentor's name"
+                      placeholder="Enter your mentor's name (optional)"
                       value={formData.mentorName}
                       onChange={(e) => handleInputChange('mentorName', e.target.value)}
-                      required
                       className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
