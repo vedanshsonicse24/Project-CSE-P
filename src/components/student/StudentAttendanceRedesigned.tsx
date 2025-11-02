@@ -93,33 +93,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
       );
     }
 
-    // Bar chart animation
-    if (barChartRef.current) {
-      tl.from(
-        barChartRef.current,
-        {
-          scaleY: 0,
-          transformOrigin: 'bottom',
-          duration: 0.8,
-          ease: 'elastic.out(1, 0.3)',
-        },
-        '-=0.2'
-      );
-    }
-
-    // Pie chart animation
-    if (pieChartRef.current) {
-      tl.from(
-        pieChartRef.current,
-        {
-          scale: 0.5,
-          opacity: 0,
-          duration: 0.7,
-          ease: 'back.out(1.7)',
-        },
-        '-=0.4'
-      );
-    }
+    // Removed chart entrance animations for bar and pie charts to make them load statically
 
     // BOA card animation
     if (boaCardRef.current) {
@@ -253,7 +227,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
             </Card>
           </div>
 
-          {/* Benefit of Attendance Added */}
+          {/* BOA Added */}
           <div
             ref={(el) => {
               if (el) summaryCardsRef.current[3] = el;
@@ -263,7 +237,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-gray-900 uppercase tracking-wide">Benefit of Attendance</p>
+                    <p className="text-sm font-bold text-gray-900 uppercase tracking-wide">BOA</p>
                     <p className="text-4xl font-black text-gray-900 mt-2">{statsData.totalBenefitOfAttendance}</p>
                     <p className="text-xs text-gray-900 font-semibold mt-1">Total entries added</p>
                   </div>
@@ -315,7 +289,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
                       }}
                       cursor={{ fill: 'rgba(99, 102, 241, 0.1)' }}
                     />
-                    <Bar dataKey="percentage" radius={[12, 12, 0, 0]} />
+                    <Bar dataKey="percentage" radius={[12, 12, 0, 0]} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <div className="flex items-center justify-center gap-6 mt-4">
@@ -360,8 +334,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
                       outerRadius={110}
                       fill="#8884d8"
                       dataKey="value"
-                      animationBegin={0}
-                      animationDuration={800}
+                      isAnimationActive={false}
                     >
                       {pieChartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -403,7 +376,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
           </div>
         </div>
 
-        {/* Benefit of Attendance Section */}
+        {/* BOA Section */}
         <div ref={boaCardRef}>
           <Card className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 shadow-xl">
             <CardHeader>
@@ -411,16 +384,16 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
                 <div className="bg-red-100 p-3 rounded-lg">
                   <Award className="h-7 w-7 text-red-600" />
                 </div>
-                Benefit of Attendance
+                BOA
               </CardTitle>
               <p className="text-sm text-gray-700 mt-2">
-                Benefit of Attendance entries are added to improve your attendance record when circumstances prevent your presence
+                BOA entries are added to improve your attendance record when circumstances prevent your presence
               </p>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between bg-white rounded-lg p-6 shadow-md">
                 <div>
-                  <p className="text-sm text-gray-600 font-medium uppercase tracking-wide">Total Benefit of Attendance Added</p>
+                  <p className="text-sm text-gray-600 font-medium uppercase tracking-wide">Total BOA Added</p>
                   <p className="text-5xl font-black text-red-600 mt-2">{statsData.totalBenefitOfAttendance}</p>
                   <p className="text-sm text-gray-500 mt-2">Across all subjects</p>
                 </div>
@@ -460,7 +433,7 @@ export function StudentAttendanceRedesigned({ onBack }: StudentAttendanceRedesig
                       </p>
                       {subject.benefitOfAttendance > 0 && (
                         <p className="text-xs text-red-600 font-semibold mt-1.5">
-                          + {subject.benefitOfAttendance} Benefit of Attendance added
+                          + {subject.benefitOfAttendance} BOA added
                         </p>
                       )}
                     </div>

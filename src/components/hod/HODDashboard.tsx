@@ -7,7 +7,7 @@ import {
   Upload,
   Calendar,
   Award,
-  Download,
+  
 } from "lucide-react";
 import { Timetable } from "../timetable/Timetable";
 import { TeacherTimetable } from "../timetable/TeacherTimetable";
@@ -358,29 +358,23 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Designation</TableHead>
                 <TableHead>Classes</TableHead>
                 <TableHead>Mentees</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {faculty.map((member) => (
                 <TableRow key={member.id}>
+                  <TableCell>
+                    <span className="text-sm font-mono text-gray-700">{member.id}</span>
+                  </TableCell>
                   <TableCell>{member.name}</TableCell>
                   <TableCell>{member.designation}</TableCell>
                   <TableCell>{member.classes}</TableCell>
                   <TableCell>{member.mentees}</TableCell>
-                  <TableCell>
-                    <Badge variant={member.leave === "Available" ? "outline" : "secondary"}>
-                      {member.leave}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Button size="sm" variant="outline">View</Button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -477,7 +471,7 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
 
   const renderApprovals = () => (
     <div className="space-y-6">
-      <h2>Student BOA Approvals</h2>
+      <h2>BOA Approvals</h2>
       <BOAManagement />
     </div>
   );
@@ -739,107 +733,7 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
     </div>
   );
 
-  const renderReports = () => (
-    <div className="space-y-6">
-      <h2>Export Reports</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Student Reports</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-between" variant="outline">
-              <span>Student List by Semester</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Attendance Report</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Academic Performance</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Backlog Report</span>
-              <Download className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Faculty Reports</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-between" variant="outline">
-              <span>Faculty List</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Workload Distribution</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Leave Records</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Research Publications</span>
-              <Download className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Department Reports</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-between" variant="outline">
-              <span>Overall Statistics</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Achievements Report</span>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button className="w-full justify-between" variant="outline">
-              <span>Research Summary</span>
-              <Download className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Custom Report</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm">Select Report Type</label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose report type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="faculty">Faculty</SelectItem>
-                  <SelectItem value="department">Department</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm">Date Range</label>
-              <Input type="date" />
-            </div>
-            <Button className="w-full">Generate Custom Report</Button>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
+  // Reports page removed — HOD reports functionality consolidated into other sections
 
   const handleMarkAttendance = (slotId: string) => {
     setSelectedSlotId(slotId);
@@ -880,8 +774,7 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
         return renderAchievements();
       case "research":
         return renderResearch();
-      case "reports":
-        return renderReports();
+      // 'reports' section removed
       default:
         return renderDashboard();
     }

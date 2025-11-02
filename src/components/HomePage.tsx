@@ -1,18 +1,54 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown, Edit3, Edit2, Save, X } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
+  onNavigateToPrograms?: (programType?: string) => void;
+  onNavigateToCSEDepartment?: () => void;
+  onNavigateToFacultyInfo?: () => void;
+  onNavigateToContact?: () => void;
+  onNavigateToNewsEvents?: () => void;
+  userRole?: "faculty" | "student" | "hod" | "admin" | "developer" | null;
 }
 
-export function HomePage({ onNavigateToLogin }: HomePageProps) {
+export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [clubsDropdownOpen, setClubsDropdownOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<number | null>(null);
+  const [editedProjects, setEditedProjects] = useState([
+    {
+      id: 1,
+      title: "Green Palna",
+      description: "Green Palna encourages environmental responsibility and health awareness by distributing saplings and promoting plant-based nutrition for sustainable living.",
+      contributors: "6 Students",
+      duration: "3 Months",
+      backgroundImage: "./assets/green-palna-bg.png",
+      projectLink: "#"
+    },
+    {
+      id: 2,
+      title: "Har Ghar Munga",
+      description: "Project Har Ghar Munga promotes sustainability and fights anemia by planting drumstick saplings and encouraging the use of moringa and fenugreek in diets.",
+      contributors: "6 Students",
+      duration: "4 Months",
+      backgroundImage: "./assets/har-ghar-munga-bg.png",
+      projectLink: "#"
+    },
+    {
+      id: 3,
+      title: "Harihar Pathsala",
+      description: "Harihar Pathsala promotes health, nutrition, and eco-awareness by giving children saplings to plant and spreading TB prevention and nutrition education.",
+      contributors: "8 Students",
+      duration: "5 Months",
+      backgroundImage: "./assets/harihar-pathsala-bg.png",
+      projectLink: "#"
+    }
+  ]);
 
   // Show scroll to top button when scrolling down
   useEffect(() => {
@@ -23,6 +59,14 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Load saved projects from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('studentProjects');
+    if (saved) {
+      setEditedProjects(JSON.parse(saved));
+    }
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -30,6 +74,32 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleEditProject = (id: number) => {
+    setEditingProject(id);
+  };
+
+  const handleSaveProject = (id: number) => {
+    localStorage.setItem('studentProjects', JSON.stringify(editedProjects));
+    setEditingProject(null);
+    toast.success('Project updated successfully!');
+  };
+
+  const handleCancelEdit = () => {
+    // Reload from localStorage or reset to original
+    const saved = localStorage.getItem('studentProjects');
+    if (saved) {
+      setEditedProjects(JSON.parse(saved));
+    }
+    setEditingProject(null);
+  };
+
+  const handleProjectChange = (id: number, field: 'title' | 'description' | 'contributors' | 'duration' | 'projectLink', value: string) => {
+    const updated = editedProjects.map(project => 
+      project.id === id ? { ...project, [field]: value } : project
+    );
+    setEditedProjects(updated);
   };
 
   const announcements = [
@@ -153,8 +223,25 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Stats Section */}
-      <section id="stats" className="py-16 bg-white">
+      <section id="stats" className="py-16 bg-white relative">
         <div className="container mx-auto px-6">
+          {/* Developer Edit Button */}
+          {userRole === "developer" && (
+            <div className="absolute top-4 right-4 z-10">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 bg-white/90 backdrop-blur-sm border-blue-200 text-blue-700 hover:bg-blue-50"
+                onClick={() => {
+                  alert("Content editing coming soon! This will open the stats editor.");
+                }}
+              >
+                <Edit3 className="h-4 w-4" />
+                Edit Stats
+              </Button>
+            </div>
+          )}
+          
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
             style={{ color: '#800000' }}
@@ -176,7 +263,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <div className="flex justify-center mb-4">
-                  <div className="p-4 rounded-full bg-blue-50">
+                  <div className="p-4 rounded-full bg-red-100">
                     <stat.icon className="h-8 w-8" style={{ color: '#800000' }} />
                   </div>
                 </div>
@@ -200,7 +287,24 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
       {/* Student Projects moved below Faculty (per request) */}
 
       {/* Faculty Section - Meet Our Faculty */}
-      <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white relative">
+        {/* Developer Edit Button */}
+        {userRole === "developer" && (
+          <div className="absolute top-4 right-4 z-20">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 bg-white/90 backdrop-blur-sm border-blue-200 text-blue-700 hover:bg-blue-50"
+              onClick={() => {
+                alert("Content editing coming soon! This will open the faculty editor.");
+              }}
+            >
+              <Edit3 className="h-4 w-4" />
+              Edit Faculty
+            </Button>
+          </div>
+        )}
+        
         {/* Section Heading */}
         <motion.div
           className="text-center mb-16"
@@ -288,63 +392,93 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         `}</style>
       </section>
 
-      {/* --- Student Projects Section --- */}
+      {/* Student Projects Section */}
       <div className="projects-section">
-        <div className="container">
+        <div className="container mx-auto px-6">
           <h2 className="section-title">Student Projects</h2>
-          
           <div className="projects-grid">
             
-            {/* Card 1 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/34495e/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>E-Commerce Platform</h3>
-                <p>A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">React</span>
-                  <span className="tech-tag">Node.js</span>
-                  <span className="tech-tag">MongoDB</span>
+            {editedProjects.map((project, index) => (
+              <motion.div 
+                key={project.id}
+                className="project-card" 
+                style={{ backgroundImage: `url(${project.backgroundImage})` }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <div className="project-content">
+                  {editingProject === project.id ? (
+                    // Edit Mode
+                    <div className="edit-form">
+                      <div className="edit-controls">
+                        <button onClick={() => handleSaveProject(project.id)} className="save-btn">
+                          <Save size={16} />
+                        </button>
+                        <button onClick={handleCancelEdit} className="cancel-btn">
+                          <X size={16} />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={project.title}
+                        onChange={(e) => handleProjectChange(project.id, 'title', e.target.value)}
+                        className="edit-title"
+                      />
+                      <textarea
+                        value={project.description}
+                        onChange={(e) => handleProjectChange(project.id, 'description', e.target.value)}
+                        className="edit-description"
+                        rows={3}
+                      />
+                      <div className="edit-stats">
+                        <input
+                          type="text"
+                          value={project.contributors}
+                          onChange={(e) => handleProjectChange(project.id, 'contributors', e.target.value)}
+                          className="edit-stat"
+                          placeholder="Contributors"
+                        />
+                        <input
+                          type="text"
+                          value={project.duration}
+                          onChange={(e) => handleProjectChange(project.id, 'duration', e.target.value)}
+                          className="edit-stat"
+                          placeholder="Duration"
+                        />
+                      </div>
+                      <input
+                        type="url"
+                        value={project.projectLink}
+                        onChange={(e) => handleProjectChange(project.id, 'projectLink', e.target.value)}
+                        className="edit-link"
+                        placeholder="Project Link"
+                      />
+                    </div>
+                  ) : (
+                    // View Mode
+                    <>
+                      {(userRole === 'admin' || userRole === 'hod') && (
+                        <button 
+                          onClick={() => handleEditProject(project.id)}
+                          className="edit-btn"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                      )}
+                      <h3 className="project-title">{project.title}</h3>
+                      <p className="project-description">{project.description}</p>
+                      <div className="project-stats">
+                        <span className="stat">{project.contributors}</span>
+                        <span className="stat">{project.duration}</span>
+                      </div>
+                      <a href={project.projectLink} className="project-btn">View Project</a>
+                    </>
+                  )}
                 </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/8e44ad/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>AI Health Scanner</h3>
-                <p>A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">TensorFlow</span>
-                  <span className="tech-tag">Keras</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div 
-              className="project-card"
-              style={{ backgroundImage: "url('https://placehold.co/600x400/2c3e50/white?text=Project+Image')" }}
-            >
-              <div className="project-card-content">
-                <h3>Campus Connect App</h3>
-                <p>A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.</p>
-                <div className="project-tags">
-                  <span className="tech-tag">Flutter</span>
-                  <span className="tech-tag">Firebase</span>
-                  <span className="tech-tag">Dart</span>
-                </div>
-                <a href="#" className="project-btn">View Project</a>
-              </div>
-            </div>
+              </motion.div>
+            ))}
 
           </div>
         </div>
@@ -354,7 +488,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         /* --- Student Projects Section --- */
         .projects-section {
           padding: 60px 20px;
-          background-color: #f4f4f4; /* Updated background to match body */
+          background-color: #f4f4f4;
           text-align: center;
         }
 
@@ -375,92 +509,201 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         }
 
         .project-card {
-          position: relative; /* Needed for the gradient overlay */
-          border-radius: 16px; /* More rounded corners */
-          overflow: hidden; /* Clips the image to the border-radius */
-          min-height: 450px; /* Gives the card a uniform height */
-          
-          /* Background image (set via inline style in JSX) */
+          position: relative;
+          border-radius: 16px;
+          overflow: hidden;
+          min-height: 450px;
           background-size: cover;
           background-position: center;
-          
-          /* Flex to push content to the bottom */
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end; /* Aligns content to the bottom */
-
-          color: #ffffff; /* All text inside is white */
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
+          cursor: pointer;
         }
 
         .project-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+          transform: translateY(-8px);
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* This is the dark gradient overlay at the bottom */
-        .project-card::before {
-          content: '';
+        .project-content {
           position: absolute;
           bottom: 0;
           left: 0;
-          width: 100%;
-          height: 70%;
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
-          z-index: 1; /* Sits below content, above image */
+          right: 0;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.1));
+          color: white;
+          padding: 30px 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          min-height: 100%;
         }
 
-        /* Wrapper for all text content */
-        .project-card-content {
-          position: relative;
-          z-index: 2; /* Sits on top of the gradient */
-          padding: 24px;
+        .edit-btn {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          backdrop-filter: blur(10px);
         }
 
-        .project-card h3 {
-          font-size: 1.7rem; /* Larger title */
+        .edit-btn:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        .edit-form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          height: 100%;
+          justify-content: space-between;
+        }
+
+        .edit-controls {
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+
+        .save-btn, .cancel-btn {
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          border-radius: 50%;
+          width: 35px;
+          height: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .save-btn:hover {
+          background: rgba(34, 197, 94, 0.3);
+        }
+
+        .cancel-btn:hover {
+          background: rgba(239, 68, 68, 0.3);
+        }
+
+        .edit-title {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          color: white;
+          font-size: 1.6rem;
           font-weight: 700;
-          color: #ffffff;
-          margin-top: 0;
-          margin-bottom: 8px;
+          font-family: 'Gotham', sans-serif;
+          backdrop-filter: blur(10px);
+        }
+
+        .edit-title::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .edit-description {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          color: white;
+          font-size: 0.95rem;
+          line-height: 1.6;
+          resize: vertical;
+          min-height: 80px;
+          backdrop-filter: blur(10px);
+          font-family: inherit;
+        }
+
+        .edit-description::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .edit-stats {
+          display: flex;
+          gap: 10px;
+        }
+
+        .edit-stat {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 8px 12px;
+          color: white;
+          font-size: 0.85rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .edit-stat::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .edit-link {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          color: white;
+          font-size: 0.9rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .edit-link::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .project-title {
+          font-size: 1.6rem;
+          font-weight: 700;
+          margin-bottom: 12px;
           font-family: 'Gotham', sans-serif;
         }
 
-        .project-card p {
+        .project-description {
           font-size: 0.95rem;
           line-height: 1.6;
-          color: #e0e0e0; /* Slightly off-white for description */
-          margin-bottom: 16px;
+          margin-bottom: 20px;
+          opacity: 0.9;
         }
 
-        /* New Tags section */
-        .project-tags {
+        .project-stats {
           display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
+          gap: 15px;
           margin-bottom: 20px;
         }
 
-        .tech-tag {
-          background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
-          backdrop-filter: blur(5px); /* Frosted glass effect */
-          color: #ffffff;
-          padding: 5px 12px;
-          border-radius: 99px; /* Pill shape */
-          font-size: 0.8rem;
+        .stat {
+          background: rgba(255, 255, 255, 0.2);
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 0.85rem;
           font-weight: 500;
+          backdrop-filter: blur(10px);
         }
 
-        /* New Button */
         .project-btn {
-          display: block;
-          background: #ffffff;
-          color: #000000;
+          align-self: flex-start;
+          background-color: white;
+          color: #333;
+          padding: 12px 24px;
+          border-radius: 25px;
           text-decoration: none;
-          padding: 12px 20px;
-          border-radius: 99px; /* Pill shape */
-          text-align: center;
+          font-size: 0.9rem;
           font-weight: 600;
           transition: transform 0.2s ease, background-color 0.2s ease;
           font-family: 'Gotham', sans-serif;
@@ -605,23 +848,23 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-6">
             <motion.h1 
-              className="text-5xl mb-4"
+              className="text-5xl mb-4 font-bold"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Welcome to CSE Department Portal
+              Thank you for visiting the CSE Department Portal
             </motion.h1>
             <motion.p 
-              className="text-xl mb-8 max-w-2xl mx-auto"
+              className="text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
               initial={{ y: 30, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               A comprehensive platform for faculty, students, and administrators
-              to streamline academic operations and enhance learning experiences.
+              to streamline academic operations and enhance learning experiences
             </motion.p>
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -637,154 +880,12 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
                 className="text-white hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: '#f97316' }}
               >
-                Login to Continue
+                Login to continue your journey
               </Button>
             </motion.div>
           </div>
         </div>
       </section>
-
-      {/* Enhanced Footer */}
-      <footer className="text-white py-16" style={{ backgroundColor: '#1e3a8a' }}>
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="flex items-center mb-4">
-                <img
-                  src="https://ssipmt.edu.in/assets/images/logo/logo.jpg?v2"
-                  alt="SSIPMT Logo"
-                  className="h-12 w-12 rounded-full mr-3"
-                />
-                <h3 className="text-xl font-bold">SSIPMT</h3>
-              </div>
-              <p className="text-gray-300 mb-4">
-                Excellence in technical education and research, fostering innovation and leadership for a better tomorrow.
-              </p>
-              <div className="flex space-x-4">
-                <motion.a 
-                  href="#" 
-                  className="text-gray-300 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Linkedin className="h-5 w-5" />
-                </motion.a>
-                <motion.a 
-                  href="#" 
-                  className="text-gray-300 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Youtube className="h-5 w-5" />
-                </motion.a>
-                <motion.a 
-                  href="#" 
-                  className="text-gray-300 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Mail className="h-5 w-5" />
-                </motion.a>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><button onClick={scrollToTop} className="text-gray-300 hover:text-white transition-colors text-left">Home</button></li>
-                <li 
-                  className="relative"
-                  onMouseEnter={() => setClubsDropdownOpen(true)}
-                  onMouseLeave={() => setClubsDropdownOpen(false)}
-                >
-                  <button 
-                    className="text-gray-300 hover:text-white transition-colors text-left flex items-center gap-1 w-full"
-                  >
-                    Clubs
-                    <ChevronDown className={`h-4 w-4 transition-transform ${clubsDropdownOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {clubsDropdownOpen && (
-                    <ul className="ml-4 mt-2 space-y-1">
-                      <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">COE</a></li>
-                      <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">CSA</a></li>
-                    </ul>
-                  )}
-                </li>
-                <li><button onClick={() => scrollToSection('faculty')} className="text-gray-300 hover:text-white transition-colors text-left">Faculty</button></li>
-                <li><button onClick={() => scrollToSection('announcements')} className="text-gray-300 hover:text-white transition-colors text-left">Announcements</button></li>
-                <li><button onClick={() => scrollToSection('contact')} className="text-gray-300 hover:text-white transition-colors text-left">Contact</button></li>
-              </ul>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <h3 className="text-lg font-bold mb-4">Programs</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li>B.Tech</li>
-                <li>M.Tech</li>
-                <li>PhD</li>
-              </ul>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <h3 className="text-lg font-bold mb-4">Contact Info</h3>
-              <div className="space-y-3 text-gray-300">
-                <div className="flex items-start">
-                  <MapPin className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                  <a 
-                    href="https://www.google.com/maps/place/Shri+Shankaracharya+Institute+Of+Professional+Management+%26+Technology,+Raipur/@21.1346018,81.6660459,17z/data=!3m1!4b1!4m16!1m9!4m8!1m0!1m6!1m2!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!2sP.O,+Old+Dhamtari+Road,+Sejabahar,+Mujgahan,+Chhattisgarh+493661!2m2!1d81.6686208!2d21.1346018!3m5!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!8m2!3d21.1346018!4d81.6686208!16s%2Fm%2F0_x9qhl?entry=ttu&g_ep=EgoyMDI1MTAyNi4wIKXMDSoASAFQAw%3D%3D"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-white hover:underline transition-colors cursor-pointer"
-                  >
-                    SSIPMT Campus, Raipur, Chhattisgarh, India
-                  </a>
-                </div>
-                <div className="flex items-center">
-                  <Phone className="h-5 w-5 mr-2 flex-shrink-0" />
-                  <span>+91 771 123 4567</span>
-                </div>
-                <div className="flex items-center">
-                  <Mail className="h-5 w-5 mr-2 flex-shrink-0" />
-                  <span>info@ssipmt.edu.in</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="border-t border-gray-600 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-300 text-sm mb-4 md:mb-0">
-                © 2025 SSIPMT Raipur. All rights reserved.
-              </p>
-              <div className="flex space-x-6 text-sm text-gray-300">
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-white transition-colors">Sitemap</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       {/* Scroll to Top Button */}
       {showScrollTop && (

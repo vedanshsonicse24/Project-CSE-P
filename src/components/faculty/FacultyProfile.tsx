@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -134,6 +134,131 @@ export function FacultyProfile() {
     );
   }
 
+  // Photo uploader component (internal)
+  function PhotoUploader() {
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
+    const [photoError, setPhotoError] = useState<string | null>(null);
+    const MAX_BYTES = 1024 * 1024; // 1 MB
+
+    useEffect(() => {
+      return () => {
+        if (preview) URL.revokeObjectURL(preview);
+      };
+    }, [preview]);
+
+  const onPhotoChange = (e: any) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setPhotoError("Please upload a valid image file");
+        toast.error("Please upload a valid image file");
+        return;
+      }
+      if (file.size > MAX_BYTES) {
+        setPhotoError("Please upload an image smaller than 1 MB");
+        toast.error("Please upload an image smaller than 1 MB");
+        return;
+      }
+      setPhotoError(null);
+      setPhotoFile(file);
+      const url = URL.createObjectURL(file);
+      setPreview(url);
+    };
+
+    const removePhoto = () => {
+      if (preview) URL.revokeObjectURL(preview);
+      setPreview(null);
+      setPhotoFile(null);
+      setPhotoError(null);
+    };
+
+    return (
+      <div className="w-full flex flex-col items-center gap-3">
+        <input id="photo-input" type="file" accept="image/*" onChange={onPhotoChange} className="hidden" />
+        <label htmlFor="photo-input" className="w-full">
+          <Button className="w-full">Upload Photo</Button>
+        </label>
+
+        {photoError && <p className="text-sm text-red-600">{photoError}</p>}
+
+        {preview && (
+          <div className="w-40 h-40 rounded-full overflow-hidden border border-gray-200">
+            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+          </div>
+        )}
+
+        {preview && (
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={removePhoto}>Replace</Button>
+            <Button variant="outline" onClick={removePhoto}>Remove</Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // CV uploader component (internal)
+  function CVUploader() {
+    const [cvFile, setCvFile] = useState<File | null>(null);
+    const [cvUrl, setCvUrl] = useState<string | null>(null);
+    const [cvError, setCvError] = useState<string | null>(null);
+    const MAX_BYTES = 1024 * 1024; // 1 MB
+
+    useEffect(() => {
+      return () => {
+        if (cvUrl) URL.revokeObjectURL(cvUrl);
+      };
+    }, [cvUrl]);
+
+  const onCvChange = (e: any) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (file.size > MAX_BYTES) {
+        setCvError("Please upload a file smaller than 1 MB");
+        toast.error("Please upload a file smaller than 1 MB");
+        return;
+      }
+      setCvError(null);
+      setCvFile(file);
+      const url = URL.createObjectURL(file);
+      setCvUrl(url);
+    };
+
+    const replaceCv = () => {
+      // trigger file input click
+      const el = document.getElementById("cv-input") as HTMLInputElement | null;
+      el?.click();
+    };
+
+    const removeCv = () => {
+      if (cvUrl) URL.revokeObjectURL(cvUrl);
+      setCvUrl(null);
+      setCvFile(null);
+      setCvError(null);
+    };
+
+    return (
+      <div className="mt-6">
+        <input id="cv-input" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={onCvChange} className="hidden" />
+        <div className="flex items-center gap-4">
+          <label htmlFor="cv-input">
+            <Button>Upload CV</Button>
+          </label>
+          {cvFile && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-700">{cvFile.name}</span>
+              <Button variant="ghost" onClick={() => cvUrl && window.open(cvUrl, "_blank")}>View</Button>
+              <Button variant="outline" onClick={replaceCv}>Replace</Button>
+              <Button variant="ghost" onClick={removeCv}>Remove</Button>
+            </div>
+          )}
+        </div>
+        {cvError && <p className="text-sm text-red-600">{cvError}</p>}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
@@ -145,11 +270,8 @@ export function FacultyProfile() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-900 via-blue-700 to-blue-900 bg-clip-text text-transparent mb-2">
-            Faculty Profile
+            Profile
           </h1>
-          <p className="text-gray-600 text-lg">
-            Manage your academic and professional information
-          </p>
         </motion.div>
 
         {/* Two-Column Layout */}
@@ -163,20 +285,22 @@ export function FacultyProfile() {
             transition={{ duration: 0.6 }}
           >
             
-            {/* Faculty Photo */}
+            {/* Photo */}
             <Card className="shadow-lg">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700">
                 <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <User className="h-5 w-5" />
-                  Faculty Photo
+                  Photo
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 flex justify-center">
+              <CardContent className="p-6 flex flex-col items-center gap-4">
                 <div className="p-2 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
                   <div className="rounded-full bg-white p-2">
                     <AnimatedAvatar size={140} />
                   </div>
                 </div>
+                {/* Photo upload controls */}
+                <PhotoUploader />
               </CardContent>
             </Card>
 
@@ -378,6 +502,7 @@ export function FacultyProfile() {
                     </Select>
                   </div>
                 </div>
+                {/* CV upload area moved to Academic Details (keeps layout consistent) */}
               </CardContent>
             </Card>
 
@@ -449,19 +574,9 @@ export function FacultyProfile() {
                     </Select>
                   </div>
                 </div>
-          {/* Upload CV Section */}
+          {/* Upload CV Section (replaced with new CVUploader component) */}
           <div className="md:col-span-2 mb-6">
-            <Label htmlFor="cvUpload" className="text-gray-700 font-medium flex items-center gap-2 mb-2">
-              <FileText className="h-4 w-4 text-purple-600" />
-              Upload CV
-            </Label>
-            <Input
-              id="cvUpload"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">Accepted formats: PDF, DOC, DOCX</p>
+            <CVUploader />
           </div>
               </CardContent>
             </Card>

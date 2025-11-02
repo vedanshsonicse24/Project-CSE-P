@@ -1,197 +1,21 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
-import { User, Calendar, Hash, Award, Mail, Phone, Users, Linkedin, Github, BookOpen, GraduationCap, MapPin, Briefcase, TrendingUp, FileText, Eye, EyeOff, Lock } from "lucide-react";
-import { toast } from "sonner";
-import { motion } from "motion/react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+// StudentProfile deprecated.
+// This file was retained as a stub to avoid accidental import breakage.
+// The app now uses `StudentProfileModern` located at `src/components/student/StudentProfileModern.tsx`.
 
-interface Backlog {
-  subject: string;
-  semester: string;
-}
-
-interface AttendanceRecord {
-  subject: string;
-  classesAttended: string;
-  totalClasses: string;
-}
-
-interface SemesterResult {
-  subject: string;
-  marks: string;
-  grade: string;
-}
-
-interface StudentProfileData {
-  // Personal Information
-  fullName: string;
-  rollNumber: string;
-  enrollmentNumber: string;
-  linkedIn: string;
-  github: string;
-  dateOfBirth: string;
-  gender: string;
-  profilePicture: string;
-  attendance: string;
-  designation: string;
+export function StudentProfile() {
+  // Deprecated placeholder. If this function is invoked, redirect to modern profile or return null.
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.warn('StudentProfile is deprecated. Use StudentProfileModern instead.');
+  }
+  return null;
   
   // Contact Information
   email: string;
   additionalEmail: string;
   phone: string;
   address: string;
-  
-  // Academic Info (Left Panel)
-  semester: string;
-  section: string;
-  mentorName: string;
-  backlogs: Backlog[];
-  attendanceRecords: AttendanceRecord[];
-  
-  // Parent Information
-  fatherName: string;
-  fatherPhone: string;
-  fatherOccupation: string;
-  motherName: string;
-  motherPhone: string;
-  motherOccupation: string;
-  
-  // Academic Details
-  currentSemesterResults: SemesterResult[];
-  averageCGPA: string;
-  researchPapersCount: string;
-  projectsCount: string;
-  
-  // Achievements
-  achievements: string;
-  
-  // Clubs
-  activeInClubs: string;
 }
-
-
-export function StudentProfile() {
-  const [formData, setFormData] = useState<StudentProfileData>({
-    // Personal Information
-    fullName: "Priya Sharma",
-    rollNumber: "21CS002",
-    enrollmentNumber: "0827CS211002",
-    linkedIn: "linkedin.com/in/priyasharma",
-    github: "github.com/priyasharma",
-    dateOfBirth: "2003-05-15",
-    gender: "Female",
-    profilePicture: "",
-    attendance: "92",
-    designation: "Student Representative",
-    
-    // Contact Information
-    email: "priya.sharma@student.edu",
-    additionalEmail: "",
-    phone: "+91 98765 43210",
-    address: "123, Model Town, Raipur, Chhattisgarh - 492001",
-    
-    // Academic Info
-    semester: "5",
-    section: "A",
-    mentorName: "Dr. Rajesh Kumar",
-    backlogs: [
-      { subject: "Data Structures", semester: "3" }
-    ],
-    attendanceRecords: [
-      { subject: "Machine Learning", classesAttended: "42", totalClasses: "45" },
-      { subject: "Database Systems", classesAttended: "40", totalClasses: "42" },
-      { subject: "Web Development", classesAttended: "38", totalClasses: "40" }
-    ],
-    
-    // Parent Information
-    fatherName: "Rajesh Sharma",
-    fatherPhone: "+91 98765 12345",
-    fatherOccupation: "Government Employee",
-    motherName: "Sunita Sharma",
-    motherPhone: "+91 98765 67890",
-    motherOccupation: "Teacher",
-    
-    // Academic Details
-    currentSemesterResults: [
-      { subject: "Machine Learning", marks: "85", grade: "A" },
-      { subject: "Database Systems", marks: "88", grade: "A" },
-      { subject: "Software Engineering", marks: "82", grade: "A" }
-    ],
-    averageCGPA: "8.5",
-    researchPapersCount: "2",
-    projectsCount: "5",
-    
-    // Achievements
-    achievements: "First Prize in Hackathon 2024\nBest Project Award - Web Development\nActive Member - Coding Club\nPublished Research Paper on AI",
-    
-    // Clubs
-    activeInClubs: "Coding Club\nRobotics Club",
-  });
-
-  // Password change states
-  const [showPasswordSection, setShowPasswordSection] = useState(false);
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: ""
-  });
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const handleInputChange = (field: keyof StudentProfileData, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const addBacklog = () => {
-    setFormData(prev => ({
-      ...prev,
-      backlogs: [...prev.backlogs, { subject: "", semester: "" }]
-    }));
-  };
-
-  const updateBacklog = (index: number, field: 'subject' | 'semester', value: string) => {
-    const newBacklogs = [...formData.backlogs];
-    newBacklogs[index][field] = value;
-    handleInputChange('backlogs', newBacklogs);
-  };
-
-  const removeBacklog = (index: number) => {
-    const newBacklogs = formData.backlogs.filter((_, i) => i !== index);
-    handleInputChange('backlogs', newBacklogs);
-  };
-
-  const addAttendanceRecord = () => {
-    setFormData(prev => ({
-      ...prev,
-      attendanceRecords: [...prev.attendanceRecords, { subject: "", classesAttended: "", totalClasses: "" }]
-    }));
-  };
-
-  const updateAttendanceRecord = (index: number, field: 'subject' | 'classesAttended' | 'totalClasses', value: string) => {
-    const newRecords = [...formData.attendanceRecords];
-    newRecords[index][field] = value;
-    handleInputChange('attendanceRecords', newRecords);
-  };
-
-  const removeAttendanceRecord = (index: number) => {
-    const newRecords = formData.attendanceRecords.filter((_, i) => i !== index);
-    handleInputChange('attendanceRecords', newRecords);
-  };
-
-  const addSemesterResult = () => {
-    setFormData(prev => ({
-      ...prev,
-      currentSemesterResults: [...prev.currentSemesterResults, { subject: "", marks: "", grade: "" }]
-    }));
-  };
 
   const updateSemesterResult = (index: number, field: 'subject' | 'marks' | 'grade', value: string) => {
     const newResults = [...formData.currentSemesterResults];

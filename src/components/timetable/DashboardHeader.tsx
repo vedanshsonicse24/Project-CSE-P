@@ -74,7 +74,7 @@ export function DashboardHeader({ onNavigate, currentPage }: DashboardHeaderProp
                 <DropdownMenuItem onClick={() => onNavigate('attendance')}>
                   Mark Attendance
                 </DropdownMenuItem>
-                <DropdownMenuItem>View Reports</DropdownMenuItem>
+                {/* View Reports removed per HOD portal cleanup */}
               </DropdownMenuContent>
             </DropdownMenu>
 

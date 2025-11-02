@@ -18,6 +18,8 @@ interface StudentProfileData {
   dateOfBirth: string;
   rollNumber: string;
   enrollmentNumber: string;
+  semester: string;
+  section: string;
   attendance: number;
   designation: string;
   linkedIn: string;
@@ -50,6 +52,8 @@ export function StudentProfileModern() {
     dateOfBirth: "",
     rollNumber: "",
     enrollmentNumber: "",
+    semester: "",
+    section: "",
     attendance: 0,
     designation: "",
     linkedIn: "",
@@ -202,6 +206,8 @@ export function StudentProfileModern() {
       dateOfBirth: "",
       rollNumber: "",
       enrollmentNumber: "",
+      semester: "",
+      section: "",
       attendance: 0,
       designation: "",
       linkedIn: "",
@@ -510,6 +516,66 @@ export function StudentProfileModern() {
                       `}
                       required
                     />
+                  </div>
+
+                  {/* Semester */}
+                  <div className="group relative">
+                    <Label htmlFor="semester" className={`text-sm font-medium ${textClass} flex items-center gap-2 mb-2`}>
+                      <GraduationCap className={`h-4 w-4 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                      Current Semester *
+                      {validatedFields.semester && <Check className="h-4 w-4 text-green-500 animate-scale-in" />}
+                    </Label>
+                    <Select 
+                      value={formData.semester} 
+                      onValueChange={(value: string) => handleInputChange("semester", value)}
+                    >
+                      <SelectTrigger className={`
+                        ${shakingFields.semester ? 'animate-shake border-red-500' : ''}
+                        ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'}
+                        transition-all duration-300 hover:scale-105
+                        ${validatedFields.semester ? 'border-green-500' : ''}
+                      `}>
+                        <SelectValue placeholder="Select semester" />
+                      </SelectTrigger>
+                      <SelectContent className={darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}>
+                        <SelectItem value="1">Semester 1</SelectItem>
+                        <SelectItem value="2">Semester 2</SelectItem>
+                        <SelectItem value="3">Semester 3</SelectItem>
+                        <SelectItem value="4">Semester 4</SelectItem>
+                        <SelectItem value="5">Semester 5</SelectItem>
+                        <SelectItem value="6">Semester 6</SelectItem>
+                        <SelectItem value="7">Semester 7</SelectItem>
+                        <SelectItem value="8">Semester 8</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Section */}
+                  <div className="group relative">
+                    <Label htmlFor="section" className={`text-sm font-medium ${textClass} flex items-center gap-2 mb-2`}>
+                      <Hash className={`h-4 w-4 ${darkMode ? 'text-cyan-400' : 'text-cyan-600'}`} />
+                      Section *
+                      {validatedFields.section && <Check className="h-4 w-4 text-green-500 animate-scale-in" />}
+                    </Label>
+                    <Select 
+                      value={formData.section} 
+                      onValueChange={(value: string) => handleInputChange("section", value)}
+                    >
+                      <SelectTrigger className={`
+                        ${shakingFields.section ? 'animate-shake border-red-500' : ''}
+                        ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'}
+                        transition-all duration-300 hover:scale-105
+                        ${validatedFields.section ? 'border-green-500' : ''}
+                      `}>
+                        <SelectValue placeholder="Select section" />
+                      </SelectTrigger>
+                      <SelectContent className={darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}>
+                        <SelectItem value="A">Section A</SelectItem>
+                        <SelectItem value="B">Section B</SelectItem>
+                        <SelectItem value="C">Section C</SelectItem>
+                        <SelectItem value="D">Section D</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {/* Attendance Progress Bar (Read-Only) */}

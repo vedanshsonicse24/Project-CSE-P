@@ -215,94 +215,7 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
     </div>
   );
 
-  const renderProfile = () => (
-    <div className="space-y-6">
-      <h2>My Profile</h2>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Personal Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label>Full Name</Label>
-              <Input defaultValue={studentInfo.name} />
-            </div>
-            <div className="space-y-2">
-              <Label>Roll Number</Label>
-              <Input defaultValue={studentInfo.roll} disabled />
-            </div>
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" defaultValue={studentInfo.email} />
-            </div>
-            <div className="space-y-2">
-              <Label>Phone</Label>
-              <Input defaultValue={studentInfo.phone} />
-            </div>
-            <div className="space-y-2">
-              <Label>Date of Birth</Label>
-              <Input type="date" />
-            </div>
-            <div className="space-y-2">
-              <Label>Blood Group</Label>
-              <Input placeholder="O+" />
-            </div>
-          </div>
-          <Button className="mt-6" onClick={onNavigateToProfile}>Update Profile</Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Family Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label>Father's Name</Label>
-              <Input placeholder="Enter father's name" />
-            </div>
-            <div className="space-y-2">
-              <Label>Father's Occupation</Label>
-              <Input placeholder="Enter occupation" />
-            </div>
-            <div className="space-y-2">
-              <Label>Mother's Name</Label>
-              <Input placeholder="Enter mother's name" />
-            </div>
-            <div className="space-y-2">
-              <Label>Emergency Contact</Label>
-              <Input placeholder="+91 XXXXX XXXXX" />
-            </div>
-            <div className="space-y-2">
-              <Label>Address</Label>
-              <Input placeholder="Enter address" className="md:col-span-2" />
-            </div>
-          </div>
-          <Button className="mt-6">Save Details</Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Upload Profile Photo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-6">
-            <Avatar className="h-24 w-24">
-              <AvatarFallback className="bg-blue-100 text-blue-700 text-2xl">PS</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-2">AI-based profile will auto-fetch details when photo is uploaded</p>
-              <Input type="file" accept="image/*" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  // The student dashboard no longer includes a separate 'profile' page/section here.
 
   const renderCV = () => (
     <div className="space-y-6">
@@ -574,8 +487,7 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
     switch (activeSection) {
       case "dashboard":
         return renderDashboard();
-      case "profile":
-        return renderProfile();
+      // 'profile' dashboard section removed (standalone profile page retained separately)
       case "timetable":
         return <Timetable userRole="student" />;
       case "cv":

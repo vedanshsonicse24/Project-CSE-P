@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { NewHeader } from "./components/common/NewHeader";
-import { Breadcrumb, getBreadcrumbItems } from "./components/common/Breadcrumb";
 import { CookieConsentBanner } from "./components/common/CookieConsentBanner";
+import { Footer } from "./components/common/Footer";
 import { HomePage } from "./components/HomePage";
 import { LoginPage } from "./components/LoginPage";
 import { StudentRegistration } from "./components/student/StudentRegistration";
@@ -13,6 +13,18 @@ import { StudentDashboard } from "./components/student/StudentDashboard";
 import { StudentProfileModern } from "./components/student/StudentProfileModern";
 import { HODDashboard } from "./components/hod/HODDashboard";
 import { FacultyInfoPage } from "./components/pages/FacultyInfoPage";
+import { AboutPage } from "./components/pages/AboutPage";
+import { AdmissionsPage } from "./components/pages/AdmissionsPage";
+import { ApplyPage } from "./components/pages/ApplyPage";
+import { COEPage } from "./components/pages/COEPage";
+import CsaPage from "./components/pages/CsaPage";
+import { ContactPage } from "./components/pages/ContactPage";
+import { CSEDepartmentPage } from "./components/pages/CSEDepartmentPage";
+import EducationResearchPage from "./components/pages/EducationResearchPage";
+import { LifeAtSSIPMTPage } from "./components/pages/LifeAtSSIPMTPage";
+import { NewsEventsPage } from "./components/pages/NewsEventsPage";
+import { ProgramsPage } from "./components/pages/ProgramsPage";
+import { ResearchPage } from "./components/pages/ResearchPage";
 import AttendanceScheduleDemo from "./components/faculty/AttendanceScheduleDemo";
 import { PageTransition } from "./components/common/PageTransition";
 import { Toaster } from "./components/ui/sonner";
@@ -21,7 +33,7 @@ import { toast } from "sonner";
 import "./styles/student-profile-animations.css";
 
 
-type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "hod-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register" | "attendance-demo";
+type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "hod-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register" | "attendance-demo" | "about" | "admissions" | "apply" | "coe" | "csa" | "contact" | "cse-department" | "education-research" | "life-at-ssipmt" | "news-events" | "programs" | "research";
 type UserRole = "faculty" | "student" | "hod" | "admin" | null;
 
 export default function App() {
@@ -111,11 +123,25 @@ export default function App() {
     }
   };
 
+  // Helper function to navigate and scroll to top
+  const navigateToPage = (page: Page) => {
+    setCurrentPage(page);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+  };
+
   const renderPage = () => {
     if (currentPage === "home") {
       return (
         <PageTransition>
-          <HomePage onNavigateToLogin={() => setCurrentPage("login")} />
+          <HomePage 
+            onNavigateToLogin={() => navigateToPage("login")} 
+            onNavigateToPrograms={() => navigateToPage("programs")}
+            onNavigateToCSEDepartment={() => navigateToPage("cse-department")}
+            onNavigateToFacultyInfo={() => navigateToPage("faculty-info")}
+            onNavigateToContact={() => navigateToPage("contact")}
+            onNavigateToNewsEvents={() => navigateToPage("news-events")}
+            userRole={userRole}
+          />
         </PageTransition>
       );
     }
@@ -248,6 +274,105 @@ export default function App() {
       );
     }
 
+    if (currentPage === "about") {
+      return (
+        <PageTransition>
+          <AboutPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "admissions") {
+      return (
+        <PageTransition>
+          <AdmissionsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "apply") {
+      return (
+        <PageTransition>
+          <ApplyPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "coe") {
+      return (
+        <PageTransition>
+          <COEPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "csa") {
+      return (
+        <PageTransition>
+          <CsaPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "contact") {
+      return (
+        <PageTransition>
+          <ContactPage 
+            onNavigateToAdmissions={() => navigateToPage("admissions")}
+            onNavigateToPrograms={() => navigateToPage("programs")}
+          />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "cse-department") {
+      return (
+        <PageTransition>
+          <CSEDepartmentPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "education-research") {
+      return (
+        <PageTransition>
+          <EducationResearchPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "life-at-ssipmt") {
+      return (
+        <PageTransition>
+          <LifeAtSSIPMTPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "news-events") {
+      return (
+        <PageTransition>
+          <NewsEventsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "programs") {
+      return (
+        <PageTransition>
+          <ProgramsPage />
+        </PageTransition>
+      );
+    }
+
+    if (currentPage === "research") {
+      return (
+        <PageTransition>
+          <ResearchPage />
+        </PageTransition>
+      );
+    }
+
     return null;
   };
 
@@ -261,40 +386,46 @@ export default function App() {
         userRole={userRole || undefined} 
         userName={userName || undefined} 
         onLogout={userRole ? handleLogout : undefined}
-        onNavigateToLogin={!userRole ? () => setCurrentPage("login") : undefined}
+        onNavigateToLogin={!userRole ? () => navigateToPage("login") : undefined}
         onNavigateToProfile={
           userRole === "student" 
-            ? () => setCurrentPage("student-profile") 
+            ? () => navigateToPage("student-profile") 
             : userRole === "faculty" 
-            ? () => setCurrentPage("faculty-profile")
+            ? () => navigateToPage("faculty-profile")
             : userRole === "hod"
-            ? () => setCurrentPage("hod-profile")
+            ? () => navigateToPage("hod-profile")
             : undefined
         }
         onNavigateToSection={userRole ? handleNavigateToSection : undefined}
-        onNavigateToHome={() => setCurrentPage("home")}
-        onNavigateToFacultyInfo={() => setCurrentPage("faculty-info")}
-        onNavigateToAlumni={() => setCurrentPage("alumni")}
+        onNavigateToHome={() => navigateToPage("home")}
+        onNavigateToFacultyInfo={() => navigateToPage("faculty-info")}
+        onNavigateToAlumni={() => navigateToPage("alumni")}
+        onNavigateToAbout={() => navigateToPage("about")}
+        onNavigateToAdmissions={() => navigateToPage("admissions")}
+        onNavigateToLifeAtSSIPMT={() => navigateToPage("life-at-ssipmt")}
+        onNavigateToPrograms={() => navigateToPage("programs")}
+        onNavigateToApply={() => navigateToPage("apply")}
+        onNavigateToCSEDepartment={() => navigateToPage("cse-department")}
+        onNavigateToResearch={() => navigateToPage("research")}
+        onNavigateToContact={() => navigateToPage("contact")}
+        onNavigateToNewsEvents={() => navigateToPage("news-events")}
+        onNavigateToCOE={() => navigateToPage("coe")}
+        onNavigateToCSA={() => navigateToPage("csa")}
         showHeroVideo={currentPage === "home"}
       />
 
-      {/* Breadcrumb Navigation */}
-      {currentPage !== "home" && currentPage !== "login" && currentPage !== "student-register" && currentPage !== "faculty-register" && !userRole && (
-        <Breadcrumb
-          items={getBreadcrumbItems(
-            currentPage,
-            userRole || undefined,
-            dashboardSection,
-            () => setCurrentPage("home"),
-            () => {
-              setCurrentPage("dashboard");
-              setDashboardSection("dashboard");
-            }
-          )}
-        />
-      )}
-
       {renderPage()}
+      
+      {/* Universal Footer */}
+      <Footer 
+        onNavigateToHome={() => navigateToPage("home")}
+        onNavigateToFacultyInfo={() => navigateToPage("faculty-info")}
+        onNavigateToNewsEvents={() => navigateToPage("news-events")}
+        onNavigateToContact={() => navigateToPage("contact")}
+        onNavigateToPrograms={() => navigateToPage("programs")}
+        onNavigateToCOE={() => navigateToPage("coe")}
+        onNavigateToCSA={() => navigateToPage("csa")}
+      />
       
       {/* Enhanced Toast Notifications */}
       <Toaster 

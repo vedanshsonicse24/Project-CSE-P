@@ -79,7 +79,7 @@ export function BOASubmissionForm() {
         
         <CardContent className="p-6">
           <h3 className="text-center mb-6" style={{ color: '#1e3a8a' }}>
-            Benefit of Attendance (BOA) - Single Entry Form
+            BOA - Single Entry Form
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -233,7 +233,7 @@ export function BOASubmissionForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="rollNo">Class Roll No. *</Label>
+                  <Label htmlFor="rollNo">Roll Number *</Label>
                   <Input
                     id="rollNo"
                     value={formData.rollNo}

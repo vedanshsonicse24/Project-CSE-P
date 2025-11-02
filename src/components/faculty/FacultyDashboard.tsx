@@ -147,13 +147,12 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
           <CardContent>
             <div className="space-y-4">
               {classes.map((cls) => (
-                <div key={cls.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div key={cls.id} className="flex items-center p-4 bg-gray-50 rounded-lg gap-4">
                   <div>
                     <p>{cls.code} - {cls.name}</p>
                     <p className="text-sm text-gray-600">Section {cls.section} • {cls.students} students</p>
                     <p className="text-xs text-gray-500 mt-1">{cls.time}</p>
                   </div>
-                  <Button size="sm">Start Class</Button>
                 </div>
               ))}
             </div>

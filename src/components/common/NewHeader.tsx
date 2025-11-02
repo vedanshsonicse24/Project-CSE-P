@@ -1,4 +1,4 @@
-﻿import { Search, ChevronDown } from "lucide-react";
+﻿import { Search } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 interface NewHeaderProps {
@@ -11,14 +11,103 @@ interface NewHeaderProps {
   onNavigateToHome?: () => void;
   onNavigateToFacultyInfo?: () => void;
   onNavigateToAlumni?: () => void;
+  onNavigateToAbout?: () => void;
+  onNavigateToAdmissions?: () => void;
+  onNavigateToLifeAtSSIPMT?: () => void;
+  onNavigateToPrograms?: () => void;
+  onNavigateToApply?: () => void;
+  onNavigateToCSEDepartment?: () => void;
+  onNavigateToResearch?: () => void;
+  onNavigateToContact?: () => void;
+  onNavigateToNewsEvents?: () => void;
+  onNavigateToCOE?: () => void;
+  onNavigateToCSA?: () => void;
   showHeroVideo?: boolean;
 }
 
-export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onNavigateToProfile, onNavigateToSection, onNavigateToHome, onNavigateToFacultyInfo, onNavigateToAlumni, showHeroVideo }: NewHeaderProps) {
+export function NewHeader({ 
+  userRole, 
+  userName, 
+  onLogout, 
+  onNavigateToLogin, 
+  onNavigateToProfile, 
+  onNavigateToSection, 
+  onNavigateToHome, 
+  onNavigateToFacultyInfo, 
+  onNavigateToAlumni,
+  onNavigateToAbout,
+  onNavigateToAdmissions,
+  onNavigateToLifeAtSSIPMT,
+  onNavigateToPrograms,
+  onNavigateToApply,
+  onNavigateToCSEDepartment,
+  onNavigateToResearch,
+  onNavigateToContact,
+  onNavigateToNewsEvents,
+  onNavigateToCOE,
+  onNavigateToCSA,
+  showHeroVideo 
+}: NewHeaderProps) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showInfoDropdown, setShowInfoDropdown] = useState(false);
-  const [facultyDropdownOpen, setFacultyDropdownOpen] = useState(false);
-  const [reportsDropdownOpen, setReportsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [showClubsDropdown, setShowClubsDropdown] = useState(false);
+  const [showFacultyDropdown, setShowFacultyDropdown] = useState(false);
+  
+  // Navigation sections for search
+  const searchableeSections = [
+    { name: "Home", key: "home" },
+    { name: "Who We Are", key: "about" },
+    { name: "Education & Research", key: "education" },
+    { name: "Admissions", key: "admissions" },
+    { name: "CSE Programs", key: "programs" },
+    { name: "Faculty Info", key: "faculty" },
+    { name: "Alumni", key: "alumni" },
+    { name: "Contact", key: "contact" },
+    { name: "News & Events", key: "news" },
+    { name: "Student Dashboard", key: "student-dashboard" },
+    { name: "Faculty Dashboard", key: "faculty-dashboard" },
+    { name: "HOD Dashboard", key: "hod-dashboard" },
+  ];
+
+  const filteredSections = searchableeSections.filter(section =>
+    section.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearchSelect = (sectionKey: string) => {
+    switch(sectionKey) {
+      case "home":
+        onNavigateToHome?.();
+        break;
+      case "faculty":
+        onNavigateToFacultyInfo?.();
+        break;
+      case "alumni":
+        onNavigateToAlumni?.();
+        break;
+      case "contact":
+        onNavigateToContact?.();
+        break;
+      case "news":
+        onNavigateToNewsEvents?.();
+        break;
+      case "education":
+        // Education & Research
+        onNavigateToResearch?.();
+        break;
+      case "admissions":
+        onNavigateToAdmissions?.();
+        break;
+      case "programs":
+        onNavigateToPrograms?.();
+        break;
+      default:
+        onNavigateToSection?.(sectionKey);
+    }
+    setSearchQuery("");
+    setShowSearchDropdown(false);
+  };
   
   const handleNavClick = (section: string) => {
     setActiveNavItem(section);
@@ -170,6 +259,80 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           display: block;
         }
 
+        .search-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .search-box {
+          position: relative;
+          display: flex;
+          align-items: center;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          padding: 6px 12px;
+          min-width: 200px;
+          transition: all 0.2s ease;
+        }
+
+        .search-box:focus-within {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-box-icon {
+          color: #64748b;
+          margin-right: 8px;
+          flex-shrink: 0;
+        }
+
+        .search-input {
+          border: none;
+          outline: none;
+          flex: 1;
+          font-size: 14px;
+          color: #1e293b;
+          background: transparent;
+        }
+
+        .search-input::placeholder {
+          color: #94a3b8;
+        }
+
+        .search-dropdown {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+          max-height: 300px;
+          overflow-y: auto;
+          margin-top: 4px;
+        }
+
+        .search-dropdown-item {
+          padding: 12px 16px;
+          cursor: pointer;
+          font-size: 14px;
+          color: #1e293b;
+          border-bottom: 1px solid #f1f5f9;
+          transition: background-color 0.2s ease;
+        }
+
+        .search-dropdown-item:hover {
+          background-color: #f8fafc;
+        }
+
+        .search-dropdown-item:last-child {
+          border-bottom: none;
+        }
+
         .info-dropdown {
           position: relative;
           display: inline-block;
@@ -212,6 +375,94 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           background-color: #f8f9fa;
           color: var(--maroon-color);
         }
+
+        .clubs-dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .clubs-dropdown-content {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: white;
+          min-width: 160px;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e5e5e5;
+          border-radius: 4px;
+          z-index: 1001;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .clubs-dropdown-content.show {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .clubs-dropdown-content a {
+          color: var(--grey-text);
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+          transition: background-color 0.2s ease;
+        }
+
+        .clubs-dropdown-content a:hover {
+          background-color: #f8f9fa;
+          color: var(--maroon-color);
+        }
+
+        .faculty-dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .faculty-dropdown-content {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: white;
+          min-width: 180px;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e5e5e5;
+          border-radius: 4px;
+          z-index: 1001;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .faculty-dropdown-content.show {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .faculty-dropdown-content a {
+          color: var(--grey-text);
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+          transition: background-color 0.2s ease;
+        }
+
+        .faculty-dropdown-content a:hover {
+          background-color: #f8f9fa;
+          color: var(--maroon-color);
+        }
+
+        /* Reports dropdown removed to clean HOD navigation */
 
         .main-header-container {
           position: relative;
@@ -384,6 +635,11 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           width: 100%;
         }
 
+        .main-nav a:not(.btn-cta):active {
+          transform: translateY(1px);
+          transition: all 0.1s ease;
+        }
+
         .btn-cta {
           border: 2px solid var(--maroon-color);
           color: var(--maroon-color);
@@ -403,6 +659,28 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
           height: auto;
           line-height: 1;
           z-index: 1;
+        }
+
+        /* Dashboard button spacing next to search */
+        .dashboard-btn {
+          margin-left: 12px;
+          padding: 8px 14px;
+          font-size: 13px;
+        }
+
+        /* Responsive: stack search and dashboard on small screens */
+        @media (max-width: 640px) {
+          .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+          }
+
+          .dashboard-btn {
+            width: 100%;
+            margin-left: 0;
+          }
         }
 
         .btn-cta::before {
@@ -467,14 +745,20 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         <div className="top-bar">
           <nav className="container">
             <div className="top-nav-left">
-              <a href="#">NEWS & EVENTS</a>
-              <a href="#">CAREERS</a>
+              <button 
+                onClick={onNavigateToNewsEvents}
+                className="text-white hover:opacity-85 transition-opacity text-sm uppercase cursor-pointer bg-transparent border-none"
+                style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.5px' }}
+              >
+                NEWS & EVENTS
+              </button>
+              {/* Careers link removed per design request */}
               <div 
                 className="info-dropdown"
                 onMouseEnter={() => setShowInfoDropdown(true)}
                 onMouseLeave={() => setShowInfoDropdown(false)}
               >
-                <a href="#" style={{ cursor: 'pointer' }}>INFO FOR</a>
+                <a href="#" style={{ cursor: 'pointer' }}>PEOPLE</a>
                 <div className={`info-dropdown-content ${showInfoDropdown ? 'show' : ''}`}>
                   <a 
                     href="#" 
@@ -498,6 +782,15 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                   </a>
                 </div>
               </div>
+              <a 
+                href="https://tourmkr.com/F1yU45CLVU/44749218p&339.7h&90.08t" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-white hover:opacity-85 transition-opacity text-sm uppercase"
+                style={{ marginLeft: '6px' }}
+              >
+                VIRTUAL TOUR
+              </a>
             </div>
             <div className="top-nav-right">
               {userRole ? (
@@ -522,20 +815,35 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                 </>
               ) : (
                 <>
-                  <a href="#">VIRTUAL TOUR</a>
-                  <a 
-                    href="#contact"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const element = document.getElementById('contact');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }}
+                  <button 
+                    onClick={onNavigateToContact}
+                    className="text-white hover:opacity-85 transition-opacity text-sm uppercase cursor-pointer"
                   >
                     CONTACT US
-                  </a>
-                  <a href="#">DIRECTORY</a>
+                  </button>
+                  <div 
+                    className="clubs-dropdown"
+                    onMouseEnter={() => setShowClubsDropdown(true)}
+                    onMouseLeave={() => setShowClubsDropdown(false)}
+                  >
+                    <a href="#" style={{ cursor: 'pointer' }}>CLUBS</a>
+                    <div className={`clubs-dropdown-content ${showClubsDropdown ? 'show' : ''}`}>
+                      <a href="#" onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowClubsDropdown(false); 
+                        onNavigateToCSA?.();
+                      }}>
+                        C.S.A.
+                      </a>
+                      <a href="#" onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowClubsDropdown(false); 
+                        onNavigateToCOE?.();
+                      }}>
+                        C.O.E.
+                      </a>
+                    </div>
+                  </div>
                   {onNavigateToLogin && (
                     <button 
                       onClick={onNavigateToLogin}
@@ -546,9 +854,6 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                   )}
                 </>
               )}
-              <div className="search-icon" aria-label="Search">
-                <Search size={16} />
-              </div>
             </div>
           </nav>
         </div>
@@ -556,8 +861,8 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
         <div className="main-header-container">
           <div className="main-header-bar">
             <nav className="main-nav">
-              {userRole ? (
-                // Logged in navigation with portal-specific buttons
+              {userRole && !showHeroVideo ? (
+                // Logged in navigation with portal-specific buttons (only when NOT on home page)
                 <>
                   <div className="main-nav-left">
                     <a 
@@ -594,7 +899,6 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                     )}
                     {userRole === 'student' && (
                       <>
-                        {/* Navigation profile link removed for student portal per request. Top-right header PROFILE button remains. */}
                         <a 
                           href="#" 
                           className={activeNavItem === "cv" ? "active" : ""} 
@@ -621,51 +925,45 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                           STUDENTS
                         </a>
                         <div 
-                          className="relative"
-                          onMouseEnter={() => setFacultyDropdownOpen(true)}
-                          onMouseLeave={() => setFacultyDropdownOpen(false)}
+                          className="faculty-dropdown"
+                          onMouseEnter={() => setShowFacultyDropdown(true)}
+                          onMouseLeave={() => setShowFacultyDropdown(false)}
                         >
                           <a 
                             href="#" 
-                            className={`${activeNavItem === "faculty" || activeNavItem === "facultydetails" || activeNavItem === "schedule" ? "active" : ""} flex items-center gap-1`} 
-                            onClick={(e) => { e.preventDefault(); }}
+                            className={activeNavItem === "faculty" || activeNavItem === "facultydetails" ? "active" : ""} 
+                            onClick={(e) => { e.preventDefault(); handleNavClick('faculty'); }}
                           >
-                            FACULTY
-                            <ChevronDown className={`h-3 w-3 transition-transform ${facultyDropdownOpen ? 'rotate-180' : ''}`} />
+                            FACULTY ▾
                           </a>
-                          {facultyDropdownOpen && (
-                            <div className="absolute left-0 top-full mt-1 bg-white rounded shadow-lg py-2 px-3 space-y-1 z-50 min-w-[180px]">
-                              <a 
-                                href="#" 
-                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
-                                onClick={(e) => { e.preventDefault(); handleNavClick('faculty'); setFacultyDropdownOpen(false); }}
-                              >
-                                Faculty Management
-                              </a>
-                              <a 
-                                href="#" 
-                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
-                                onClick={(e) => { e.preventDefault(); handleNavClick('facultydetails'); setFacultyDropdownOpen(false); }}
-                              >
-                                Faculty Details
-                              </a>
-                              <a 
-                                href="#" 
-                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
-                                onClick={(e) => { e.preventDefault(); handleNavClick('schedule'); setFacultyDropdownOpen(false); }}
-                              >
-                                My Schedule
-                              </a>
-                            </div>
-                          )}
+                          <div className={`faculty-dropdown-content ${showFacultyDropdown ? 'show' : ''}`}>
+                            <a 
+                              href="#" 
+                              onClick={(e) => { e.preventDefault(); handleNavClick('faculty'); setShowFacultyDropdown(false); }}
+                            >
+                              Faculty Mgmt
+                            </a>
+                            <a 
+                              href="#" 
+                              onClick={(e) => { e.preventDefault(); handleNavClick('facultydetails'); setShowFacultyDropdown(false); }}
+                            >
+                              Faculty Details
+                            </a>
+                            <a
+                              href="#"
+                              onClick={(e) => { e.preventDefault(); handleNavClick('schedule'); setShowFacultyDropdown(false); }}
+                            >
+                              My Schedule
+                            </a>
+                          </div>
                         </div>
-                        <a 
-                          href="#" 
-                          className={activeNavItem === "lectures" ? "active" : ""} 
-                          onClick={(e) => { e.preventDefault(); handleNavClick('lectures'); }}
-                        >
-                          LECTURE MGMT
-                        </a>
+                          <a 
+                            href="#" 
+                            className={activeNavItem === "lectures" ? "active" : ""} 
+                            onClick={(e) => { e.preventDefault(); handleNavClick('lectures'); }}
+                          >
+                            LECTURE MGMT
+                          </a>
                       </>
                     )}
                   </div>
@@ -703,7 +1001,7 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                           className={activeNavItem === "boa" ? "active" : ""} 
                           onClick={(e) => { e.preventDefault(); handleNavClick('boa'); }}
                         >
-                          UPLOAD BOA
+                          BOA UPLOAD
                         </a>
                         <a 
                           href="#" 
@@ -728,61 +1026,122 @@ export function NewHeader({ userRole, userName, onLogout, onNavigateToLogin, onN
                           className={activeNavItem === "approvals" ? "active" : ""} 
                           onClick={(e) => { e.preventDefault(); handleNavClick('approvals'); }}
                         >
-                          BOA MGMT
+                          APPROVALS
                         </a>
-                        <div 
-                          className="relative"
-                          onMouseEnter={() => setReportsDropdownOpen(true)}
-                          onMouseLeave={() => setReportsDropdownOpen(false)}
+                        <a
+                          href="#"
+                          className={activeNavItem === "achievements" ? "active" : ""}
+                          onClick={(e) => { e.preventDefault(); handleNavClick('achievements'); }}
                         >
-                          <a 
-                            href="#" 
-                            className={`${activeNavItem === "reports" || activeNavItem === "achievements" ? "active" : ""} flex items-center gap-1`} 
-                            onClick={(e) => { e.preventDefault(); }}
-                          >
-                            REPORTS
-                            <ChevronDown className={`h-3 w-3 transition-transform ${reportsDropdownOpen ? 'rotate-180' : ''}`} />
-                          </a>
-                          {reportsDropdownOpen && (
-                            <div className="absolute left-0 top-full mt-1 bg-white rounded shadow-lg py-2 px-3 space-y-1 z-50 min-w-[150px]">
-                              <a 
-                                href="#" 
-                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
-                                onClick={(e) => { e.preventDefault(); handleNavClick('reports'); setReportsDropdownOpen(false); }}
-                              >
-                                Reports
-                              </a>
-                              <a 
-                                href="#" 
-                                className="text-blue-900 hover:text-blue-600 transition-colors text-xs block py-1 font-semibold whitespace-nowrap"
-                                onClick={(e) => { e.preventDefault(); handleNavClick('achievements'); setReportsDropdownOpen(false); }}
-                              >
-                                Achievements
-                              </a>
-                            </div>
-                          )}
-                        </div>
+                          ACHIEVEMENTS
+                        </a>
+                        <a
+                          href="#"
+                          className={activeNavItem === "research" ? "active" : ""}
+                          onClick={(e) => { e.preventDefault(); handleNavClick('research'); }}
+                        >
+                          RESEARCH
+                        </a>
                       </>
                     )}
                   </div>
                 </>
               ) : (
-                // Public navigation
+                // Public navigation (shown when not logged in OR when on home page)
                 <>
                   <div className="main-nav-left">
-                    <a href="#" className="active">WHO WE ARE</a>
-                    <a href="#">EDUCATION & RESEARCH</a>
-                    <a href="#">ADMISSIONS</a>
+                    <a 
+                      href="#" 
+                      className={activeNavItem === "who-we-are" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("who-we-are");
+                        onNavigateToCSEDepartment?.(); 
+                      }}
+                    >
+                      WHO WE ARE
+                    </a>
+                    <a 
+                      href="#" 
+                      className={activeNavItem === "education" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("education");
+                        onNavigateToResearch?.(); 
+                      }}
+                    >
+                      EDUCATION & RESEARCH
+                    </a>
+                    <a 
+                      href="#" 
+                      className={activeNavItem === "admissions" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("admissions");
+                        onNavigateToAdmissions?.(); 
+                      }}
+                    >
+                      ADMISSIONS
+                    </a>
                   </div>
                   
-                  <div className="main-nav-right">
-                    <a href="#">LIFE AT SSIPMT</a>
-                    <a href="#">SSIPMT PROGRAMS</a>
+                                    <div className="main-nav-right">
                     <a 
-                      href="#"
+                      href="#" 
+                      className={activeNavItem === "programs" ? "active" : ""}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        setActiveNavItem("programs");
+                        onNavigateToPrograms?.(); 
+                      }}
                     >
-                      APPLY
+                      CSE PROGRAMS
                     </a>
+                    <div className="search-container">
+                      <div className="search-box">
+                        <Search size={16} className="search-box-icon" />
+                        <input
+                          type="text"
+                          placeholder="Search sections..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onFocus={() => setShowSearchDropdown(true)}
+                          onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
+                          className="search-input"
+                        />
+                      </div>
+                      {showSearchDropdown && searchQuery && filteredSections.length > 0 && (
+                        <div className="search-dropdown">
+                          {filteredSections.map((section) => (
+                            <div
+                              key={section.key}
+                              className="search-dropdown-item"
+                              onMouseDown={() => handleSearchSelect(section.key)}
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              {section.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                      {/* Dashboard button shown when a user is logged in */}
+                      {userRole && (
+                        <a
+                          href="#"
+                          className={activeNavItem === "dashboard" ? "active" : ""}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveNavItem("dashboard");
+                            // Keep functionality: navigate to the user's dashboard section
+                            onNavigateToSection?.("dashboard");
+                          }}
+                          style={{ marginLeft: '12px', fontSize: '13px', fontWeight: 600, padding: '0 4px', textTransform: 'uppercase', letterSpacing: '0.03em' }}
+                          aria-label="Go to Dashboard"
+                        >
+                          DASHBOARD
+                        </a>
+                      )}
                   </div>
                 </>
               )}
