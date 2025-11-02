@@ -45,6 +45,7 @@ export default function App() {
   const [userName, setUserName] = useState<string>("");
   const [dashboardSection, setDashboardSection] = useState<string>("dashboard");
   const [cookiesEnabled, setCookiesEnabled] = useState<boolean>(false);
+  const [coeScrollSection, setCoeScrollSection] = useState<string | undefined>(undefined);
 
   // React Router navigation helpers (component scope)
   const pageToPath = (page: Page) => {
@@ -217,6 +218,11 @@ export default function App() {
 
   // Helper function to navigate and scroll to top
   const navigateToPage = (page: Page) => {
+    // Clear COE scroll section when navigating to other pages
+    if (page !== "coe") {
+      setCoeScrollSection(undefined);
+    }
+    
     // push to browser history and update location
     try {
       const path = pageToPath(page);
@@ -231,6 +237,12 @@ export default function App() {
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
   };
 
+  // Special navigation function for COE with section parameter
+  const navigateToCOE = (section?: string) => {
+    setCoeScrollSection(section);
+    navigateToPage("coe");
+  };
+
   const renderPage = () => {
     if (currentPage === "home") {
       return (
@@ -242,6 +254,7 @@ export default function App() {
             onNavigateToFacultyInfo={() => navigateToPage("faculty-info")}
             onNavigateToContact={() => navigateToPage("contact")}
             onNavigateToNewsEvents={() => navigateToPage("news-events")}
+            onNavigateToCOE={(section) => navigateToCOE(section === "projects" ? "projects" : undefined)}
             userRole={userRole}
           />
         </PageTransition>
@@ -407,7 +420,7 @@ export default function App() {
     if (currentPage === "coe") {
       return (
         <PageTransition>
-          <COEPage />
+          <COEPage scrollToSection={coeScrollSection} />
         </PageTransition>
       );
     }

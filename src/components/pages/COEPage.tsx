@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Code2, Smartphone, Brain, Server, Lightbulb, Rocket, Users, Award, Calendar, Mail, Phone, MapPin, Github, Linkedin, Instagram, ChevronRight, ExternalLink, X, Target, Eye, CheckCircle } from "lucide-react";
 import videoSrc from "./4733-179738669_medium.mp4";
@@ -35,7 +35,11 @@ interface FacultyMember {
   email?: string;
 }
 
-export function COEPage() {
+interface COEPageProps {
+  scrollToSection?: string;
+}
+
+export function COEPage({ scrollToSection }: COEPageProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedFaculty, setSelectedFaculty] = useState<FacultyMember | null>(null);
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
@@ -124,6 +128,24 @@ export function COEPage() {
     ? projects 
     : projects.filter(p => p.category === projectFilter);
 
+  // Handle scrolling to specific section when component mounts
+  useEffect(() => {
+    if (scrollToSection === "projects") {
+      // Wait for component to fully render, then scroll to Project Showcase
+      const timer = setTimeout(() => {
+        const projectSection = document.getElementById("project-showcase");
+        if (projectSection) {
+          projectSection.scrollIntoView({ 
+            behavior: "smooth", 
+            block: "start" 
+          });
+        }
+      }, 500); // Small delay to ensure smooth rendering
+
+      return () => clearTimeout(timer);
+    }
+  }, [scrollToSection]);
+
   return (
     <div style={{ background: BG_LIGHT, minHeight: '100vh', fontFamily: 'Poppins, Inter, sans-serif' }}>
       {/* 1. HERO SECTION - Video Background Only */}
@@ -137,7 +159,6 @@ export function COEPage() {
             playsInline
             preload="metadata"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.4)' }}
             onError={(e) => {
               // Fallback to gradient background if video fails
               const target = e.target as HTMLVideoElement;
@@ -385,7 +406,7 @@ export function COEPage() {
       </section>
 
       {/* 4. PROJECT SHOWCASE */}
-      <section className="py-20 px-6 bg-white" style={{ borderTop: `1px solid rgba(0, 188, 212, 0.1)` }}>
+      <section id="project-showcase" className="py-20 px-6 bg-white" style={{ borderTop: `1px solid rgba(0, 188, 212, 0.1)` }}>
         <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -784,16 +805,6 @@ export function COEPage() {
                         <p className="font-medium" style={{ color: PRIMARY }}>{project}</p>
                       </div>
                     ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedTeamMember.email && (
-                <div>
-                  <h4 className="font-bold mb-2" style={{ color: PRIMARY }}>Contact</h4>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Mail size={18} style={{ color: ACCENT }} />
-                    <p>{selectedTeamMember.email}</p>
                   </div>
                 </div>
               )}

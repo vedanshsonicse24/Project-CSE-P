@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown, Edit3, Edit2, Save, X } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown, Edit3, Edit2, Save, X, ChevronRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
@@ -14,10 +14,11 @@ interface HomePageProps {
   onNavigateToFacultyInfo?: () => void;
   onNavigateToContact?: () => void;
   onNavigateToNewsEvents?: () => void;
+  onNavigateToCOE?: (section?: string) => void;
   userRole?: "faculty" | "student" | "hod" | "admin" | "developer" | null;
 }
 
-export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, userRole }: HomePageProps) {
+export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [editingProject, setEditingProject] = useState<number | null>(null);
   const [editedProjects, setEditedProjects] = useState([
@@ -402,11 +403,14 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
               <motion.div 
                 key={project.id}
                 className="project-card" 
-                style={{ backgroundImage: `url(${project.backgroundImage})` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                style={{ 
+                  backgroundImage: `url(${project.backgroundImage})`,
+                  cursor: editingProject === project.id ? 'default' : 'default'
+                }}
               >
                 <div className="project-content">
                   {editingProject === project.id ? (
@@ -461,7 +465,10 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
                     <>
                       {(userRole === 'admin' || userRole === 'hod') && (
                         <button 
-                          onClick={() => handleEditProject(project.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProject(project.id);
+                          }}
                           className="edit-btn"
                         >
                           <Edit2 size={16} />
@@ -473,7 +480,6 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
                         <span className="stat">{project.contributors}</span>
                         <span className="stat">{project.duration}</span>
                       </div>
-                      <a href={project.projectLink} className="project-btn">View Project</a>
                     </>
                   )}
                 </div>
@@ -481,6 +487,23 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
             ))}
 
           </div>
+          
+          {/* View More Button */}
+          <motion.div
+            className="view-more-container"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <button 
+              onClick={() => onNavigateToCOE?.("projects")}
+              className="view-more-btn"
+            >
+              View More Projects
+              <ChevronRight size={20} />
+            </button>
+          </motion.div>
         </div>
       </div>
 
@@ -696,22 +719,38 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
           backdrop-filter: blur(10px);
         }
 
-        .project-btn {
-          align-self: flex-start;
-          background-color: white;
-          color: #333;
-          padding: 12px 24px;
-          border-radius: 25px;
-          text-decoration: none;
-          font-size: 0.9rem;
+        /* View More Button */
+        .view-more-container {
+          margin-top: 40px;
+          display: flex;
+          justify-content: center;
+        }
+
+        .view-more-btn {
+          background: linear-gradient(135deg, #800000, #a00000);
+          color: white;
+          border: none;
+          padding: 14px 28px;
+          border-radius: 50px;
+          font-size: 1.1rem;
           font-weight: 600;
-          transition: transform 0.2s ease, background-color 0.2s ease;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          box-shadow: 0 4px 15px rgba(128, 0, 0, 0.3);
           font-family: 'Gotham', sans-serif;
         }
 
-        .project-btn:hover {
-          transform: scale(1.03);
-          background-color: #f0f0f0;
+        .view-more-btn:hover {
+          background: linear-gradient(135deg, #a00000, #c00000);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(128, 0, 0, 0.4);
+        }
+
+        .view-more-btn:active {
+          transform: translateY(0);
         }
       `}</style>
 
