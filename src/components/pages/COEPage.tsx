@@ -136,7 +136,7 @@ export function COEPage() {
             loop
             playsInline
             preload="metadata"
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ filter: 'brightness(0.4)' }}
             onError={(e) => {
               // Fallback to gradient background if video fails
@@ -152,16 +152,8 @@ export function COEPage() {
             <source src="/4733-179738669_medium.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* Fallback gradient background if video fails to load */}
-          <div 
-            className="absolute inset-0 opacity-0"
-            style={{ 
-              background: `linear-gradient(135deg, ${PRIMARY} 0%, ${BG_DARK} 100%)`,
-              transition: 'opacity 0.3s ease'
-            }}
-          ></div>
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0" style={{ background: 'rgba(10, 25, 48, 0.7)' }}></div>
+          {/* Fallback gradient background removed per request */}
+          {/* Dark overlay for better text readability (removed per request) */}
         </div>
       </section>
 
@@ -219,7 +211,7 @@ export function COEPage() {
             </motion.p>
 
             {/* Category Points - Redesigned as bullet points */}
-            <motion.div 
+            <motion.div
               className="py-8"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -227,24 +219,26 @@ export function COEPage() {
               viewport={{ once: true }}
             >
               <div className="max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Semantic bullet list for accessibility */}
+                <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0" role="list">
                   {["Web Development", "Innovation", "Govt Projects", "Teamwork", "IoT"].map((tag, i) => (
-                    <motion.div
+                    <motion.li
                       key={tag}
-                      className="flex items-center gap-3 p-3"
+                      className="flex items-start gap-3 p-3"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: 1.3 + i * 0.1 }}
                       viewport={{ once: true }}
                     >
-                      <div 
-                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      <span
+                        aria-hidden="true"
+                        className="mt-1 w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ background: ACCENT }}
-                      ></div>
+                      ></span>
                       <span className="text-lg font-medium text-gray-700">{tag}</span>
-                    </motion.div>
+                    </motion.li>
                   ))}
-                </div>
+                </ul>
               </div>
             </motion.div>
           </motion.div>
@@ -597,78 +591,7 @@ export function COEPage() {
         </div>
       </section>
 
-      {/* CONTACT INFO SECTION */}
-      <section className="py-16 px-6" style={{ background: '#f8fafc' }}>
-        <div className="max-w-7xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold text-center mb-12" 
-            style={{ color: PRIMARY }}
-          >
-            Get In Touch
-          </motion.h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {/* Email */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all"
-            >
-              <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${ACCENT}20` }}>
-                <Mail size={32} color={ACCENT} />
-              </div>
-              <h4 className="font-bold text-lg mb-2" style={{ color: PRIMARY }}>Email</h4>
-              <p className="text-gray-600">coe@ssipmt.edu</p>
-            </motion.div>
-
-            {/* Phone */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all"
-            >
-              <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${ACCENT}20` }}>
-                <Phone size={32} color={ACCENT} />
-              </div>
-              <h4 className="font-bold text-lg mb-2" style={{ color: PRIMARY }}>Phone</h4>
-              <p className="text-gray-600">+91-771-3501600</p>
-            </motion.div>
-
-            {/* Follow Us */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all"
-            >
-              <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${ACCENT}20` }}>
-                <Users size={32} color={ACCENT} />
-              </div>
-              <h4 className="font-bold text-lg mb-2" style={{ color: PRIMARY }}>Follow Us</h4>
-              <div className="flex justify-center mt-4">
-                <a 
-                  href="https://www.instagram.com/centre__of__excellence?igsh=aDIyb3BrbmIxcWx2" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110" 
-                  style={{ background: PRIMARY }}
-                >
-                  <Instagram size={20} color="white" />
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      {/* Contact section removed per user request */}
 
       {/* Project Modal */}
       {selectedProject && (
