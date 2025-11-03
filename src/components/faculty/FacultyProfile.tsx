@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { User, Calendar, Hash, Award, Mail, Phone, Users, BookOpen, GraduationCap, MapPin, Clock, Briefcase, Building } from "lucide-react";
+import { User, Calendar, Hash, Award, Mail, Phone, Users, BookOpen, GraduationCap, MapPin, Clock, Briefcase, Building, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 
@@ -165,8 +165,8 @@ export function FacultyProfile() {
             
             {/* Faculty Photo */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <User className="h-5 w-5" />
                   Faculty Photo
                 </CardTitle>
@@ -182,8 +182,8 @@ export function FacultyProfile() {
 
             {/* Academic Position */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <GraduationCap className="h-5 w-5" />
                   Academic Position
                 </CardTitle>
@@ -224,8 +224,8 @@ export function FacultyProfile() {
 
             {/* Mentoring Details */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-green-600 to-green-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <Users className="h-5 w-5" />
                   Mentoring Details
                 </CardTitle>
@@ -263,8 +263,8 @@ export function FacultyProfile() {
 
             {/* Additional Information */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <BookOpen className="h-5 w-5" />
                   Additional Information
                 </CardTitle>
@@ -313,8 +313,8 @@ export function FacultyProfile() {
 
             {/* Personal Information */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <User className="h-5 w-5" />
                   Personal Information
                 </CardTitle>
@@ -383,8 +383,8 @@ export function FacultyProfile() {
 
             {/* Academic Details */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <GraduationCap className="h-5 w-5" />
                   Academic Details
                 </CardTitle>
@@ -449,13 +449,27 @@ export function FacultyProfile() {
                     </Select>
                   </div>
                 </div>
+          {/* Upload CV Section */}
+          <div className="md:col-span-2 mb-6">
+            <Label htmlFor="cvUpload" className="text-gray-700 font-medium flex items-center gap-2 mb-2">
+              <FileText className="h-4 w-4 text-purple-600" />
+              Upload CV
+            </Label>
+            <Input
+              id="cvUpload"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">Accepted formats: PDF, DOC, DOCX</p>
+          </div>
               </CardContent>
             </Card>
 
             {/* Contact Information */}
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
-                <CardTitle className="text-xl flex items-center gap-2">
+              <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-700">
+                <CardTitle className="text-xl flex items-center gap-2 text-black font-bold">
                   <Mail className="h-5 w-5" />
                   Contact Information
                 </CardTitle>
@@ -526,9 +540,9 @@ export function FacultyProfile() {
               <Button
                 type="button"
                 onClick={handleSave}
-                className="flex-1 bg-gradient-to-r from-blue-900 to-blue-700 hover:from-blue-800 hover:to-blue-600 text-white font-semibold py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+                className="flex-1 bg-gray-400 text-gray-700 font-semibold py-6 text-lg shadow-none cursor-pointer"
               >
-                Save Faculty Profile
+                Save Profile
               </Button>
               <Button
                 type="button"

@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
-import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
-  LayoutDashboard,
   Users,
   BookOpen,
-  Calendar,
   FileCheck,
   Upload,
+  Calendar,
   Award,
-  FileText,
   Download,
-  CalendarDays,
 } from "lucide-react";
 import { Timetable } from "../timetable/Timetable";
 import { TeacherTimetable } from "../timetable/TeacherTimetable";
@@ -41,19 +37,6 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import { Toaster } from "../ui/sonner";
-
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: Users, label: "Student Management", id: "students" },
-  { icon: BookOpen, label: "Faculty Management", id: "faculty" },
-  { icon: Users, label: "Faculty Details", id: "facultydetails" },
-  { icon: Calendar, label: "Lecture Management", id: "lectures" },
-  { icon: CalendarDays, label: "Timetable", id: "timetable" },
-  { icon: Calendar, label: "My Schedule", id: "schedule" },
-  { icon: FileCheck, label: "Approvals", id: "approvals" },
-  { icon: Award, label: "Achievements", id: "achievements" },
-  { icon: Download, label: "Reports", id: "reports" },
-];
 
 interface HODDashboardProps {
   isViewOnly?: boolean;
@@ -126,8 +109,8 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
   };
 
   const lectureSwaps = [
-    { id: 1, date: "2025-10-16", class: "CSE301", originalFaculty: "Dr. Sharma", proxyFaculty: "Dr. Kumar", reason: "Conference", status: "Approved" },
-    { id: 2, date: "2025-10-17", class: "CSE302", originalFaculty: "Prof. Gupta", proxyFaculty: "Dr. Verma", reason: "Personal", status: "Pending" },
+    { id: 1, date: "2025-10-16", class: "CSE301", semester: "6", section: "A", originalFaculty: "Dr. Sharma", proxyFaculty: "Dr. Kumar", reason: "Conference", status: "Approved" },
+    { id: 2, date: "2025-10-17", class: "CSE302", semester: "6", section: "B", originalFaculty: "Prof. Gupta", proxyFaculty: "Dr. Verma", reason: "Personal", status: "Pending" },
   ];
 
   const renderDashboard = () => (
@@ -186,31 +169,7 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button className="h-24 flex flex-col gap-2" variant="outline">
-              <Upload className="h-6 w-6" />
-              <span className="text-sm">Upload BOA</span>
-            </Button>
-            <Button className="h-24 flex flex-col gap-2" variant="outline">
-              <Calendar className="h-6 w-6" />
-              <span className="text-sm">Manage Lectures</span>
-            </Button>
-            <Button className="h-24 flex flex-col gap-2" variant="outline">
-              <FileCheck className="h-6 w-6" />
-              <span className="text-sm">Review Approvals</span>
-            </Button>
-            <Button className="h-24 flex flex-col gap-2" variant="outline">
-              <Download className="h-6 w-6" />
-              <span className="text-sm">Export Reports</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Quick Actions removed as requested: Upload BOA, Manage Lectures, Review Approvals, Export Reports */}
     </div>
   );
 
@@ -455,46 +414,32 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
 
   const renderLectures = () => (
     <div className="space-y-6">
-      <h2>Lecture & Engage Management</h2>
 
       <Card>
         <CardHeader>
-          <CardTitle>Lecture Swap Requests</CardTitle>
+          <CardTitle>Engaged Lectures</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
-                <TableHead>Class</TableHead>
+                <TableHead>Semester</TableHead>
+                <TableHead>Section</TableHead>
                 <TableHead>Original Faculty</TableHead>
-                <TableHead>Engage Faculty</TableHead>
+                <TableHead>Engaged Faculty</TableHead>
                 <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {lectureSwaps.map((swap) => (
                 <TableRow key={swap.id}>
                   <TableCell>{swap.date}</TableCell>
-                  <TableCell>{swap.class}</TableCell>
+                  <TableCell>{swap.semester}</TableCell>
+                  <TableCell>{swap.section}</TableCell>
                   <TableCell>{swap.originalFaculty}</TableCell>
                   <TableCell>{swap.proxyFaculty}</TableCell>
                   <TableCell>{swap.reason}</TableCell>
-                  <TableCell>
-                    <Badge variant={swap.status === "Approved" ? "outline" : "secondary"}>
-                      {swap.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {swap.status === "Pending" && (
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="text-green-600">Approve</Button>
-                        <Button size="sm" variant="outline" className="text-red-600">Reject</Button>
-                      </div>
-                    )}
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -502,50 +447,7 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Assign Engage Lecture</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm">Select Faculty on Leave</label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select faculty" />
-                </SelectTrigger>
-                <SelectContent>
-                  {faculty.map((member) => (
-                    <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm">Select Engage Faculty</label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select engage" />
-                </SelectTrigger>
-                <SelectContent>
-                  {faculty.filter(f => f.leave === "Available").map((member) => (
-                    <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm">Class</label>
-              <Input placeholder="Enter class code" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm">Date</label>
-              <Input type="date" />
-            </div>
-          </div>
-          <Button className="mt-4">Assign Engage</Button>
-        </CardContent>
-      </Card>
+      {/* Assign Engage Lecture removed from HOD lectures page per request */}
     </div>
   );
 
@@ -963,11 +865,6 @@ export function HODDashboard({ isViewOnly = false, initialSection = "dashboard" 
 
   return (
     <div className="flex flex-col">
-      <DashboardSidebar
-        items={sidebarItems}
-        activeItem={activeSection}
-        onItemClick={setActiveSection}
-      />
       <main className="flex-1 p-8 bg-gray-50">
         {renderContent()}
       </main>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { DashboardSidebar } from "../common/DashboardSidebar";
 import { StatsCard } from "../common/StatsCard";
 import {
   LayoutDashboard,
@@ -12,13 +11,18 @@ import {
   CalendarDays,
   GraduationCap,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Timetable } from "../timetable/Timetable";
 import { TeacherTimetable } from "../timetable/TeacherTimetable";
 import { AttendancePage } from "../timetable/AttendancePage";
-import { AttendancePageNew } from "../attendance/AttendancePageNew";
 import { BOAManagement } from "../boa/BOAManagement";
 import { StudentManagement } from "../student/StudentManagement";
-import { FacultyAttendanceRedesigned } from "./FacultyAttendanceRedesigned";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -34,15 +38,6 @@ import {
 import { Input } from "../ui/input";
 import { Toaster } from "../ui/sonner";
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: UserCheck, label: "Attendance", id: "attendance" },
-  { icon: CalendarDays, label: "Timetable", id: "timetable" },
-  { icon: GraduationCap, label: "Student Management", id: "student-management" },
-  { icon: FileText, label: "Grade Behaviour", id: "grading" },
-  { icon: FileText, label: "BOA Approvals", id: "boa" },
-  { icon: Calendar, label: "Engage Lectures", id: "proxy" },
-];
 
 interface FacultyDashboardProps {
   initialSection?: string;
@@ -77,10 +72,60 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
     { id: 3, name: "Pooja Gupta", roll: "21CS020", performance: "Average", contact: "pooja@student.edu" },
   ];
 
-  const engageLectures = [
-    { id: 1, date: "2025-10-10", class: "CSE301", takenBy: "Dr. Sharma", reason: "Conference" },
-    { id: 2, date: "2025-10-12", class: "CSE302", takenBy: "Prof. Gupta", reason: "Personal Leave" },
+  const [engageLectures, setEngageLectures] = useState([
+    { id: 1, date: "2025-10-10", class: "CSE301", semester: "6", section: "A", takenBy: "Dr. Sharma", reason: "Conference" },
+    { id: 2, date: "2025-10-12", class: "CSE302", semester: "6", section: "B", takenBy: "Prof. Gupta", reason: "Personal Leave" },
+  ]);
+
+  // "To Engage" sample list (copied structure from HOD's Engaged Lectures)
+  const toEngage = [
+    { id: 1, date: "2025-11-01", semester: "6", section: "A", originalFaculty: "Dr. Sharma", proxyFaculty: "Dr. Kumar", reason: "Conference" },
+    { id: 2, date: "2025-11-03", semester: "6", section: "B", originalFaculty: "Prof. Gupta", proxyFaculty: "Dr. Verma", reason: "Personal" },
   ];
+
+  // Minimal faculty list for assign engage form
+  const faculty = [
+    { id: 1, name: "Dr. Rajesh Sharma", leave: "Available" },
+    { id: 2, name: "Dr. Priya Kumar", leave: "On Leave" },
+    { id: 3, name: "Prof. Amit Gupta", leave: "Available" },
+    { id: 4, name: "Dr. Neha Verma", leave: "Available" },
+  ];
+
+  // Engage lecture form state
+  const [engagedBy, setEngagedBy] = useState<string | undefined>(undefined);
+  const [engageTo, setEngageTo] = useState<string | undefined>(undefined);
+  const [semester, setSemester] = useState<string>("1");
+  const [section, setSection] = useState<string>("A");
+  const [subject, setSubject] = useState<string>("");
+  const [reason, setReason] = useState<string>("");
+  const [engageDate, setEngageDate] = useState<string>("");
+  const [period, setPeriod] = useState<string>("1");
+
+  const handleEngageLecture = () => {
+    const newLecture: any = {
+      id: Date.now(),
+      date: engageDate || new Date().toISOString().split("T")[0],
+      // class removed from engage form
+      takenBy: engageTo || "",
+      subject: subject || "",
+      reason: reason || "",
+      semester,
+      section,
+      period,
+      engagedBy,
+    };
+    setEngageLectures((prev) => [newLecture, ...prev]);
+
+    // reset form
+    setEngagedBy(undefined);
+    setEngageTo(undefined);
+    setSemester("1");
+    setSection("A");
+    setSubject("");
+    setReason("");
+    setEngageDate("");
+    setPeriod("1");
+  };
 
   const renderDashboard = () => (
     <div className="space-y-6">
@@ -146,23 +191,6 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
           </CardContent>
         </Card>
       </div>
-
-      <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 cursor-pointer hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-700">
-            <UserCheck className="h-5 w-5" />
-            Mark Attendance
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <p className="text-sm text-gray-600">Mark attendance for your classes and manage student records.</p>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setActiveSection('attendance')}>
-              Go to Attendance
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 
@@ -267,14 +295,50 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
 
   const renderEngage = () => (
     <div className="space-y-6">
-      <h2>Engage Lecture History</h2>
+
+      {/* To Engage (copied from HOD Engaged Lectures) */}
       <Card>
+        <CardHeader>
+          <CardTitle>To Engage</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Semester</TableHead>
+                <TableHead>Section</TableHead>
+                <TableHead>Original Faculty</TableHead>
+                <TableHead>Engaged Faculty</TableHead>
+                <TableHead>Reason</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {toEngage.map((swap) => (
+                <TableRow key={swap.id}>
+                  <TableCell>{swap.date}</TableCell>
+                  <TableCell>{swap.semester}</TableCell>
+                  <TableCell>{swap.section}</TableCell>
+                  <TableCell>{swap.originalFaculty}</TableCell>
+                  <TableCell>{swap.proxyFaculty}</TableCell>
+                  <TableCell>{swap.reason}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Engage Lecture History</CardTitle>
+        </CardHeader>
         <CardContent className="pt-6">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
-                <TableHead>Class</TableHead>
+                <TableHead>Semester</TableHead>
+                <TableHead>Section</TableHead>
                 <TableHead>Taken By</TableHead>
                 <TableHead>Reason</TableHead>
               </TableRow>
@@ -283,13 +347,110 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
               {engageLectures.map((lecture) => (
                 <TableRow key={lecture.id}>
                   <TableCell>{lecture.date}</TableCell>
-                  <TableCell>{lecture.class}</TableCell>
+                  <TableCell>{lecture.semester}</TableCell>
+                  <TableCell>{lecture.section}</TableCell>
                   <TableCell>{lecture.takenBy}</TableCell>
                   <TableCell>{lecture.reason}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+
+      {/* Engage Lecture (moved from HOD portal) */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <span className="text-black font-bold">Engage Lecture</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm">Engaged By</label>
+              <Select value={engagedBy} onValueChange={(v: string) => setEngagedBy(v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select engaged by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {faculty.map((member) => (
+                    <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">Engage To</label>
+              <Select value={engageTo} onValueChange={(v: string) => setEngageTo(v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select engage to" />
+                </SelectTrigger>
+                <SelectContent>
+                  {faculty.filter(f => f.leave === "Available").map((member) => (
+                    <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Class field removed per request */}
+
+            <div className="space-y-2">
+              <label className="text-sm">Semester</label>
+              <Select value={semester} onValueChange={(v: string) => setSemester(v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select semester" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 8 }, (_, i) => (i + 1).toString()).map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">Section</label>
+              <Select value={section} onValueChange={(v: string) => setSection(v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select section" />
+                </SelectTrigger>
+                <SelectContent>
+                  {['A','B','C','D'].map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">Subject to Engage</label>
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Enter subject" />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">Reason</label>
+              <textarea
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                className="w-full border rounded px-3 py-2 text-sm"
+                placeholder="Enter reason for engagement (e.g., conference, personal leave, etc.)"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">Date</label>
+              <Input type="date" value={engageDate} onChange={(e) => setEngageDate(e.target.value)} />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">Period Number</label>
+              <Input type="number" min={1} max={10} value={period} onChange={(e) => setPeriod(e.target.value)} />
+            </div>
+          </div>
+          <Button className="mt-4" onClick={handleEngageLecture}>Engage Lecture</Button>
         </CardContent>
       </Card>
     </div>
@@ -363,7 +524,7 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
       case "dashboard":
         return renderDashboard();
       case "attendance":
-        return <FacultyAttendanceRedesigned onBack={() => setActiveSection("dashboard")} />;
+        return <TeacherTimetable onMarkAttendance={handleMarkAttendance} />;
       case "timetable":
         return <Timetable userRole="faculty" />;
       case "student-management":
@@ -385,11 +546,6 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
 
   return (
     <div className="flex flex-col">
-      <DashboardSidebar
-        items={sidebarItems}
-        activeItem={activeSection}
-        onItemClick={setActiveSection}
-      />
       <main className="flex-1 p-8 bg-gray-50">
         {renderContent()}
       </main>

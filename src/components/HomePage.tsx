@@ -3,6 +3,7 @@ import { Card, CardContent } from "./ui/card";
 import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
+import { FacultyCarousel3D } from "./common/FacultyCarousel3D";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 
@@ -68,6 +69,7 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
 
   const facultyData = [
     { name: "Dr. Anand Tamrakar", role: "HOD", img: "/images/hod.jpg" },
+    { name: "Mr. Sourabh Mishra", role: "Assistant Professor", img: "/images/sourabh.jpg" },
     { name: "Mrs. Keshika Jangde", role: "Assistant Professor", img: "/images/fac1.jpg" },
     { name: "Ms. Jyoti Gautam", role: "Assistant Professor", img: "/images/fac2.jpg" },
     { name: "Mr. Tegendra Kumar", role: "Assistant Professor", img: "/images/fac3.jpg" },
@@ -199,93 +201,266 @@ export function HomePage({ onNavigateToLogin }: HomePageProps) {
 
       {/* Student Projects moved below Faculty (per request) */}
 
-      {/* Faculty Section - Meet Our Faculty */}
-      <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white">
+      {/* Faculty Section - Meet Our Faculty with 3D Carousel */}
+      <section id="faculty" className="w-full py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50 overflow-hidden">
         {/* Section Heading */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20 max-w-5xl mx-auto px-6"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl font-bold mb-4" style={{ color: '#800000' }}>
-            Meet Our Faculty
-          </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto px-6">
-            Our distinguished faculty members bring years of academic excellence and industry experience to guide students towards success.
-          </p>
-        </motion.div>
-
-        {/* Horizontal Stack Container for Faculty Cards */}
-        <div className="relative">
-          {/* Gradient overlays for scroll indication */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
-          
-          {/* Horizontal Scrolling Faculty Cards Container */}
+          {/* Decorative Elements */}
           <motion.div 
-            className="flex gap-8 overflow-x-auto scrollbar-hide px-8 pb-6"
-            style={{ 
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              scrollBehavior: 'smooth'
-            }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            className="flex items-center justify-center gap-3 mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
           >
-            {/* Render Faculty Cards using the new component */}
-            {facultyData.map((faculty, index) => (
-              <FacultyCard
-                key={index}
-                name={faculty.name}
-                title={faculty.role}
-                department="Computer Science Engineering"
-                image={faculty.img}
-                isHOD={faculty.role === "HOD"}
-                index={index}
-              />
-            ))}
+            <motion.div 
+              className="h-px w-12 bg-gradient-to-r from-transparent via-blue-500 to-blue-600"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            />
+            <motion.div 
+              className="w-2 h-2 rounded-full bg-blue-600"
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.7, 1, 0.7]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.div 
+              className="h-px w-12 bg-gradient-to-r from-blue-600 to-indigo-600 via-indigo-500"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            />
           </motion.div>
+
+          {/* Main Title with Gradient */}
+          <motion.h2 
+            className="font-extrabold mb-12 tracking-tighter leading-none"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            style={{
+              fontSize: 'clamp(4rem, 12vw, 10rem)',
+              background: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e40af 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.02em'
+            }}
+          >
+            Meet Our Faculty
+          </motion.h2>
           
-          {/* Scroll Navigation Hint */}
-          <motion.div 
-            className="flex justify-center mt-8"
+          {/* Description with Stunning Styling */}
+          <motion.div
+            className="relative max-w-4xl mx-auto px-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
           >
-            <div className="flex items-center space-x-2 text-gray-500 text-sm bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-              </svg>
-              <span className="font-medium">Scroll to explore our faculty</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
+            {/* Background Glow Effect */}
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-3xl blur-2xl opacity-40"
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 0.4 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.6 }}
+            />
+            
+            {/* Quote marks decoration - Left */}
+            <motion.span 
+              className="absolute -left-2 md:-left-6 -top-4 text-7xl md:text-8xl font-serif opacity-20"
+              style={{
+                background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+              initial={{ opacity: 0, x: -30, rotate: -15 }}
+              whileInView={{ opacity: 0.2, x: 0, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+            >
+              "
+            </motion.span>
+            
+            {/* Main Description Text */}
+            <motion.p 
+              className="text-2xl md:text-3xl lg:text-4xl leading-relaxed md:leading-relaxed lg:leading-relaxed font-light relative z-10 py-6"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <motion.span
+                className="inline-block"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                style={{
+                  background: 'linear-gradient(135deg, #1e293b 0%, #475569 50%, #334155 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontWeight: '300'
+                }}
+              >
+                Our distinguished faculty members
+              </motion.span>
+              {' '}
+              <motion.span
+                className="inline-block text-slate-600"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                bring years of
+              </motion.span>
+              {' '}
+              <motion.span
+                className="inline-block font-medium"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.9 }}
+                style={{
+                  background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                academic excellence
+              </motion.span>
+              {' '}
+              <motion.span
+                className="inline-block text-slate-600"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.0 }}
+              >
+                and
+              </motion.span>
+              {' '}
+              <motion.span
+                className="inline-block font-medium"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.1 }}
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                industry experience
+              </motion.span>
+              {' '}
+              <motion.span
+                className="inline-block text-slate-600"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+              >
+                to guide students towards
+              </motion.span>
+              {' '}
+              <motion.span
+                className="inline-block font-semibold"
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 1.3 }}
+                style={{
+                  background: 'linear-gradient(135deg, #1e40af 0%, #6366f1 50%, #7c3aed 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                success
+              </motion.span>
+              <motion.span
+                className="inline-block text-blue-600 text-5xl"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.4, type: "spring", stiffness: 200 }}
+              >
+                .
+              </motion.span>
+            </motion.p>
+            
+            {/* Quote marks decoration - Right */}
+            <motion.span 
+              className="absolute -right-2 md:-right-6 -bottom-4 text-7xl md:text-8xl font-serif opacity-20"
+              style={{
+                background: 'linear-gradient(135deg, #6366f1 0%, #7c3aed 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+              initial={{ opacity: 0, x: 30, rotate: 15 }}
+              whileInView={{ opacity: 0.2, x: 0, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+            >
+              "
+            </motion.span>
           </motion.div>
-        </div>
 
-        {/* Enhanced Custom CSS for styling */}
-  <style>{`
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            scroll-snap-type: x mandatory;
-          }
-          .scrollbar-hide > * {
-            scroll-snap-align: start;
-          }
-        `}</style>
+          {/* Decorative underline */}
+          <motion.div 
+            className="flex items-center justify-center gap-2 mt-10"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <motion.div 
+              className="h-0.5 w-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.9 }}
+            />
+            <div className="w-1 h-1 rounded-full bg-blue-500" />
+            <div className="w-1 h-1 rounded-full bg-indigo-500" />
+            <div className="w-1 h-1 rounded-full bg-blue-500" />
+            <motion.div 
+              className="h-0.5 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.9 }}
+            />
+          </motion.div>
+        </motion.div>
+
+        {/* 3D Carousel */}
+        <FacultyCarousel3D facultyData={facultyData} />
       </section>
 
       {/* --- Student Projects Section --- */}

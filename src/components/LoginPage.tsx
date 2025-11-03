@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 
 interface LoginPageProps {
-  onLogin: (role: "faculty" | "student" | "hod" | "admin", username: string, email?: string, rememberMe?: boolean) => void;
+  onLogin: (role: "faculty" | "student" | "hod" | "admin" | "student_admin", username: string, email?: string, rememberMe?: boolean) => void;
   onNavigateToHome?: () => void;
   onNavigateToRegister?: (role: "student" | "faculty") => void;
 }

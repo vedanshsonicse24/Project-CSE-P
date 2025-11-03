@@ -21,7 +21,7 @@ import "./styles/student-profile-animations.css";
 
 
 type Page = "home" | "login" | "dashboard" | "student-profile" | "faculty-profile" | "faculty-info" | "alumni" | "student-register" | "faculty-register" | "attendance-demo";
-type UserRole = "faculty" | "student" | "hod" | "admin" | null;
+type UserRole = "faculty" | "student" | "hod" | "admin" | "student_admin" | null;
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>("home");
@@ -59,7 +59,7 @@ export default function App() {
     }
   }, []);
 
-  const handleLogin = (role: "faculty" | "student" | "hod" | "admin", username: string, email?: string, rememberMe = false) => {
+  const handleLogin = (role: "faculty" | "student" | "hod" | "admin" | "student_admin", username: string, email?: string, rememberMe = false) => {
     setUserRole(role);
     setUserName(username);
     setUserEmail(email || "");
