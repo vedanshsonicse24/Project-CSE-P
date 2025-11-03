@@ -23,88 +23,33 @@ interface HomePageProps {
 export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [editingProject, setEditingProject] = useState<number | null>(null);
-  
-  // Real Student Projects Data from PDF
   const [editedProjects, setEditedProjects] = useState([
     {
       id: 1,
       title: "Green Palna",
-      description: "An eco-health initiative linking childbirth with tree plantation and maternal nutrition, promoting environmental responsibility and sustainable living.",
+      description: "Green Palna encourages environmental responsibility and health awareness by distributing saplings and promoting plant-based nutrition for sustainable living.",
       contributors: "6 Students",
       duration: "3 Months",
       backgroundImage: "./assets/green-palna-bg.png",
-      projectLink: "#",
-      tag: "Popular Now"
+      projectLink: "#"
     },
     {
       id: 2,
       title: "Har Ghar Munga",
-      description: "Promotes nutrition and sustainability by distributing drumstick saplings to Anganwadi children, fighting anemia through moringa and fenugreek.",
+      description: "Project Har Ghar Munga promotes sustainability and fights anemia by planting drumstick saplings and encouraging the use of moringa and fenugreek in diets.",
       contributors: "6 Students",
       duration: "4 Months",
       backgroundImage: "./assets/har-ghar-munga-bg.png",
-      projectLink: "#",
-      tag: "Featured"
+      projectLink: "#"
     },
     {
       id: 3,
-      title: "Harihar Pathshala",
-      description: "Combines TB awareness, nutrition education, and tree plantation in schools and Anganwadi centers for holistic child development.",
+      title: "Harihar Pathsala",
+      description: "Harihar Pathsala promotes health, nutrition, and eco-awareness by giving children saplings to plant and spreading TB prevention and nutrition education.",
       contributors: "8 Students",
       duration: "5 Months",
       backgroundImage: "./assets/harihar-pathsala-bg.png",
-      projectLink: "#",
-      tag: "New"
-    },
-    {
-      id: 4,
-      title: "Smriti Pustakalaya",
-      description: "A digital donation platform connecting book donors with rural libraries and schools, bridging the literacy gap in underserved communities.",
-      contributors: "5 Students",
-      duration: "4 Months",
-      backgroundImage: "./assets/smriti-pustakalaya-bg.png",
-      projectLink: "#",
-      tag: "$270"
-    },
-    {
-      id: 5,
-      title: "Chhanv Health Camp",
-      description: "A comprehensive welfare portal offering health checkups and government scheme access for state employees and their families.",
-      contributors: "7 Students",
-      duration: "6 Months",
-      backgroundImage: "./assets/chhanv-bg.png",
-      projectLink: "#",
-      tag: "Popular Now"
-    },
-    {
-      id: 6,
-      title: "Medi Guru",
-      description: "A virtual training platform for government medical officers in Chhattisgarh, enhancing healthcare delivery through digital education.",
-      contributors: "6 Students",
-      duration: "5 Months",
-      backgroundImage: "./assets/medi-guru-bg.png",
-      projectLink: "#",
-      tag: "Featured"
-    },
-    {
-      id: 7,
-      title: "Dhadkan",
-      description: "A school health monitoring system for early detection of student health issues, ensuring timely medical intervention and wellness tracking.",
-      contributors: "5 Students",
-      duration: "4 Months",
-      backgroundImage: "./assets/dhadkan-bg.png",
-      projectLink: "#",
-      tag: "New"
-    },
-    {
-      id: 8,
-      title: "Samadhan",
-      description: "A centralized public grievance redressal system for tracking and resolving citizen complaints efficiently and transparently.",
-      contributors: "6 Students",
-      duration: "5 Months",
-      backgroundImage: "./assets/samadhan-bg.png",
-      projectLink: "#",
-      tag: "Popular Now"
+      projectLink: "#"
     }
   ]);
 
@@ -485,19 +430,31 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 bg-white">
+      <section id="contact" className="py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-6">
-          <motion.h2 
-            className="text-3xl font-bold text-center mb-12"
-            style={{ color: '#1e3a8a' }}
+          {/* Section Header */}
+          <motion.div
+            className="text-center mb-20"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            Get In Touch
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <h2 
+              className="text-5xl font-bold mb-6"
+              style={{ color: '#1e3a8a' }}
+            >
+              Get In Touch
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-blue-600 mx-auto mb-6"></div>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+              Have questions? We'd love to hear from you. Reach out to us through any of the following channels.
+            </p>
+          </motion.div>
+
+          {/* Contact Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl mx-auto">
+            {/* Phone Card */}
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 50 }}
@@ -505,14 +462,38 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex justify-center mb-4">
-                <div className="p-4 rounded-full bg-blue-100">
-                  <Phone className="h-6 w-6" style={{ color: '#1e3a8a' }} />
+              <div className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                {/* Icon Container */}
+                <div className="flex justify-center mb-8">
+                  <div className="p-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl">
+                    <Phone className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+
+                {/* Heading */}
+                <h3 className="font-bold mb-4 text-2xl" style={{ color: '#1e3a8a' }}>
+                  Phone
+                </h3>
+
+                {/* Divider Line */}
+                <div className="w-16 h-0.5 bg-blue-500 mx-auto mb-6"></div>
+
+                {/* Content */}
+                <div className="space-y-3">
+                  <p className="text-gray-700 text-lg font-medium">
+                    +91 771 123 4567
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Mon - Fri
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    9:00 AM - 5:00 PM
+                  </p>
                 </div>
               </div>
-              <h3 className="font-bold mb-2" style={{ color: '#1e3a8a' }}>Phone</h3>
-              <p className="text-gray-600">+91 771 123 4567</p>
             </motion.div>
+
+            {/* Email Card */}
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 50 }}
@@ -520,14 +501,38 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <div className="flex justify-center mb-4">
-                <div className="p-4 rounded-full bg-blue-100">
-                  <Mail className="h-6 w-6" style={{ color: '#1e3a8a' }} />
+              <div className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                {/* Icon Container */}
+                <div className="flex justify-center mb-8">
+                  <div className="p-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl">
+                    <Mail className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+
+                {/* Heading */}
+                <h3 className="font-bold mb-4 text-2xl" style={{ color: '#1e3a8a' }}>
+                  Email
+                </h3>
+
+                {/* Divider Line */}
+                <div className="w-16 h-0.5 bg-blue-500 mx-auto mb-6"></div>
+
+                {/* Content */}
+                <div className="space-y-3">
+                  <p className="text-gray-700 text-lg font-medium break-all px-2">
+                    info@ssipmt.edu.in
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Response Time
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Within 24 hours
+                  </p>
                 </div>
               </div>
-              <h3 className="font-bold mb-2" style={{ color: '#1e3a8a' }}>Email</h3>
-              <p className="text-gray-600">info@ssipmt.edu.in</p>
             </motion.div>
+
+            {/* Address Card */}
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 50 }}
@@ -535,24 +540,47 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="flex justify-center mb-4">
-                <div className="p-4 rounded-full bg-blue-100">
-                  <MapPin className="h-6 w-6" style={{ color: '#1e3a8a' }} />
+              <div className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                {/* Icon Container */}
+                <div className="flex justify-center mb-8">
+                  <div className="p-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl">
+                    <MapPin className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+
+                {/* Heading */}
+                <h3 className="font-bold mb-4 text-2xl" style={{ color: '#1e3a8a' }}>
+                  Address
+                </h3>
+
+                {/* Divider Line */}
+                <div className="w-16 h-0.5 bg-blue-500 mx-auto mb-6"></div>
+
+                {/* Content */}
+                <div className="space-y-3">
+                  <p className="text-gray-700 text-lg font-medium leading-relaxed px-4">
+                    <a 
+                      href="https://www.google.com/maps/place/Shri+Shankaracharya+Institute+Of+Professional+Management+%26+Technology,+Raipur/@21.1346018,81.6660459,17z/data=!3m1!4b1!4m16!1m9!4m8!1m0!1m6!1m2!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!2sP.O,+Old+Dhamtari+Road,+Sejabahar,+Mujgahan,+Chhattisgarh+493661!2m2!1d81.6686208!2d21.1346018!3m5!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!8m2!3d21.1346018!4d81.6686208!16s%2Fm%2F0_x9qhl?entry=ttu&g_ep=EgoyMDI1MTAyNi4wIKXMDSoASAFQAw%3D%3D"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-blue-600 transition-colors cursor-pointer inline-block"
+                    >
+                      SSIPMT Campus
+                    </a>
+                  </p>
+                  <p className="text-gray-700 text-base">
+                    Raipur, Chhattisgarh
+                  </p>
+                  <p className="text-gray-500 text-sm mt-4">
+                    📍 Click to view on Maps
+                  </p>
                 </div>
               </div>
-              <h3 className="font-bold mb-2" style={{ color: '#1e3a8a' }}>Address</h3>
-              <p className="text-gray-600">
-                <a 
-                  href="https://www.google.com/maps/place/Shri+Shankaracharya+Institute+Of+Professional+Management+%26+Technology,+Raipur/@21.1346018,81.6660459,17z/data=!3m1!4b1!4m16!1m9!4m8!1m0!1m6!1m2!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!2sP.O,+Old+Dhamtari+Road,+Sejabahar,+Mujgahan,+Chhattisgarh+493661!2m2!1d81.6686208!2d21.1346018!3m5!1s0x3a28db1573b8526b:0x3f6847db83d1b08e!8m2!3d21.1346018!4d81.6686208!16s%2Fm%2F0_x9qhl?entry=ttu&g_ep=EgoyMDI1MTAyNi4wIKXMDSoASAFQAw%3D%3D"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-blue-600 hover:underline transition-colors cursor-pointer"
-                >
-                  SSIPMT Campus, Raipur, Chhattisgarh
-                </a>
-              </p>
             </motion.div>
           </div>
+
+          {/* Bottom Spacing */}
+          <div className="mt-20"></div>
         </div>
       </section>
 
