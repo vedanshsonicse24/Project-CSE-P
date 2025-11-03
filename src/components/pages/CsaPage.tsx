@@ -169,13 +169,7 @@ const CsaPage: React.FC = () => {
     .reveal.visible{opacity:1;transform:none}
   `}</style>
 
-      <div className="topbar">
-        <div className="topbar-inner">
-          <a href="#contact">CONTACT US</a>
-          <a href="#clubs">CLUBS</a>
-          <a href="#login">LOGIN</a>
-        </div>
-      </div>
+      {/* topbar removed - use global header/navigation instead */}
 
       <header>
         <div className="container nav">
@@ -190,17 +184,7 @@ const CsaPage: React.FC = () => {
             <div aria-hidden="true" />
           </div>
 
-          <div className="nav-bottom">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div className="left-tab active">CSE PROGRAMS</div>
-            </div>
-
-            {/* Search removed from page to avoid duplicate search bars; use global header search instead */}
-
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <a className="cta" href="#events">Explore Events</a>
-            </div>
-          </div>
+          {/* nav-bottom removed (CSE PROGRAMS tab and adjacent Explore Events CTA) - header retains brand only */}
         </div>
       </header>
 
@@ -213,12 +197,6 @@ const CsaPage: React.FC = () => {
             <div className="hero-actions">
               <a className="cta" href="#events">Explore Events</a>
               <a style={{ padding: '.5rem .75rem', borderRadius: 8, background: 'transparent', border: '1px solid var(--blue-700)', color: 'var(--blue-700)', textDecoration: 'none', fontWeight: 600 }} href="#about">About CSA</a>
-            </div>
-            <div style={{ marginTop: '1.2rem', display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-              <div style={{ background: 'linear-gradient(90deg,rgba(11,87,208,0.04),transparent)', padding: '.6rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '.6rem' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20v-6" stroke="var(--blue-700)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"></path><path d="M6.5 14.5l5.5-3.5 5.5 3.5" stroke="var(--blue-500)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                <div style={{ fontWeight: 600 }}>Workshops & Hackathons</div>
-              </div>
             </div>
           </div>
           <aside className="hero-figure reveal" aria-hidden="true">
@@ -245,7 +223,7 @@ const CsaPage: React.FC = () => {
         {/* About */}
         <section id="about" className="reveal">
           <h2 className="section-title">About CSA</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '1rem', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', alignItems: 'start' }}>
             <div>
               <p style={{ marginTop: 0 }}>Our mission is to foster a culture of learning and innovation by providing students opportunities to build real-world projects, collaborate with peers, and gain industry-relevant skills.</p>
               <p className="muted">We organize regular workshops, mentorship programs, project sprints, and hackathons that help members gain practical experience. CSA connects students with faculty mentors and industry professionals to create a bridge between academic learning and real-world engineering challenges.</p>
@@ -261,17 +239,6 @@ const CsaPage: React.FC = () => {
                 <li><strong>Community & Inclusion:</strong> Foster a welcoming environment that encourages contributions from beginners to advanced students.</li>
                 <li><strong>Research & Open Source:</strong> Support research initiatives and encourage members to publish or contribute to open-source projects.</li>
               </ul>
-            </div>
-            <div style={{ background: 'linear-gradient(180deg,#fff,#f6f9ff)', padding: '1rem', borderRadius: '12px', boxShadow: 'var(--card-shadow)' }}>
-              <strong>Member benefits</strong>
-              <ul className="muted">
-                <li>Access to workshops</li>
-                <li>Priority registration</li>
-                <li>Mentorship & certificates</li>
-                <li>Networking with industry</li>
-                <li>Collaboration on funded projects</li>
-              </ul>
-              <a className="cta" href="#contact" style={{ display: 'inline-block', marginTop: '.6rem' }}>Become a member</a>
             </div>
           </div>
         </section>
@@ -347,90 +314,79 @@ const CsaPage: React.FC = () => {
         {/* Connect */}
         <section id="contact" className="reveal">
           <h2 className="section-title">Connect</h2>
-          <div className="contact-grid">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', alignItems: 'start' }}>
             <div>
               <h3 style={{ marginBottom: '0.6rem', color: 'var(--blue-900)', fontSize: '1.05rem' }}>Computer Science Association (CSA) — Academic Year 2025-26 ✨👏</h3>
               <div style={{ marginBottom: '0.6rem', color: '#6b7280' }}>Executive Committee</div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: '1rem' }}>
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>President</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Prince Raj</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 88098 00756</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Prince Raj</div>
                 </div>
 
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
-                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Discipline Incharge</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Himanshu Sinha</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 79994 39205</p>
-                </div>
-
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Vice President</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Ishan Raj Gupta</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 88278 22494</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Ishan Raj Gupta</div>
                 </div>
 
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Secretary</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Brachsam Agrawal</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 70004 81538</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Brachsam Agrawal</div>
                 </div>
 
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Joint Secretary</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Bushra Fatima</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 78058 39030</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Bushra Fatima</div>
                 </div>
 
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
+                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Discipline Incharge</div>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Himanshu Sinha</div>
+                </div>
+
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Social Media Head</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Akash Goswami</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 62648 69781</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Akash Goswami</div>
                 </div>
 
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
-                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Graphics Head</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Vivek Mandal</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 78802 64460</p>
-                </div>
-
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
-                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Treasurer</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Aditya Sahu</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 62648 69781</p>
-                </div>
-
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
-                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>PR Head</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Aadya Puranik</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 80856 99810</p>
-                </div>
-
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Operational Head</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Karsh Verma</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 72230 53241</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Karsh Verma</div>
                 </div>
 
-                <div style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
+                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Graphics Head</div>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Vivek Mandal</div>
+                </div>
+
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
+                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Treasurer</div>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Aditya Sahu</div>
+                </div>
+
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
+                  <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>PR Head</div>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Aadya Puranik</div>
+                </div>
+
+                <div className="card" style={{ padding: '1rem', borderRadius: 12 }}>
                   <div style={{ fontWeight: 700, color: 'var(--blue-900)', marginBottom: '.25rem' }}>Logistics Head</div>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>Navneet Verma</p>
-                  <p className="muted" style={{ margin: '0.15rem 0' }}>+91 77488 91455</p>
+                  <div className="muted" style={{ margin: '0.15rem 0' }}>Navneet Verma</div>
                 </div>
               </div>
             </div>
-            <aside style={{ padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
+          </div>
+
+          {/* Follow Us moved below Connect to align with page layout */}
+          <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+            <aside style={{ width: '100%', maxWidth: 420, padding: '1rem', borderRadius: 12, background: 'linear-gradient(180deg,#fff,#fbfdff)', boxShadow: 'var(--card-shadow)' }}>
               <div style={{ fontWeight: 700, color: 'var(--blue-900)' }}>Follow Us</div>
               <p className="muted">Stay connected with CSA for latest updates</p>
               <div style={{ display: 'flex', gap: '.5rem', marginTop: '.5rem', flexDirection: 'column' }}>
                 <a href="https://www.instagram.com/computer_science_association/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{ textDecoration: 'none', padding: '.45rem', borderRadius: 8, background: 'rgba(128,0,0,0.06)', color: '#800000', textAlign: 'center' }}>Instagram</a>
                 <a href="https://www.facebook.com/ssipmtrpr/?ref=embed_page#" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{ textDecoration: 'none', padding: '.45rem', borderRadius: 8, background: 'rgba(128,0,0,0.06)', color: '#800000', textAlign: 'center' }}>Facebook</a>
               </div>
-              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(128,0,0,0.1)' }}>
-                <div style={{ fontWeight: 600, color: 'var(--blue-900)', marginBottom: '.5rem' }}>General Contact</div>
-                <p className="muted" style={{ margin: '0.3rem 0' }}>csa@ssipmt.edu.in</p>
-                <p className="muted" style={{ margin: '0.3rem 0' }}>+91 98765 43210</p>
-              </div>
+              {/* General Contact (email/phone) removed per request */}
             </aside>
           </div>
         </section>

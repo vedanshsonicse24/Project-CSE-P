@@ -4,8 +4,14 @@ import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, A
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, EffectCoverflow } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-coverflow';
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
@@ -20,36 +26,43 @@ interface HomePageProps {
 
 export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [editingProject, setEditingProject] = useState<number | null>(null);
-  const [editedProjects, setEditedProjects] = useState([
+  const [editingProject, setEditingProject] = useState<string | null>(null);
+  
+  // Base student projects array - modular and editable
+  const baseStudentProjects = [
     {
-      id: 1,
+      id: "greenpalna",
       title: "Green Palna",
       description: "Green Palna encourages environmental responsibility and health awareness by distributing saplings and promoting plant-based nutrition for sustainable living.",
+      image: "./assets/green-palna-bg.png",
+      tag: "Popular Now",
       contributors: "6 Students",
-      duration: "3 Months",
-      backgroundImage: "./assets/green-palna-bg.png",
-      projectLink: "#"
+      duration: "3 Months"
     },
     {
-      id: 2,
+      id: "hargharmonga",
       title: "Har Ghar Munga",
       description: "Project Har Ghar Munga promotes sustainability and fights anemia by planting drumstick saplings and encouraging the use of moringa and fenugreek in diets.",
+      image: "./assets/har-ghar-munga-bg.png",
+      tag: null,
       contributors: "6 Students",
-      duration: "4 Months",
-      backgroundImage: "./assets/har-ghar-munga-bg.png",
-      projectLink: "#"
+      duration: "4 Months"
     },
     {
-      id: 3,
+      id: "hariharpathsala",
       title: "Harihar Pathsala",
       description: "Harihar Pathsala promotes health, nutrition, and eco-awareness by giving children saplings to plant and spreading TB prevention and nutrition education.",
+      image: "./assets/harihar-pathsala-bg.png",
+      tag: null,
       contributors: "8 Students",
-      duration: "5 Months",
-      backgroundImage: "./assets/harihar-pathsala-bg.png",
-      projectLink: "#"
+      duration: "5 Months"
     }
-  ]);
+  ];
+
+  // Dynamically extend to 9 cards (3 base × 3)
+  const extendedProjects = [...baseStudentProjects, ...baseStudentProjects, ...baseStudentProjects];
+  
+  const [editedProjects, setEditedProjects] = useState(extendedProjects);
 
   // Show scroll to top button when scrolling down
   useEffect(() => {
@@ -77,11 +90,11 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleEditProject = (id: number) => {
+  const handleEditProject = (id: string) => {
     setEditingProject(id);
   };
 
-  const handleSaveProject = (id: number) => {
+  const handleSaveProject = (id: string) => {
     localStorage.setItem('studentProjects', JSON.stringify(editedProjects));
     setEditingProject(null);
     toast.success('Project updated successfully!');
@@ -96,7 +109,7 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
     setEditingProject(null);
   };
 
-  const handleProjectChange = (id: number, field: 'title' | 'description' | 'contributors' | 'duration' | 'projectLink', value: string) => {
+  const handleProjectChange = (id: string, field: 'title' | 'description' | 'contributors' | 'duration' | 'tag', value: string) => {
     const updated = editedProjects.map(project => 
       project.id === id ? { ...project, [field]: value } : project
     );
@@ -393,101 +406,152 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
         `}</style>
       </section>
 
-      {/* Student Projects Section */}
-      <div className="projects-section">
+      {/* Student Projects Section - Swiper Carousel */}
+      <div className="projects-section emotions-slider">
         <div className="container mx-auto px-6">
           <h2 className="section-title">Student Projects</h2>
-          <div className="projects-grid">
-            
-            {editedProjects.map((project, index) => (
-              <motion.div 
-                key={project.id}
-                className="project-card" 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                style={{ 
-                  backgroundImage: `url(${project.backgroundImage})`,
-                  cursor: editingProject === project.id ? 'default' : 'default'
-                }}
-              >
-                <div className="project-content">
-                  {editingProject === project.id ? (
-                    // Edit Mode
-                    <div className="edit-form">
-                      <div className="edit-controls">
-                        <button onClick={() => handleSaveProject(project.id)} className="save-btn">
-                          <Save size={16} />
-                        </button>
-                        <button onClick={handleCancelEdit} className="cancel-btn">
-                          <X size={16} />
-                        </button>
-                      </div>
-                      <input
-                        type="text"
-                        value={project.title}
-                        onChange={(e) => handleProjectChange(project.id, 'title', e.target.value)}
-                        className="edit-title"
-                      />
-                      <textarea
-                        value={project.description}
-                        onChange={(e) => handleProjectChange(project.id, 'description', e.target.value)}
-                        className="edit-description"
-                        rows={3}
-                      />
-                      <div className="edit-stats">
-                        <input
-                          type="text"
-                          value={project.contributors}
-                          onChange={(e) => handleProjectChange(project.id, 'contributors', e.target.value)}
-                          className="edit-stat"
-                          placeholder="Contributors"
-                        />
-                        <input
-                          type="text"
-                          value={project.duration}
-                          onChange={(e) => handleProjectChange(project.id, 'duration', e.target.value)}
-                          className="edit-stat"
-                          placeholder="Duration"
-                        />
-                      </div>
-                      <input
-                        type="url"
-                        value={project.projectLink}
-                        onChange={(e) => handleProjectChange(project.id, 'projectLink', e.target.value)}
-                        className="edit-link"
-                        placeholder="Project Link"
-                      />
-                    </div>
-                  ) : (
-                    // View Mode
-                    <>
-                      {(userRole === 'admin' || userRole === 'hod') && (
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditProject(project.id);
-                          }}
-                          className="edit-btn"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                      )}
-                      <h3 className="project-title">{project.title}</h3>
-                      <p className="project-description">{project.description}</p>
-                      <div className="project-stats">
-                        <span className="stat">{project.contributors}</span>
-                        <span className="stat">{project.duration}</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-
-          </div>
+          <p className="section-subtitle">Explore innovative projects crafted by our talented students</p>
           
+          <div className="swiper-container-wrapper">
+            <Swiper
+              modules={[Navigation, Pagination, EffectCoverflow]}
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView="auto"
+              spaceBetween={20}
+              speed={600}
+              initialSlide={1}
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 2.5,
+                slideShadows: false,
+              }}
+              navigation={{
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+              }}
+              pagination={{
+                el: '.swiper-pagination',
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1,
+                  spaceBetween: 10
+                },
+                640: {
+                  slidesPerView: 1.5,
+                  spaceBetween: 15
+                },
+                768: {
+                  slidesPerView: 2,
+                  spaceBetween: 20
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 30
+                }
+              }}
+              className="projects-swiper"
+            >
+              {editedProjects.map((project, index) => (
+                <SwiperSlide key={`${project.id}-${index}`} className="project-slide">
+                  <div 
+                    className="project-card-swiper"
+                    style={{ backgroundImage: `url(${project.image})` }}
+                  >
+                    {project.tag && (
+                      <span className="project-tag">{project.tag}</span>
+                    )}
+                    
+                    <div className="project-content">
+                      {editingProject === project.id ? (
+                        <div className="edit-form">
+                          <div className="edit-controls">
+                            <button onClick={() => handleSaveProject(project.id)} className="save-btn">
+                              <Save size={16} />
+                            </button>
+                            <button onClick={handleCancelEdit} className="cancel-btn">
+                              <X size={16} />
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            value={project.title}
+                            onChange={(e) => handleProjectChange(project.id, 'title', e.target.value)}
+                            className="edit-title"
+                            placeholder="Project Title"
+                          />
+                          <textarea
+                            value={project.description}
+                            onChange={(e) => handleProjectChange(project.id, 'description', e.target.value)}
+                            className="edit-description"
+                            rows={3}
+                            placeholder="Project Description"
+                          />
+                          <div className="edit-stats">
+                            <input
+                              type="text"
+                              value={project.contributors}
+                              onChange={(e) => handleProjectChange(project.id, 'contributors', e.target.value)}
+                              className="edit-stat"
+                              placeholder="Contributors"
+                            />
+                            <input
+                              type="text"
+                              value={project.duration}
+                              onChange={(e) => handleProjectChange(project.id, 'duration', e.target.value)}
+                              className="edit-stat"
+                              placeholder="Duration"
+                            />
+                          </div>
+                          <input
+                            type="text"
+                            value={project.tag || ''}
+                            onChange={(e) => handleProjectChange(project.id, 'tag', e.target.value)}
+                            className="edit-link"
+                            placeholder="Tag (e.g., Popular Now)"
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {(userRole === 'admin' || userRole === 'hod') && (
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditProject(project.id);
+                              }}
+                              className="edit-btn"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                          )}
+                          <h3 className="project-title">{project.title}</h3>
+                          <p className="project-description">{project.description}</p>
+                          <div className="project-stats">
+                            <span className="stat">{project.contributors}</span>
+                            <span className="stat">{project.duration}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            {/* Navigation Arrows */}
+            <div className="swiper-button-prev slider-nav-btn"></div>
+            <div className="swiper-button-next slider-nav-btn"></div>
+            
+            {/* Pagination */}
+            <div className="swiper-pagination"></div>
+          </div>
+
           {/* View More Button */}
           <motion.div
             className="view-more-container"
@@ -519,8 +583,86 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
           font-size: 2.5rem;
           font-weight: 700;
           color: var(--grey-text, #333);
-          margin-bottom: 40px;
+          margin-bottom: 20px;
           font-family: 'Gotham', sans-serif;
+        }
+
+        .section-subtitle {
+          font-size: 1.1rem;
+          color: #666;
+          margin-bottom: 40px;
+          font-weight: 400;
+        }
+
+        /* Swiper Container Wrapper */
+        .swiper-container-wrapper {
+          position: relative;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 40px 60px;
+        }
+
+        /* Swiper Slide Styling */
+        .project-slide {
+          width: 350px !important;
+          height: auto;
+        }
+
+        .projects-swiper {
+          padding-bottom: 60px;
+        }
+
+        .project-card-swiper {
+          position: relative;
+          border-radius: 20px;
+          overflow: hidden;
+          min-height: 450px;
+          background-size: cover;
+          background-position: center;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          cursor: grab;
+        }
+
+        .project-card-swiper:active {
+          cursor: grabbing;
+        }
+
+        /* Active Slide Effect */
+        .swiper-slide-active .project-card-swiper {
+          transform: scale(1.05);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Inactive Slides */
+        .swiper-slide:not(.swiper-slide-active) .project-card-swiper {
+          opacity: 0.7;
+          transform: scale(0.95);
+        }
+
+        /* Project Tag */
+        .project-tag {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+          color: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          z-index: 10;
+          box-shadow: 0 4px 15px rgba(238, 90, 111, 0.4);
+          animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
         }
 
         .projects-grid {
@@ -751,6 +893,118 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
 
         .view-more-btn:active {
           transform: translateY(0);
+        }
+
+        /* Swiper Navigation Buttons */
+        .slider-nav-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(135deg, #800000, #a00000);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          z-index: 10;
+          box-shadow: 0 4px 15px rgba(128, 0, 0, 0.3);
+        }
+
+        .slider-nav-btn:hover {
+          background: linear-gradient(135deg, #a00000, #c00000);
+          transform: translateY(-50%) scale(1.1);
+          box-shadow: 0 6px 20px rgba(128, 0, 0, 0.4);
+        }
+
+        .slider-nav-btn.swiper-button-disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .swiper-button-prev {
+          left: 0;
+        }
+
+        .swiper-button-next {
+          right: 0;
+        }
+
+        .swiper-button-prev::after,
+        .swiper-button-next::after {
+          font-size: 20px;
+          color: white;
+          font-weight: bold;
+        }
+
+        /* Swiper Pagination */
+        .swiper-pagination {
+          bottom: 20px !important;
+        }
+
+        .swiper-pagination-bullet {
+          width: 12px;
+          height: 12px;
+          background: #ccc;
+          opacity: 0.5;
+          transition: all 0.3s ease;
+        }
+
+        .swiper-pagination-bullet-active {
+          background: #800000;
+          opacity: 1;
+          width: 30px;
+          border-radius: 6px;
+        }
+
+        /* Responsive Swiper Adjustments */
+        @media (max-width: 1024px) {
+          .swiper-container-wrapper {
+            padding: 30px 50px;
+          }
+          
+          .project-slide {
+            width: 300px !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .swiper-container-wrapper {
+            padding: 20px 40px;
+          }
+
+          .project-slide {
+            width: 280px !important;
+          }
+
+          .project-card-swiper {
+            min-height: 400px;
+          }
+
+          .slider-nav-btn {
+            width: 40px;
+            height: 40px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .swiper-container-wrapper {
+            padding: 15px 30px;
+          }
+
+          .project-slide {
+            width: 260px !important;
+          }
+
+          .section-title {
+            font-size: 2rem;
+          }
+
+          .section-subtitle {
+            font-size: 1rem;
+          }
         }
       `}</style>
 
