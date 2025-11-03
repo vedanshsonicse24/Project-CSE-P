@@ -3,6 +3,8 @@ import { Card, CardContent } from "./ui/card";
 import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown, Edit3, Edit2, Save, X, ChevronRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
+import { FacultyCarousel3D } from "./common/FacultyCarousel3D";
+import { StudentProjectsCarousel } from "./common/StudentProjectsCarousel";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -21,33 +23,88 @@ interface HomePageProps {
 export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [editingProject, setEditingProject] = useState<number | null>(null);
+  
+  // Real Student Projects Data from PDF
   const [editedProjects, setEditedProjects] = useState([
     {
       id: 1,
       title: "Green Palna",
-      description: "Green Palna encourages environmental responsibility and health awareness by distributing saplings and promoting plant-based nutrition for sustainable living.",
+      description: "An eco-health initiative linking childbirth with tree plantation and maternal nutrition, promoting environmental responsibility and sustainable living.",
       contributors: "6 Students",
       duration: "3 Months",
       backgroundImage: "./assets/green-palna-bg.png",
-      projectLink: "#"
+      projectLink: "#",
+      tag: "Popular Now"
     },
     {
       id: 2,
       title: "Har Ghar Munga",
-      description: "Project Har Ghar Munga promotes sustainability and fights anemia by planting drumstick saplings and encouraging the use of moringa and fenugreek in diets.",
+      description: "Promotes nutrition and sustainability by distributing drumstick saplings to Anganwadi children, fighting anemia through moringa and fenugreek.",
       contributors: "6 Students",
       duration: "4 Months",
       backgroundImage: "./assets/har-ghar-munga-bg.png",
-      projectLink: "#"
+      projectLink: "#",
+      tag: "Featured"
     },
     {
       id: 3,
-      title: "Harihar Pathsala",
-      description: "Harihar Pathsala promotes health, nutrition, and eco-awareness by giving children saplings to plant and spreading TB prevention and nutrition education.",
+      title: "Harihar Pathshala",
+      description: "Combines TB awareness, nutrition education, and tree plantation in schools and Anganwadi centers for holistic child development.",
       contributors: "8 Students",
       duration: "5 Months",
       backgroundImage: "./assets/harihar-pathsala-bg.png",
-      projectLink: "#"
+      projectLink: "#",
+      tag: "New"
+    },
+    {
+      id: 4,
+      title: "Smriti Pustakalaya",
+      description: "A digital donation platform connecting book donors with rural libraries and schools, bridging the literacy gap in underserved communities.",
+      contributors: "5 Students",
+      duration: "4 Months",
+      backgroundImage: "./assets/smriti-pustakalaya-bg.png",
+      projectLink: "#",
+      tag: "$270"
+    },
+    {
+      id: 5,
+      title: "Chhanv Health Camp",
+      description: "A comprehensive welfare portal offering health checkups and government scheme access for state employees and their families.",
+      contributors: "7 Students",
+      duration: "6 Months",
+      backgroundImage: "./assets/chhanv-bg.png",
+      projectLink: "#",
+      tag: "Popular Now"
+    },
+    {
+      id: 6,
+      title: "Medi Guru",
+      description: "A virtual training platform for government medical officers in Chhattisgarh, enhancing healthcare delivery through digital education.",
+      contributors: "6 Students",
+      duration: "5 Months",
+      backgroundImage: "./assets/medi-guru-bg.png",
+      projectLink: "#",
+      tag: "Featured"
+    },
+    {
+      id: 7,
+      title: "Dhadkan",
+      description: "A school health monitoring system for early detection of student health issues, ensuring timely medical intervention and wellness tracking.",
+      contributors: "5 Students",
+      duration: "4 Months",
+      backgroundImage: "./assets/dhadkan-bg.png",
+      projectLink: "#",
+      tag: "New"
+    },
+    {
+      id: 8,
+      title: "Samadhan",
+      description: "A centralized public grievance redressal system for tracking and resolving citizen complaints efficiently and transparently.",
+      contributors: "6 Students",
+      duration: "5 Months",
+      backgroundImage: "./assets/samadhan-bg.png",
+      projectLink: "#",
+      tag: "Popular Now"
     }
   ]);
 
@@ -287,472 +344,95 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
 
       {/* Student Projects moved below Faculty (per request) */}
 
-      {/* Faculty Section - Meet Our Faculty */}
-      <section id="faculty" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white relative">
-        {/* Developer Edit Button */}
-        {userRole === "developer" && (
-          <div className="absolute top-4 right-4 z-20">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2 bg-white/90 backdrop-blur-sm border-blue-200 text-blue-700 hover:bg-blue-50"
-              onClick={() => {
-                alert("Content editing coming soon! This will open the faculty editor.");
-              }}
-            >
-              <Edit3 className="h-4 w-4" />
-              Edit Faculty
-            </Button>
-          </div>
-        )}
-        
+      {/* Faculty Section - Meet Our Faculty with 3D Carousel */}
+      <section id="faculty" className="w-full py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50 overflow-hidden">
         {/* Section Heading */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20 max-w-5xl mx-auto px-6"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl font-bold mb-4" style={{ color: '#800000' }}>
+          {/* Decorative Elements */}
+          <motion.div
+            className="flex items-center justify-center gap-3 mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="w-1 h-1 rounded-full bg-blue-500" />
+            <div className="w-1 h-1 rounded-full bg-indigo-500" />
+            <div className="w-1 h-1 rounded-full bg-blue-500" />
+          </motion.div>
+
+          <motion.h2
+            className="font-extrabold mb-12 tracking-tighter leading-none"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            style={{
+              fontSize: 'clamp(3rem, 8vw, 6rem)',
+              background: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e40af 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.02em'
+            }}
+          >
             Meet Our Faculty
-          </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto px-6">
-            Our distinguished faculty members bring years of academic excellence and industry experience to guide students towards success.
-          </p>
+          </motion.h2>
+
+          {/* Description with Stunning Styling */}
+          <motion.div
+            className="relative max-w-4xl mx-auto px-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+          >
+            {/* Background Glow Effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-3xl blur-2xl opacity-40"
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 0.4 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.6 }}
+            />
+            
+            <p className="relative text-slate-600 text-lg md:text-xl leading-relaxed font-medium">
+              Our distinguished faculty members bring years of academic excellence and industry experience to guide students towards success.
+            </p>
+            
+            <motion.div
+              className="flex items-center justify-center gap-2 mt-6"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="w-1 h-1 rounded-full bg-blue-500" />
+              <div className="w-1 h-1 rounded-full bg-indigo-500" />
+              <div className="w-1 h-1 rounded-full bg-blue-500" />
+              <motion.div
+                className="h-0.5 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+              />
+            </motion.div>
+          </motion.div>
         </motion.div>
 
-        {/* Horizontal Stack Container for Faculty Cards */}
-        <div className="relative">
-          {/* Gradient overlays for scroll indication */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
-          
-          {/* Horizontal Scrolling Faculty Cards Container */}
-          <motion.div 
-            className="flex gap-8 overflow-x-auto scrollbar-hide px-8 pb-6"
-            style={{ 
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              scrollBehavior: 'smooth'
-            }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            {/* Render Faculty Cards using the new component */}
-            {facultyData.map((faculty, index) => (
-              <FacultyCard
-                key={index}
-                name={faculty.name}
-                title={faculty.role}
-                department="Computer Science Engineering"
-                image={faculty.img}
-                isHOD={faculty.role === "HOD"}
-                index={index}
-              />
-            ))}
-          </motion.div>
-          
-          {/* Scroll Navigation Hint */}
-          <motion.div 
-            className="flex justify-center mt-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="flex items-center space-x-2 text-gray-500 text-sm bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-              </svg>
-              <span className="font-medium">Scroll to explore our faculty</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Enhanced Custom CSS for styling */}
-  <style>{`
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            scroll-snap-type: x mandatory;
-          }
-          .scrollbar-hide > * {
-            scroll-snap-align: start;
-          }
-        `}</style>
+        {/* 3D Carousel */}
+        <FacultyCarousel3D facultyData={facultyData} />
       </section>
 
-      {/* Student Projects Section */}
-      <div className="projects-section">
-        <div className="container mx-auto px-6">
-          <h2 className="section-title">Student Projects</h2>
-          <div className="projects-grid">
-            
-            {editedProjects.map((project, index) => (
-              <motion.div 
-                key={project.id}
-                className="project-card" 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                style={{ 
-                  backgroundImage: `url(${project.backgroundImage})`,
-                  cursor: editingProject === project.id ? 'default' : 'default'
-                }}
-              >
-                <div className="project-content">
-                  {editingProject === project.id ? (
-                    // Edit Mode
-                    <div className="edit-form">
-                      <div className="edit-controls">
-                        <button onClick={() => handleSaveProject(project.id)} className="save-btn">
-                          <Save size={16} />
-                        </button>
-                        <button onClick={handleCancelEdit} className="cancel-btn">
-                          <X size={16} />
-                        </button>
-                      </div>
-                      <input
-                        type="text"
-                        value={project.title}
-                        onChange={(e) => handleProjectChange(project.id, 'title', e.target.value)}
-                        className="edit-title"
-                      />
-                      <textarea
-                        value={project.description}
-                        onChange={(e) => handleProjectChange(project.id, 'description', e.target.value)}
-                        className="edit-description"
-                        rows={3}
-                      />
-                      <div className="edit-stats">
-                        <input
-                          type="text"
-                          value={project.contributors}
-                          onChange={(e) => handleProjectChange(project.id, 'contributors', e.target.value)}
-                          className="edit-stat"
-                          placeholder="Contributors"
-                        />
-                        <input
-                          type="text"
-                          value={project.duration}
-                          onChange={(e) => handleProjectChange(project.id, 'duration', e.target.value)}
-                          className="edit-stat"
-                          placeholder="Duration"
-                        />
-                      </div>
-                      <input
-                        type="url"
-                        value={project.projectLink}
-                        onChange={(e) => handleProjectChange(project.id, 'projectLink', e.target.value)}
-                        className="edit-link"
-                        placeholder="Project Link"
-                      />
-                    </div>
-                  ) : (
-                    // View Mode
-                    <>
-                      {(userRole === 'admin' || userRole === 'hod') && (
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditProject(project.id);
-                          }}
-                          className="edit-btn"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                      )}
-                      <h3 className="project-title">{project.title}</h3>
-                      <p className="project-description">{project.description}</p>
-                      <div className="project-stats">
-                        <span className="stat">{project.contributors}</span>
-                        <span className="stat">{project.duration}</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-
-          </div>
-          
-          {/* View More Button */}
-          <motion.div
-            className="view-more-container"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <button 
-              onClick={() => onNavigateToCOE?.("projects")}
-              className="view-more-btn"
-            >
-              View More Projects
-              <ChevronRight size={20} />
-            </button>
-          </motion.div>
-        </div>
-      </div>
-
-      <style>{`
-        /* --- Student Projects Section --- */
-        .projects-section {
-          padding: 60px 20px;
-          background-color: #f4f4f4;
-          text-align: center;
-        }
-
-        .section-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: var(--grey-text, #333);
-          margin-bottom: 40px;
-          font-family: 'Gotham', sans-serif;
-        }
-
-        .projects-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 30px;
-          max-width: 1400px;
-          margin: 0 auto;
-        }
-
-        .project-card {
-          position: relative;
-          border-radius: 16px;
-          overflow: hidden;
-          min-height: 450px;
-          background-size: cover;
-          background-position: center;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          cursor: pointer;
-        }
-
-        .project-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .project-content {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.1));
-          color: white;
-          padding: 30px 25px;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          min-height: 100%;
-        }
-
-        .edit-btn {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          background: rgba(255, 255, 255, 0.2);
-          border: none;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          cursor: pointer;
-          transition: background-color 0.2s ease;
-          backdrop-filter: blur(10px);
-        }
-
-        .edit-btn:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-
-        .edit-form {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          height: 100%;
-          justify-content: space-between;
-        }
-
-        .edit-controls {
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px;
-          margin-bottom: 10px;
-        }
-
-        .save-btn, .cancel-btn {
-          background: rgba(255, 255, 255, 0.2);
-          border: none;
-          border-radius: 50%;
-          width: 35px;
-          height: 35px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          cursor: pointer;
-          transition: background-color 0.2s ease;
-          backdrop-filter: blur(10px);
-        }
-
-        .save-btn:hover {
-          background: rgba(34, 197, 94, 0.3);
-        }
-
-        .cancel-btn:hover {
-          background: rgba(239, 68, 68, 0.3);
-        }
-
-        .edit-title {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 8px;
-          padding: 12px;
-          color: white;
-          font-size: 1.6rem;
-          font-weight: 700;
-          font-family: 'Gotham', sans-serif;
-          backdrop-filter: blur(10px);
-        }
-
-        .edit-title::placeholder {
-          color: rgba(255, 255, 255, 0.7);
-        }
-
-        .edit-description {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 8px;
-          padding: 12px;
-          color: white;
-          font-size: 0.95rem;
-          line-height: 1.6;
-          resize: vertical;
-          min-height: 80px;
-          backdrop-filter: blur(10px);
-          font-family: inherit;
-        }
-
-        .edit-description::placeholder {
-          color: rgba(255, 255, 255, 0.7);
-        }
-
-        .edit-stats {
-          display: flex;
-          gap: 10px;
-        }
-
-        .edit-stat {
-          flex: 1;
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 8px;
-          padding: 8px 12px;
-          color: white;
-          font-size: 0.85rem;
-          backdrop-filter: blur(10px);
-        }
-
-        .edit-stat::placeholder {
-          color: rgba(255, 255, 255, 0.7);
-        }
-
-        .edit-link {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 8px;
-          padding: 12px;
-          color: white;
-          font-size: 0.9rem;
-          backdrop-filter: blur(10px);
-        }
-
-        .edit-link::placeholder {
-          color: rgba(255, 255, 255, 0.7);
-        }
-
-        .project-title {
-          font-size: 1.6rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          font-family: 'Gotham', sans-serif;
-        }
-
-        .project-description {
-          font-size: 0.95rem;
-          line-height: 1.6;
-          margin-bottom: 20px;
-          opacity: 0.9;
-        }
-
-        .project-stats {
-          display: flex;
-          gap: 15px;
-          margin-bottom: 20px;
-        }
-
-        .stat {
-          background: rgba(255, 255, 255, 0.2);
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 500;
-          backdrop-filter: blur(10px);
-        }
-
-        /* View More Button */
-        .view-more-container {
-          margin-top: 40px;
-          display: flex;
-          justify-content: center;
-        }
-
-        .view-more-btn {
-          background: linear-gradient(135deg, #800000, #a00000);
-          color: white;
-          border: none;
-          padding: 14px 28px;
-          border-radius: 50px;
-          font-size: 1.1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          box-shadow: 0 4px 15px rgba(128, 0, 0, 0.3);
-          font-family: 'Gotham', sans-serif;
-        }
-
-        .view-more-btn:hover {
-          background: linear-gradient(135deg, #a00000, #c00000);
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(128, 0, 0, 0.4);
-        }
-
-        .view-more-btn:active {
-          transform: translateY(0);
-        }
-      `}</style>
+      {/* Student Projects Section - Animated Carousel */}
+      <StudentProjectsCarousel projects={editedProjects} />
 
       {/* Announcements Section */}
       <section id="announcements" className="py-16" style={{ backgroundColor: '#f3f4f6' }}>
