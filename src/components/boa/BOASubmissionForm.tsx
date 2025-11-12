@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Calendar, FileText, User, Building, GraduationCap, Camera } from "lucide-react";
+import { Calendar, FileText, User, Building, GraduationCap, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { BOABaseURL } from "../../server";
 
 export function BOASubmissionForm() {
   const [formData, setFormData] = useState({
@@ -28,12 +29,13 @@ export function BOASubmissionForm() {
   const [eventPhotos, setEventPhotos] = useState<File[] | null>(null);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate required fields
@@ -62,32 +64,89 @@ export function BOASubmissionForm() {
       return;
     }
 
-    // Submit the form
-    toast.success("BOA request submitted successfully! Pending approval from Class In-charge.");
-    
-    // Reset form
-    setFormData({
-      eventName: "",
-      eventDateFrom: "",
-      eventDateTo: "",
-      organizingDept: "",
-      teacherInCharge: "",
-      studentName: "",
-      branch: "",
-      semester: "",
-      rollNo: "",
-      section: "",
-      numTheoryLectures: "",
-      numPracticalLectures: "",
-      classInCharge: "",
-      submissionDate: "",
-    });
+    setIsSubmitting(true);
 
-    // Reset photos
-    setEventPhotos(null);
-    // revoke previews
-    photoPreviews.forEach(url => URL.revokeObjectURL(url));
-    setPhotoPreviews([]);
+    try {
+      // Create FormData for multipart/form-data submission
+      const formDataToSend = new FormData();
+      
+      // Map frontend fields to backend expected fields
+      formDataToSend.append('eventName', formData.eventName);
+      formDataToSend.append('eventDate', formData.eventDateFrom); // Backend expects 'eventDate'
+      formDataToSend.append('organizingDept', formData.organizingDept);
+      formDataToSend.append('teacherInCharge', formData.teacherInCharge);
+      formDataToSend.append('studentName', formData.studentName);
+      formDataToSend.append('branch', formData.branch);
+      formDataToSend.append('semester', formData.semester);
+      formDataToSend.append('rollNo', formData.rollNo);
+      formDataToSend.append('section', formData.section);
+      formDataToSend.append('date', formData.eventDateFrom); // Backend expects 'date'
+      // Combine theory and practical lectures
+      const totalLectures = (parseInt(formData.numTheoryLectures) || 0) + (parseInt(formData.numPracticalLectures) || 0);
+      formDataToSend.append('numLectures', totalLectures.toString()); // Backend expects 'numLectures'
+      formDataToSend.append('classInCharge', formData.classInCharge);
+      formDataToSend.append('submissionDate', formData.submissionDate);
+
+      // Append event photos
+      if (eventPhotos) {
+        eventPhotos.forEach((photo, index) => {
+          formDataToSend.append(`eventPhotos[]`, photo);
+        });
+      }
+
+      // Send to PHP backend
+      const response = await fetch(`${BOABaseURL}boasubmissionform.php`, {
+        method: 'POST',
+        body: formDataToSend,
+        // Don't set Content-Type header - browser will set it automatically with boundary
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success' || result.success) {
+        toast.success("BOA request submitted successfully! 🎉", {
+          description: "Pending approval from Class In-charge."
+        });
+        
+        // Reset form
+        setFormData({
+          eventName: "",
+          eventDateFrom: "",
+          eventDateTo: "",
+          organizingDept: "",
+          teacherInCharge: "",
+          studentName: "",
+          branch: "",
+          semester: "",
+          rollNo: "",
+          section: "",
+          numTheoryLectures: "",
+          numPracticalLectures: "",
+          classInCharge: "",
+          submissionDate: "",
+        });
+
+        // Reset photos
+        setEventPhotos(null);
+        photoPreviews.forEach(url => URL.revokeObjectURL(url));
+        setPhotoPreviews([]);
+        
+        // Reset file input
+        const fileInput = document.getElementById('eventPhotos') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        
+      } else {
+        throw new Error(result.message || 'Failed to submit BOA request');
+      }
+      
+    } catch (error) {
+      console.error('❌ Error submitting BOA request:', error);
+      toast.error("Failed to submit BOA request", {
+        description: error instanceof Error ? error.message : "Please try again later"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -360,9 +419,16 @@ export function BOASubmissionForm() {
               type="submit"
               className="w-full text-white"
               style={{ backgroundColor: '#10B981' }}
-              disabled={!eventPhotos || eventPhotos.length === 0 || !!photoError}
+              disabled={!eventPhotos || eventPhotos.length === 0 || !!photoError || isSubmitting}
             >
-              Submit BOA Request
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                'Submit BOA Request'
+              )}
             </Button>
 
             {/* Note */}

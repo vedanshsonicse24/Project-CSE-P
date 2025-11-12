@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown, Edit3, Edit2, Save, X, ChevronRight } from "lucide-react";
+import { Bell, Mail, Linkedin, Youtube, Phone, MapPin, Clock, Users, BookOpen, Award, ChevronUp, ChevronDown, Edit3, Edit2, Save, X, ChevronRight, Loader2 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { FacultyCard } from "./common/FacultyCard";
 import { motion } from "motion/react";
@@ -12,6 +12,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-coverflow';
+import { API_ENDPOINTS } from '../server';
 
 interface HomePageProps {
   onNavigateToLogin: () => void;
@@ -27,6 +28,93 @@ interface HomePageProps {
 export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateToCSEDepartment, onNavigateToFacultyInfo, onNavigateToContact, onNavigateToNewsEvents, onNavigateToCOE, userRole }: HomePageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [editingProject, setEditingProject] = useState<string | null>(null);
+  
+  // API state management
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState([
+    { label: "Students Enrolled", value: "2,500+" },
+    { label: "Courses Offered", value: "150+" },
+    { label: "Faculty Members", value: "200+" },
+    { label: "Years of Excellence", value: "25+" },
+  ]);
+  const [announcements, setAnnouncements] = useState([
+    { id: 1, title: "Mid-Semester Examinations", date: "2025-10-20", content: "Mid-term exams will commence from October 20th, 2025." },
+    { id: 2, title: "Faculty Development Program", date: "2025-10-18", content: "FDP on AI in Education scheduled for next week." },
+    { id: 3, title: "Research Paper Submission Deadline", date: "2025-10-25", content: "Submit your research papers by October 25th." },
+  ]);
+  const [facultyData, setFacultyData] = useState([
+    { name: "Dr. Anand Tamrakar", role: "HOD", img: "/images/hod.jpg" },
+    { name: "Mrs. Keshika Jangde", role: "Assistant Professor", img: "/images/fac1.jpg" },
+    { name: "Ms. Jyoti Gautam", role: "Assistant Professor", img: "/images/fac2.jpg" },
+  ]);
+  const [projects, setProjects] = useState([
+    {
+      title: "E-Commerce Platform",
+      description: "A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.",
+      tech: "React, Node.js, Express, MongoDB"
+    },
+    {
+      title: "AI Health Scanner",
+      description: "A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.",
+      tech: "Python, TensorFlow, Keras, OpenCV"
+    },
+    {
+      title: "Campus Connect App",
+      description: "A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.",
+      tech: "Flutter, Firebase, Dart"
+    }
+  ]);
+  
+  // Fetch homepage data from API
+  useEffect(() => {
+    fetchHomepageData();
+  }, []);
+  
+  const fetchHomepageData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(API_ENDPOINTS.homepage);
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        // Update stats
+        if (result.data.stats) {
+          setStats(result.data.stats.map((stat: any) => ({
+            label: stat.label,
+            value: stat.value
+          })));
+        }
+        
+        // Update announcements
+        if (result.data.announcements) {
+          setAnnouncements(result.data.announcements);
+        }
+        
+        // Update faculty data with images
+        if (result.data.faculty) {
+          setFacultyData(result.data.faculty.map((fac: any, index: number) => ({
+            name: fac.name,
+            role: fac.role,
+            img: `/images/fac${index + 1}.jpg`
+          })));
+        }
+        
+        // Update projects
+        if (result.data.projects) {
+          setProjects(result.data.projects);
+        }
+        
+        toast.success('Homepage data loaded successfully');
+      } else {
+        toast.error('Failed to load homepage data');
+      }
+    } catch (error) {
+      console.error('Error fetching homepage data:', error);
+      toast.error('Failed to connect to server');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   // Base student projects array - modular and editable
   const baseStudentProjects = [
@@ -116,17 +204,11 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
     setEditedProjects(updated);
   };
 
-  const announcements = [
-    { id: 1, title: "Mid-Semester Examinations", date: "2025-10-20", content: "Mid-term exams will commence from October 20th, 2025." },
-    { id: 2, title: "Faculty Development Program", date: "2025-10-18", content: "FDP on AI in Education scheduled for next week." },
-    { id: 3, title: "Research Paper Submission Deadline", date: "2025-10-25", content: "Submit your research papers by October 25th." },
-  ];
-
-  const stats = [
-    { icon: Users, label: "Students Enrolled", value: "2,500+" },
-    { icon: BookOpen, label: "Courses Offered", value: "150+" },
-    { icon: Award, label: "Faculty Members", value: "200+" },
-    { icon: Clock, label: "Years of Excellence", value: "25+" },
+  const statsWithIcons = [
+    { icon: Users, label: stats[0].label, value: stats[0].value },
+    { icon: BookOpen, label: stats[1].label, value: stats[1].value },
+    { icon: Award, label: stats[2].label, value: stats[2].value },
+    { icon: Clock, label: stats[3].label, value: stats[3].value },
   ];
 
   const departments = [
@@ -147,45 +229,6 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
       description: "Leading research in artificial intelligence and machine learning",
       courses: ["B.Tech AI&DS", "M.Tech AI", "Research Programs"],
       image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
-    }
-  ];
-
-  const facultyData = [
-    { name: "Dr. Anand Tamrakar", role: "HOD", img: "/images/hod.jpg" },
-    { name: "Mrs. Keshika Jangde", role: "Assistant Professor", img: "/images/fac1.jpg" },
-    { name: "Ms. Jyoti Gautam", role: "Assistant Professor", img: "/images/fac2.jpg" },
-    { name: "Mr. Tegendra Kumar", role: "Assistant Professor", img: "/images/fac3.jpg" },
-    { name: "Ms. Toshaniwali Bhargav", role: "Assistant Professor", img: "/images/fac4.jpg" },
-    { name: "Ms. Upasana Khadatkar", role: "Assistant Professor", img: "/images/fac5.jpg" },
-    { name: "Ms. Prapti Pandey", role: "Assistant Professor", img: "/images/fac6.jpg" },
-    { name: "Ms. Preeti Tuli", role: "Assistant Professor", img: "/images/fac7.jpg" },
-    { name: "Ms. Shraddha Taunk", role: "Associate Professor", img: "/images/fac8.jpg" },
-    { name: "Ms. Poonam Gupta", role: "Assistant Professor", img: "/images/fac9.jpg" },
-    { name: "Mr. Manoj Kumar Singh", role: "Assistant Professor", img: "/images/fac10.jpg" },
-    { name: "Mr. Narendra Kumar Dewangan", role: "Senior Faculty", img: "/images/fac11.jpg" },
-    { name: "Mr. Saurabh Mishra", role: "Assistant Professor", img: "/images/fac12.jpg" },
-    { name: "Mr. Deepak Rao Khadatkar", role: "Associate Professor", img: "/images/fac13.jpg" },
-    { name: "Mr. Vivek Kumar Soni", role: "Assistant Professor", img: "/images/fac14.jpg" },
-    { name: "Mr. Vaibhav Chandrakar", role: "Assistant Professor", img: "/images/fac15.jpg" },
-    { name: "Mr. Sunil Kumar Dewangan", role: "Senior Faculty", img: "/images/fac16.jpg" },
-    { name: "Ms. Priyata Mishra", role: "Assistant Professor", img: "/images/fac17.jpg" },
-  ];
-
-  const projects = [
-    {
-      title: "E-Commerce Platform",
-      description: "A full-stack web application for online shopping, featuring user authentication, product management, and a payment gateway.",
-      tech: "React, Node.js, Express, MongoDB"
-    },
-    {
-      title: "AI Health Scanner",
-      description: "A machine learning model trained to detect anomalies and classify medical images (like X-rays) to assist in early diagnosis.",
-      tech: "Python, TensorFlow, Keras, OpenCV"
-    },
-    {
-      title: "Campus Connect App",
-      description: "A cross-platform mobile app for college event tracking, class schedules, and real-time notifications for students and faculty.",
-      tech: "Flutter, Firebase, Dart"
     }
   ];
 
@@ -233,6 +276,18 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
     );
   }
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: '#800000' }} />
+          <p className="text-gray-600">Loading homepage data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
 
@@ -267,7 +322,7 @@ export function HomePage({ onNavigateToLogin, onNavigateToPrograms, onNavigateTo
             Our Achievements
           </motion.h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {stats.map((stat, index) => (
+            {statsWithIcons.map((stat, index) => (
               <motion.div
                 key={index}
                 className="text-center"

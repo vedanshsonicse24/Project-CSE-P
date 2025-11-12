@@ -9,9 +9,10 @@ import { Slider } from "../ui/slider";
 import { 
   User, Calendar, Hash, Award, Mail, Phone, Users, 
   Linkedin, Github, BookOpen, GraduationCap, Moon, Sun, 
-  HelpCircle, Sparkles, Check, AlertCircle, Rocket, Pencil
+  HelpCircle, Sparkles, Check, AlertCircle, Rocket, Pencil, Loader2
 } from "lucide-react";
 import { toast } from "sonner";
+import { API_ENDPOINTS } from "../../server";
 
 interface StudentProfileData {
   fullName: string;
@@ -46,6 +47,8 @@ export function StudentProfileModern() {
   const [formProgress, setFormProgress] = useState(0);
   const [validatedFields, setValidatedFields] = useState<FieldValidation>({});
   const [shakingFields, setShakingFields] = useState<FieldValidation>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   
   const [formData, setFormData] = useState<StudentProfileData>({
     fullName: "",
@@ -69,6 +72,74 @@ export function StudentProfileModern() {
     backlogSubject: "",
     activeInClubs: "",
   });
+
+  // Fetch profile data on mount
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Get student data from localStorage
+      const userData = localStorage.getItem("userData");
+      if (!userData) {
+        throw new Error("No user data found. Please login again.");
+      }
+      
+      const user = JSON.parse(userData);
+      const studentId = user.user_id || user.student_id || user.id;
+      
+      if (!studentId) {
+        throw new Error("Student ID not found. Please login again.");
+      }
+      
+      // Fetch profile data with student_id
+      const response = await fetch(`${API_ENDPOINTS.student.profileModern}?student_id=${studentId}`, {
+        headers: {
+          'Authorization': `Bearer ${studentId}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await response.json();
+      
+      if (result.status === "success" && result.data) {
+        const data = result.data;
+        setFormData({
+          fullName: data.fullName || "",
+          dateOfBirth: data.dateOfBirth || "",
+          rollNumber: data.rollNumber || "",
+          enrollmentNumber: data.enrollmentNumber || "",
+          semester: data.semester || "",
+          section: data.section || "",
+          attendance: data.attendance || 0,
+          designation: data.designation || "",
+          linkedIn: data.linkedIn || "",
+          github: data.github || "",
+          fatherName: data.fatherName || "",
+          fatherPhone: data.fatherPhone || "",
+          motherName: data.motherName || "",
+          motherPhone: data.motherPhone || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          achievements: data.achievements || "",
+          numberOfBacklogs: data.numberOfBacklogs || "",
+          backlogSubject: data.backlogSubject || "",
+          activeInClubs: data.activeInClubs || "",
+        });
+        toast.success("Profile loaded successfully");
+      } else {
+        throw new Error(result.message || "Failed to fetch profile");
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load profile";
+      toast.error(errorMessage);
+      console.error("Profile fetch error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Calculate form completion progress
   useEffect(() => {
@@ -156,7 +227,7 @@ export function StudentProfileModern() {
     }, 250);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Validate required fields
     const requiredFields: (keyof StudentProfileData)[] = [
       'fullName', 'dateOfBirth', 'rollNumber', 'enrollmentNumber', 
@@ -190,14 +261,52 @@ export function StudentProfileModern() {
       return;
     }
 
-    console.log("Student Profile Data:", formData);
-    
-    // Success feedback
-    triggerConfetti();
-    toast.success("Profile updated successfully! 🎉", {
-      description: "Your information has been saved.",
-      icon: <Sparkles className="h-5 w-5" />,
-    });
+    setIsSaving(true);
+
+    try {
+      // Get student data from localStorage
+      const userData = localStorage.getItem("userData");
+      if (!userData) {
+        throw new Error("No user data found. Please login again.");
+      }
+      
+      const user = JSON.parse(userData);
+      const studentId = user.user_id || user.student_id || user.id;
+      
+      if (!studentId) {
+        throw new Error("Student ID not found. Please login again.");
+      }
+      
+      const response = await fetch(`${API_ENDPOINTS.student.profileModern}?student_id=${studentId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${studentId}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        console.log("Student Profile Data:", formData);
+        
+        // Success feedback
+        triggerConfetti();
+        toast.success("Profile updated successfully! 🎉", {
+          description: "Your information has been saved.",
+          icon: <Sparkles className="h-5 w-5" />,
+        });
+      } else {
+        throw new Error(result.message || "Failed to update profile");
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save profile";
+      toast.error(errorMessage);
+      console.error("Profile save error:", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReset = () => {
@@ -239,6 +348,17 @@ export function StudentProfileModern() {
 
   const textClass = darkMode ? "text-white" : "text-gray-900";
   const subTextClass = darkMode ? "text-gray-300" : "text-gray-600";
+
+  if (isLoading) {
+    return (
+      <div className={`${bgClass} min-h-screen flex items-center justify-center`}>
+        <div className="text-center">
+          <Loader2 className="h-16 w-16 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className={textClass}>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`${bgClass} p-4 md:p-6 relative overflow-hidden transition-all duration-500`}>
@@ -880,16 +1000,27 @@ export function StudentProfileModern() {
                 <Button
                   type="button"
                   onClick={handleSave}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-6 text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group"
+                  disabled={isSaving}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-6 text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />
-                  Save Profile
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />
+                      Save Profile
+                    </>
+                  )}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleReset}
-                  className="flex-1 border-2 border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold py-6 text-lg transition-all duration-300 transform hover:scale-105"
+                  disabled={isSaving}
+                  className="flex-1 border-2 border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold py-6 text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Reset Form
                 </Button>

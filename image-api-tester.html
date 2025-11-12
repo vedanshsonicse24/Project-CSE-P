@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image API Tester - CSE Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .test-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .test-card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .result pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 50%;
+            border: 4px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box p {
+            color: #0c5460;
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Image API Tester</h1>
+        
+        <div class="info-box">
+            <p><strong>Base URL:</strong> http://localhost/cse_portal_backend/api/figma/imagewithfallback.php</p>
+            <p><strong>Status:</strong> <span id="serverStatus">Testing...</span></p>
+        </div>
+        
+        <div class="test-grid">
+            <!-- Test 1: Get Faculty Image -->
+            <div class="test-card">
+                <h2>👨‍🏫 Get Faculty Image</h2>
+                <div class="input-group">
+                    <label for="facultyId">Faculty ID</label>
+                    <input type="text" id="facultyId" placeholder="e.g., FAC001" value="FAC001">
+                </div>
+                <button onclick="testFacultyImage()">🔍 Fetch Faculty Image</button>
+                <div id="facultyResult" class="result" style="display:none;"></div>
+            </div>
+            
+            <!-- Test 2: Get Student Image -->
+            <div class="test-card">
+                <h2>👨‍🎓 Get Student Image</h2>
+                <div class="input-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" placeholder="e.g., STU001" value="STU001">
+                </div>
+                <button onclick="testStudentImage()">🔍 Fetch Student Image</button>
+                <div id="studentResult" class="result" style="display:none;"></div>
+            </div>
+            
+            <!-- Test 3: Validate External URL -->
+            <div class="test-card">
+                <h2>🌐 Validate External URL</h2>
+                <div class="input-group">
+                    <label for="imageUrl">Image URL</label>
+                    <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg" 
+                           value="https://via.placeholder.com/150">
+                </div>
+                <button onclick="testValidateUrl()">✅ Validate URL</button>
+                <div id="validateResult" class="result" style="display:none;"></div>
+            </div>
+            
+            <!-- Test 4: Batch Test -->
+            <div class="test-card">
+                <h2>🚀 Batch Test</h2>
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.9rem;">
+                    Test multiple faculty IDs at once
+                </p>
+                <div class="input-group">
+                    <label for="batchIds">Faculty IDs (comma-separated)</label>
+                    <input type="text" id="batchIds" placeholder="FAC001, FAC002, FAC003" 
+                           value="FAC001, FAC002, FAC003">
+                </div>
+                <button onclick="testBatch()">🔥 Run Batch Test</button>
+                <div id="batchResult" class="result" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const BASE_URL = 'http://localhost/cse_portal_backend/api/figma/imagewithfallback.php';
+        
+        // Test server status on load
+        window.onload = async () => {
+            try {
+                const response = await fetch(BASE_URL);
+                const statusEl = document.getElementById('serverStatus');
+                if (response.ok) {
+                    statusEl.innerHTML = '<span style="color: #28a745;">✅ Server Online</span>';
+                } else {
+                    statusEl.innerHTML = '<span style="color: #dc3545;">❌ Server Error</span>';
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = 
+                    '<span style="color: #dc3545;">❌ Server Offline (Check XAMPP)</span>';
+            }
+        };
+        
+        async function testFacultyImage() {
+            const resultDiv = document.getElementById('facultyResult');
+            const facultyId = document.getElementById('facultyId').value.trim();
+            
+            if (!facultyId) {
+                alert('Please enter a Faculty ID');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const url = `${BASE_URL}?type=faculty&id=${facultyId}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                const statusClass = data.status === 'success' ? 'success' : 'error';
+                let html = `
+                    <h3>Response</h3>
+                    <span class="status ${statusClass}">${data.status.toUpperCase()}</span>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.status === 'success' && data.data.image_url) {
+                    html += `
+                        <div class="image-preview">
+                            <img src="${data.data.image_url}" alt="Faculty Image" 
+                                 onerror="this.src='${data.data.fallback}'">
+                        </div>
+                    `;
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error</h3>
+                    <span class="status error">NETWORK ERROR</span>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        async function testStudentImage() {
+            const resultDiv = document.getElementById('studentResult');
+            const studentId = document.getElementById('studentId').value.trim();
+            
+            if (!studentId) {
+                alert('Please enter a Student ID');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const url = `${BASE_URL}?type=student&id=${studentId}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                const statusClass = data.status === 'success' ? 'success' : 'error';
+                let html = `
+                    <h3>Response</h3>
+                    <span class="status ${statusClass}">${data.status.toUpperCase()}</span>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.status === 'success' && data.data.image_url) {
+                    html += `
+                        <div class="image-preview">
+                            <img src="${data.data.image_url}" alt="Student Image" 
+                                 onerror="this.src='${data.data.fallback}'">
+                        </div>
+                    `;
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error</h3>
+                    <span class="status error">NETWORK ERROR</span>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        async function testValidateUrl() {
+            const resultDiv = document.getElementById('validateResult');
+            const imageUrl = document.getElementById('imageUrl').value.trim();
+            
+            if (!imageUrl) {
+                alert('Please enter an image URL');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const url = `${BASE_URL}?action=validate&url=${encodeURIComponent(imageUrl)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                const statusClass = data.status === 'success' ? 'success' : 'error';
+                let html = `
+                    <h3>Response</h3>
+                    <span class="status ${statusClass}">${data.status.toUpperCase()}</span>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.status === 'success' && data.data.valid) {
+                    html += `
+                        <div class="image-preview">
+                            <img src="${imageUrl}" alt="Validated Image">
+                        </div>
+                    `;
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error</h3>
+                    <span class="status error">NETWORK ERROR</span>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        async function testBatch() {
+            const resultDiv = document.getElementById('batchResult');
+            const batchIds = document.getElementById('batchIds').value
+                .split(',')
+                .map(id => id.trim())
+                .filter(id => id.length > 0);
+            
+            if (batchIds.length === 0) {
+                alert('Please enter at least one Faculty ID');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const promises = batchIds.map(id => 
+                    fetch(`${BASE_URL}?type=faculty&id=${id}`).then(r => r.json())
+                );
+                
+                const results = await Promise.all(promises);
+                
+                let html = '<h3>Batch Results</h3>';
+                results.forEach((data, index) => {
+                    const statusClass = data.status === 'success' ? 'success' : 'error';
+                    html += `
+                        <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #ddd;">
+                            <strong>${batchIds[index]}</strong>
+                            <span class="status ${statusClass}" style="margin-left: 10px;">
+                                ${data.status.toUpperCase()}
+                            </span>
+                            <pre style="margin-top: 10px;">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                });
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error</h3>
+                    <span class="status error">NETWORK ERROR</span>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

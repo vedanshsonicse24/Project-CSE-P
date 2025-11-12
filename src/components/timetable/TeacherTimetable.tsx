@@ -1,10 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, Clock, CheckCircle } from 'lucide-react';
-import { timeSlots } from './data';
+import { Calendar, Clock, CheckCircle, Loader2 } from 'lucide-react';
+import { timeSlots as initialTimeSlots } from './data';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { toast } from 'sonner';
+import { API_ENDPOINTS } from '../../server';
+
+interface TimeSlot {
+  id: string;
+  day: string;
+  period: number;
+  subject: string;
+  teacher: string;
+  time: string;
+  attendanceTaken: boolean;
+}
 
 interface TeacherTimetableProps {
   onMarkAttendance: (slotId: string) => void;
@@ -12,7 +24,68 @@ interface TeacherTimetableProps {
 
 export function TeacherTimetable({ onMarkAttendance }: TeacherTimetableProps) {
   const [selectedDay, setSelectedDay] = useState('Monday');
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>(initialTimeSlots);
+  const [isLoading, setIsLoading] = useState(false);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  // Fetch attendance status on component mount and when day changes
+  useEffect(() => {
+    fetchAttendanceStatus();
+  }, [selectedDay]);
+
+  const fetchAttendanceStatus = async () => {
+    try {
+      setIsLoading(true);
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      // Fetch attendance records for today
+      const response = await fetch(`${API_ENDPOINTS.attendance.fetch}?date=${today}`);
+      const result = await response.json();
+
+      if (result.status === 'success' && result.data && Array.isArray(result.data)) {
+        // Group attendance by period to check if attendance was marked
+        const markedPeriods = new Set(
+          result.data.map((record: any) => parseInt(record.period))
+        );
+
+        // Update timeSlots based on which periods have attendance records
+        const updatedSlots = initialTimeSlots.map(slot => {
+          if (slot.day === selectedDay) {
+            return {
+              ...slot,
+              attendanceTaken: markedPeriods.has(slot.period)
+            };
+          }
+          return slot;
+        });
+        setTimeSlots(updatedSlots);
+      } else {
+        // If API fails, use initial data
+        setTimeSlots(initialTimeSlots);
+      }
+    } catch (error) {
+      console.error('Error fetching attendance status:', error);
+      // Use initial data on error
+      setTimeSlots(initialTimeSlots);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to refresh attendance status after marking
+  const refreshAttendance = () => {
+    fetchAttendanceStatus();
+  };
+
+  // Expose refresh function to parent via ref or callback
+  useEffect(() => {
+    // Store refresh function in window for parent access
+    (window as any).refreshAttendanceStatus = refreshAttendance;
+    
+    return () => {
+      delete (window as any).refreshAttendanceStatus;
+    };
+  }, [selectedDay]);
 
   const todaySlots = timeSlots.filter(slot => slot.day === selectedDay);
 
@@ -43,7 +116,15 @@ export function TeacherTimetable({ onMarkAttendance }: TeacherTimetableProps) {
         </div>
 
         {/* Class Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-center">
+              <Loader2 className="h-12 w-12 animate-spin text-blue-400 mx-auto mb-4" />
+              <p className="text-blue-200">Loading attendance status...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {todaySlots.map((slot, index) => (
             <motion.div
               key={slot.id}
@@ -94,12 +175,13 @@ export function TeacherTimetable({ onMarkAttendance }: TeacherTimetableProps) {
               </Card>
             </motion.div>
           ))}
+          
+          {todaySlots.length === 0 && !isLoading && (
+            <div className="col-span-full text-center py-12">
+              <p className="text-blue-200 text-lg">No classes scheduled for {selectedDay}</p>
+            </div>
+          )}
         </div>
-
-        {todaySlots.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-blue-200 text-lg">No classes scheduled for {selectedDay}</p>
-          </div>
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { CheckCircle, XCircle, Clock, Eye, FileText } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Eye, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../ui/dialog";
+import { BOABaseURL } from "../../server";
 
 type BOAStatus = "pending" | "approved" | "rejected";
 
@@ -108,12 +109,48 @@ const sampleRequests: BOARequest[] = [
 ];
 
 export function BOAManagement() {
-  const [requests, setRequests] = useState<BOARequest[]>(sampleRequests);
+  const [requests, setRequests] = useState<BOARequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<BOARequest | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remarks, setRemarks] = useState<string>("");
   const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState<boolean>(false);
   const [photoRequest, setPhotoRequest] = useState<BOARequest | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Fetch BOA requests from backend on component mount
+  useEffect(() => {
+    fetchBOARequests();
+  }, []);
+
+  const fetchBOARequests = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${BOABaseURL}boamanagement.php`);
+      const result = await response.json();
+      
+      // Handle new API response format: {status, message, data}
+      if (result.status === "success" && Array.isArray(result.data)) {
+        setRequests(result.data);
+        console.log('✅ BOA requests loaded:', result.data.length, 'requests');
+      } else if (Array.isArray(result)) {
+        // Fallback for old format (direct array)
+        setRequests(result);
+        console.log('✅ BOA requests loaded:', result);
+      } else {
+        throw new Error(result.message || 'Invalid response format');
+      }
+    } catch (error) {
+      console.error('❌ Error fetching BOA requests:', error);
+      toast.error('Failed to load BOA requests', {
+        description: 'Please check your connection and try again'
+      });
+      // Use sample data as fallback
+      setRequests([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const pendingRequests = requests.filter((r: BOARequest) => r.status === "pending");
   const approvedRequests = requests.filter((r: BOARequest) => r.status === "approved");
@@ -142,48 +179,117 @@ export function BOAManagement() {
     setIsPhotoDialogOpen(true);
   };
 
-  const handleApprove = (id: string) => {
-    setRequests((prev) =>
-      prev.map((req) =>
-        req.id === id
-          ? {
-              ...req,
-              status: "approved",
-              approvedBy: "Current User",
-              approvalDate: new Date().toISOString().split("T")[0],
-              remarks: remarks || undefined,
-            }
-          : req
-      )
-    );
-    toast.success("BOA request approved successfully");
-    setIsDialogOpen(false);
-    setSelectedRequest(null);
-    setRemarks("");
+  const handleApprove = async (id: string) => {
+    try {
+      setIsUpdating(true);
+      
+      const response = await fetch(`${BOABaseURL}boamanagement.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: id,
+          status: 'approved',
+          remarks: remarks || null,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.message || result.success) {
+        // Update local state
+        setRequests((prev) =>
+          prev.map((req) =>
+            req.id === id
+              ? {
+                  ...req,
+                  status: "approved",
+                  approvedBy: "Current User",
+                  approvalDate: new Date().toISOString().split("T")[0],
+                  remarks: remarks || undefined,
+                }
+              : req
+          )
+        );
+        
+        toast.success("BOA request approved successfully! ✅");
+        setIsDialogOpen(false);
+        setSelectedRequest(null);
+        setRemarks("");
+        
+        // Refresh data from backend
+        await fetchBOARequests();
+      } else {
+        throw new Error(result.error || 'Failed to approve request');
+      }
+    } catch (error) {
+      console.error('❌ Error approving BOA request:', error);
+      toast.error('Failed to approve request', {
+        description: error instanceof Error ? error.message : 'Please try again'
+      });
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = async (id: string) => {
     if (!remarks) {
       toast.error("Please provide a reason for rejection");
       return;
     }
-    setRequests((prev) =>
-      prev.map((req) =>
-        req.id === id
-          ? {
-              ...req,
-              status: "rejected",
-              approvedBy: "Current User",
-              approvalDate: new Date().toISOString().split("T")[0],
-              remarks,
-            }
-          : req
-      )
-    );
-    toast.success("BOA request rejected");
-    setIsDialogOpen(false);
-    setSelectedRequest(null);
-    setRemarks("");
+    
+    try {
+      setIsUpdating(true);
+      
+      const response = await fetch(`${BOABaseURL}boamanagement.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: id,
+          status: 'rejected',
+          remarks: remarks,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.message || result.success) {
+        // Update local state
+        setRequests((prev) =>
+          prev.map((req) =>
+            req.id === id
+              ? {
+                  ...req,
+                  status: "rejected",
+                  approvedBy: "Current User",
+                  approvalDate: new Date().toISOString().split("T")[0],
+                  remarks,
+                }
+              : req
+          )
+        );
+        
+        toast.success("BOA request rejected");
+        setIsDialogOpen(false);
+        setSelectedRequest(null);
+        setRemarks("");
+        
+        // Refresh data from backend
+        await fetchBOARequests();
+      } else {
+        throw new Error(result.error || 'Failed to reject request');
+      }
+    } catch (error) {
+      console.error('❌ Error rejecting BOA request:', error);
+      toast.error('Failed to reject request', {
+        description: error instanceof Error ? error.message : 'Please try again'
+      });
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const viewDetails = (request: BOARequest) => {

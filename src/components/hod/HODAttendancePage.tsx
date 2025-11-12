@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import SwipeableAttendanceRow from '../attendance/SwipeableAttendanceRow';
@@ -16,6 +16,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { API_ENDPOINTS } from '../../server';
 
 interface Student {
   id: string;
@@ -24,20 +25,70 @@ interface Student {
   attendanceStatus: 'present' | 'absent' | 'unmarked';
 }
 
-const sampleStudents: Student[] = [
-  { id: '1', name: 'Aarav Kumar', rollNumber: 'CSE2023001', attendanceStatus: 'unmarked' },
-  { id: '2', name: 'Priya Sharma', rollNumber: 'CSE2023002', attendanceStatus: 'unmarked' },
-  { id: '3', name: 'Rohan Patel', rollNumber: 'CSE2023003', attendanceStatus: 'unmarked' },
-  { id: '4', name: 'Ananya Singh', rollNumber: 'CSE2023004', attendanceStatus: 'unmarked' },
-  { id: '5', name: 'Arjun Reddy', rollNumber: 'CSE2023005', attendanceStatus: 'unmarked' },
-  { id: '6', name: 'Sneha Gupta', rollNumber: 'CSE2023006', attendanceStatus: 'unmarked' },
-  { id: '7', name: 'Vikram Joshi', rollNumber: 'CSE2023007', attendanceStatus: 'unmarked' },
-  { id: '8', name: 'Ishita Verma', rollNumber: 'CSE2023008', attendanceStatus: 'unmarked' },
-];
-
 const HODAttendancePage = () => {
-  const [students, setStudents] = useState<Student[]>(sampleStudents);
+  const [students, setStudents] = useState<Student[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedClass, setSelectedClass] = useState({
+    subject: 'Data Structures & Algorithms',
+    section: 'CSE-A',
+    semester: 3
+  });
+
+  // Fetch students when component mounts
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  // Function to fetch students from API
+  const fetchStudents = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(API_ENDPOINTS.hod.attendance);
+      const result = await response.json();
+
+      if (result.status === "success" && result.attendance) {
+        // Transform API data to match our interface
+        const transformedStudents = result.attendance.map((student: any) => ({
+          id: student.id,
+          name: student.name,
+          rollNumber: student.roll,
+          attendanceStatus: 'unmarked' as 'present' | 'absent' | 'unmarked'
+        }));
+        
+        setStudents(transformedStudents);
+        console.log('✅ Students loaded:', transformedStudents.length);
+      } else {
+        toast.error('Failed to load students', {
+          description: result.message || 'Please try again'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error fetching students:', error);
+      toast.error('Failed to load students', {
+        description: 'Please check your connection and try again'
+      });
+      // Use sample data as fallback
+      loadSampleStudents();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fallback sample students
+  const loadSampleStudents = () => {
+    const sampleStudents: Student[] = [
+      { id: '1', name: 'Aarav Kumar', rollNumber: 'CSE2023001', attendanceStatus: 'unmarked' },
+      { id: '2', name: 'Priya Sharma', rollNumber: 'CSE2023002', attendanceStatus: 'unmarked' },
+      { id: '3', name: 'Rohan Patel', rollNumber: 'CSE2023003', attendanceStatus: 'unmarked' },
+      { id: '4', name: 'Ananya Singh', rollNumber: 'CSE2023004', attendanceStatus: 'unmarked' },
+      { id: '5', name: 'Arjun Reddy', rollNumber: 'CSE2023005', attendanceStatus: 'unmarked' },
+      { id: '6', name: 'Sneha Gupta', rollNumber: 'CSE2023006', attendanceStatus: 'unmarked' },
+      { id: '7', name: 'Vikram Joshi', rollNumber: 'CSE2023007', attendanceStatus: 'unmarked' },
+      { id: '8', name: 'Ishita Verma', rollNumber: 'CSE2023008', attendanceStatus: 'unmarked' },
+    ];
+    setStudents(sampleStudents);
+  };
 
   // Calculate statistics
   const statistics = useMemo(() => {
@@ -118,15 +169,46 @@ const HODAttendancePage = () => {
     try {
       setIsSubmitting(true);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Prepare attendance data for submission
+      const attendanceData = students.map(student => ({
+        roll: student.rollNumber,
+        status: student.attendanceStatus,
+        date: new Date().toISOString().split('T')[0],
+        subject: selectedClass.subject,
+        semester: selectedClass.semester,
+        section: selectedClass.section
+      }));
 
-      toast.success('Attendance submitted successfully! 🎉', {
-        description: `${statistics.present} present, ${statistics.absent} absent`,
-        duration: 3000,
+      // Submit to backend
+      const response = await fetch(API_ENDPOINTS.hod.attendance, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          attendance: attendanceData,
+          subject: selectedClass.subject,
+          semester: selectedClass.semester,
+          section: selectedClass.section,
+          date: new Date().toISOString().split('T')[0]
+        })
       });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        toast.success('Attendance submitted successfully! 🎉', {
+          description: `${statistics.present} present, ${statistics.absent} absent`,
+          duration: 3000,
+        });
+      } else {
+        throw new Error(result.message || 'Failed to submit attendance');
+      }
     } catch (error) {
-      toast.error('Failed to submit attendance');
+      console.error('❌ Error submitting attendance:', error);
+      toast.error('Failed to submit attendance', {
+        description: error instanceof Error ? error.message : 'Please try again later'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -322,19 +404,36 @@ const HODAttendancePage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 md:p-6">
-            <div className="space-y-0">
-              {students.map((student) => (
-                <SwipeableAttendanceRow
-                  key={student.id}
-                  studentId={student.id}
-                  studentName={student.name}
-                  rollNumber={student.rollNumber}
-                  initialStatus={student.attendanceStatus}
-                  onStatusChange={handleAttendanceChange}
-                  disabled={isSubmitting}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+                  <p className="text-sm text-gray-600">Loading students...</p>
+                </div>
+              </div>
+            ) : students.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600 mb-2">No students found</p>
+                <Button onClick={fetchStudents} variant="outline">
+                  Retry
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-0">
+                {students.map((student) => (
+                  <SwipeableAttendanceRow
+                    key={student.id}
+                    studentId={student.id}
+                    studentName={student.name}
+                    rollNumber={student.rollNumber}
+                    initialStatus={student.attendanceStatus}
+                    onStatusChange={handleAttendanceChange}
+                    disabled={isSubmitting}
+                  />
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 

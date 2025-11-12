@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Module API Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .endpoint {
+            margin-bottom: 15px;
+        }
+
+        .endpoint-url {
+            font-size: 11px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .status.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status.loading {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .response {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .response::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .response::-webkit-scrollbar-track {
+            background: #2d2d2d;
+            border-radius: 4px;
+        }
+
+        .response::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .clear-btn {
+            background: #ef4444;
+            margin-top: 10px;
+        }
+
+        .clear-btn:hover {
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .json-key {
+            color: #9cdcfe;
+        }
+
+        .json-string {
+            color: #ce9178;
+        }
+
+        .json-number {
+            color: #b5cea8;
+        }
+
+        .json-boolean {
+            color: #569cd6;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spinner 0.6s linear infinite;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Faculty Module API Tester</h1>
+
+        <div class="grid">
+            <!-- Faculty API Tests -->
+            <div class="card">
+                <h2>Faculty API</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/faculty/faculty.php?endpoint=list</div>
+                    <button onclick="testAPI('faculty-list', 'http://localhost/cse_portal_backend/api/faculty/faculty.php?endpoint=list')">
+                        Test Faculty List
+                    </button>
+                    <div id="status-faculty-list"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="input-group">
+                        <label>Faculty ID:</label>
+                        <input type="text" id="facultyId" value="FAC001" placeholder="e.g., FAC001">
+                    </div>
+                    <div class="endpoint-url">GET /api/faculty/faculty.php?endpoint=profile&id=FAC001</div>
+                    <button onclick="testFacultyProfile()">
+                        Test Faculty Profile
+                    </button>
+                    <div id="status-faculty-profile"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/faculty/faculty.php?endpoint=stats&id=FAC001</div>
+                    <button onclick="testFacultyStats()">
+                        Test Faculty Stats
+                    </button>
+                    <div id="status-faculty-stats"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/faculty/faculty.php?endpoint=classes&id=FAC001</div>
+                    <button onclick="testFacultyClasses()">
+                        Test Faculty Classes
+                    </button>
+                    <div id="status-faculty-classes"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/faculty/faculty.php?endpoint=mentees&id=FAC001</div>
+                    <button onclick="testFacultyMentees()">
+                        Test Faculty Mentees
+                    </button>
+                    <div id="status-faculty-mentees"></div>
+                </div>
+
+                <div id="response-faculty" class="response" style="display:none;"></div>
+                <button class="clear-btn" onclick="clearResponse('faculty')">Clear Response</button>
+            </div>
+
+            <!-- Attendance API Tests -->
+            <div class="card">
+                <h2>Attendance API</h2>
+
+                <div class="endpoint">
+                    <div class="input-group">
+                        <label>Semester:</label>
+                        <select id="semester">
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Section:</label>
+                        <select id="section">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+                    <div class="endpoint-url">GET /api/attendance/mark_attendance.php?action=students&semester=3&section=A</div>
+                    <button onclick="testGetStudents()">
+                        Test Get Students
+                    </button>
+                    <div id="status-attendance-students"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">POST /api/attendance/mark_attendance.php?action=mark</div>
+                    <button onclick="testMarkAttendance()">
+                        Test Mark Attendance
+                    </button>
+                    <div id="status-attendance-mark"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="input-group">
+                        <label>Subject Code:</label>
+                        <input type="text" id="subjectCode" value="CSE301" placeholder="e.g., CSE301">
+                    </div>
+                    <div class="input-group">
+                        <label>Date:</label>
+                        <input type="date" id="attendanceDate" value="2025-11-10">
+                    </div>
+                    <div class="endpoint-url">GET /api/attendance/mark_attendance.php?action=fetch</div>
+                    <button onclick="testFetchAttendance()">
+                        Test Fetch Attendance
+                    </button>
+                    <div id="status-attendance-fetch"></div>
+                </div>
+
+                <div id="response-attendance" class="response" style="display:none;"></div>
+                <button class="clear-btn" onclick="clearResponse('attendance')">Clear Response</button>
+            </div>
+
+            <!-- Engage Lectures API Tests -->
+            <div class="card">
+                <h2>Engage Lectures API</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/faculty/engage_lectures.php?action=list&facultyId=FAC001</div>
+                    <button onclick="testEngageList()">
+                        Test Engage List
+                    </button>
+                    <div id="status-engage-list"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">POST /api/faculty/engage_lectures.php?action=create</div>
+                    <button onclick="testEngageCreate()">
+                        Test Create Engage Lecture
+                    </button>
+                    <div id="status-engage-create"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/faculty/engage_lectures.php?action=available_faculty</div>
+                    <button onclick="testAvailableFaculty()">
+                        Test Available Faculty
+                    </button>
+                    <div id="status-engage-available"></div>
+                </div>
+
+                <div id="response-engage" class="response" style="display:none;"></div>
+                <button class="clear-btn" onclick="clearResponse('engage')">Clear Response</button>
+            </div>
+
+            <!-- Common APIs -->
+            <div class="card">
+                <h2>Common APIs</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/common/statscard.php</div>
+                    <button onclick="testAPI('common-stats', 'http://localhost/cse_portal_backend/api/common/statscard.php')">
+                        Test Stats Card
+                    </button>
+                    <div id="status-common-stats"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-url">GET /api/common/facultycard.php</div>
+                    <button onclick="testAPI('common-faculty', 'http://localhost/cse_portal_backend/api/common/facultycard.php')">
+                        Test Faculty Card
+                    </button>
+                    <div id="status-common-faculty"></div>
+                </div>
+
+                <div id="response-common" class="response" style="display:none;"></div>
+                <button class="clear-btn" onclick="clearResponse('common')">Clear Response</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setStatus(id, status, message) {
+            const elem = document.getElementById('status-' + id);
+            if (status === 'loading') {
+                elem.innerHTML = '<span class="status loading"><span class="spinner"></span>Loading...</span>';
+            } else if (status === 'success') {
+                elem.innerHTML = '<span class="status success">✅ Success</span>';
+            } else if (status === 'error') {
+                elem.innerHTML = '<span class="status error">❌ ' + message + '</span>';
+            }
+        }
+
+        function displayResponse(category, data) {
+            const responseElem = document.getElementById('response-' + category);
+            responseElem.style.display = 'block';
+            responseElem.textContent = JSON.stringify(data, null, 2);
+        }
+
+        function clearResponse(category) {
+            const responseElem = document.getElementById('response-' + category);
+            responseElem.style.display = 'none';
+            responseElem.textContent = '';
+        }
+
+        async function testAPI(id, url, options = {}) {
+            setStatus(id, 'loading');
+            const category = id.split('-')[0];
+            
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                displayResponse(category, data);
+                
+                if (data.status === 'success') {
+                    setStatus(id, 'success');
+                } else {
+                    setStatus(id, 'error', data.message || 'Failed');
+                }
+            } catch (error) {
+                setStatus(id, 'error', error.message);
+                displayResponse(category, { error: error.message });
+            }
+        }
+
+        function testFacultyProfile() {
+            const facultyId = document.getElementById('facultyId').value;
+            const url = `http://localhost/cse_portal_backend/api/faculty/faculty.php?endpoint=profile&id=${facultyId}`;
+            testAPI('faculty-profile', url);
+        }
+
+        function testFacultyStats() {
+            const facultyId = document.getElementById('facultyId').value;
+            const url = `http://localhost/cse_portal_backend/api/faculty/faculty.php?endpoint=stats&id=${facultyId}`;
+            testAPI('faculty-stats', url);
+        }
+
+        function testFacultyClasses() {
+            const facultyId = document.getElementById('facultyId').value;
+            const url = `http://localhost/cse_portal_backend/api/faculty/faculty.php?endpoint=classes&id=${facultyId}`;
+            testAPI('faculty-classes', url);
+        }
+
+        function testFacultyMentees() {
+            const facultyId = document.getElementById('facultyId').value;
+            const url = `http://localhost/cse_portal_backend/api/faculty/faculty.php?endpoint=mentees&id=${facultyId}`;
+            testAPI('faculty-mentees', url);
+        }
+
+        function testGetStudents() {
+            const semester = document.getElementById('semester').value;
+            const section = document.getElementById('section').value;
+            const url = `http://localhost/cse_portal_backend/api/attendance/mark_attendance.php?action=students&semester=${semester}&section=${section}`;
+            testAPI('attendance-students', url);
+        }
+
+        function testMarkAttendance() {
+            const url = 'http://localhost/cse_portal_backend/api/attendance/mark_attendance.php?action=mark';
+            const data = {
+                studentId: "STU001",
+                subjectCode: "CSE301",
+                date: "2025-11-10",
+                period: 1,
+                status: "Present",
+                markedBy: "FAC001"
+            };
+            
+            testAPI('attendance-mark', url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }
+
+        function testFetchAttendance() {
+            const subjectCode = document.getElementById('subjectCode').value;
+            const date = document.getElementById('attendanceDate').value;
+            const url = `http://localhost/cse_portal_backend/api/attendance/mark_attendance.php?action=fetch&subjectCode=${subjectCode}&date=${date}&period=1`;
+            testAPI('attendance-fetch', url);
+        }
+
+        function testEngageList() {
+            const facultyId = document.getElementById('facultyId').value;
+            const url = `http://localhost/cse_portal_backend/api/faculty/engage_lectures.php?action=list&facultyId=${facultyId}`;
+            testAPI('engage-list', url);
+        }
+
+        function testEngageCreate() {
+            const url = 'http://localhost/cse_portal_backend/api/faculty/engage_lectures.php?action=create';
+            const data = {
+                originalFacultyId: "FAC001",
+                proxyFacultyId: "FAC002",
+                timetableId: "TT001",
+                engageDate: "2025-11-15",
+                reason: "Conference attendance"
+            };
+            
+            testAPI('engage-create', url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }
+
+        function testAvailableFaculty() {
+            const url = 'http://localhost/cse_portal_backend/api/faculty/engage_lectures.php?action=available_faculty&date=2025-11-15&period=3';
+            testAPI('engage-available', url);
+        }
+    </script>
+</body>
+</html>

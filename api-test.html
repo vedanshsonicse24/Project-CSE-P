@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        .endpoint {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            color: #2d3748;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .response {
+            background: #1a202c;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+        }
+        .response.show {
+            display: block;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        .status.pending {
+            background: #fef5e7;
+            color: #744210;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .info-box {
+            background: #ebf8ff;
+            border: 1px solid #90cdf4;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .info-box p {
+            color: #2c5282;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 API Integration Test Suite</h1>
+        
+        <div class="info-box">
+            <p><strong>Prerequisites:</strong></p>
+            <ul style="margin-left: 20px; color: #2c5282; line-height: 1.8;">
+                <li>XAMPP Apache and MySQL services must be running</li>
+                <li>Database 'cse_portal_database' must exist</li>
+                <li>PHP files must be in D:\new_xammp\htdocs\cse_portal_backend\</li>
+            </ul>
+        </div>
+
+        <!-- Stats Card API Tests -->
+        <div class="test-section">
+            <h2>📊 Stats Card API Tests</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-url">GET /api/common/statscard.php</div>
+                <p style="color: #718096; margin-bottom: 10px;">Fetch all statistics</p>
+                <button onclick="testStatsAll()">Test All Stats</button>
+                <button onclick="clearResponse('stats-all-response')">Clear</button>
+                <span id="stats-all-status"></span>
+                <div id="stats-all-response" class="response"></div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-url">GET /api/common/statscard.php?title=Total Students</div>
+                <p style="color: #718096; margin-bottom: 10px;">Fetch specific statistic</p>
+                <button onclick="testStatsSpecific()">Test Specific Stat</button>
+                <button onclick="clearResponse('stats-specific-response')">Clear</button>
+                <span id="stats-specific-status"></span>
+                <div id="stats-specific-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- Faculty Card API Tests -->
+        <div class="test-section">
+            <h2>👨‍🏫 Faculty Card API Tests</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-url">GET /api/common/facultycard.php</div>
+                <p style="color: #718096; margin-bottom: 10px;">Fetch all faculty members</p>
+                <button onclick="testFacultyAll()">Test All Faculty</button>
+                <button onclick="clearResponse('faculty-all-response')">Clear</button>
+                <span id="faculty-all-status"></span>
+                <div id="faculty-all-response" class="response"></div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-url">GET /api/common/facultycard.php?id=FAC001</div>
+                <p style="color: #718096; margin-bottom: 10px;">Fetch faculty by ID</p>
+                <button onclick="testFacultyById()">Test Faculty By ID</button>
+                <button onclick="clearResponse('faculty-id-response')">Clear</button>
+                <span id="faculty-id-status"></span>
+                <div id="faculty-id-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- BOA API Tests -->
+        <div class="test-section">
+            <h2>📝 BOA Management API Tests</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-url">GET /api/boa/boamanagement.php</div>
+                <p style="color: #718096; margin-bottom: 10px;">Fetch all BOA requests</p>
+                <button onclick="testBOAAll()">Test BOA List</button>
+                <button onclick="clearResponse('boa-all-response')">Clear</button>
+                <span id="boa-all-status"></span>
+                <div id="boa-all-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- HOD API Tests -->
+        <div class="test-section">
+            <h2>🏢 HOD Dashboard API Tests</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-url">GET /api/hod/faculty_management.php</div>
+                <p style="color: #718096; margin-bottom: 10px;">Fetch faculty list for management</p>
+                <button onclick="testHODFaculty()">Test HOD Faculty</button>
+                <button onclick="clearResponse('hod-faculty-response')">Clear</button>
+                <span id="hod-faculty-status"></span>
+                <div id="hod-faculty-response" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost/cse_portal_backend';
+
+        function showStatus(elementId, status, message) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<span class="status ${status}">${message}</span>`;
+        }
+
+        function showLoading(elementId) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '<span class="loading"></span>';
+        }
+
+        function showResponse(elementId, data, status) {
+            const el = document.getElementById(elementId);
+            el.textContent = JSON.stringify(data, null, 2);
+            el.classList.add('show');
+            
+            const statusEl = elementId.replace('-response', '-status');
+            showStatus(statusEl, status, status === 'success' ? '✅ Success' : '❌ Error');
+        }
+
+        function clearResponse(elementId) {
+            const el = document.getElementById(elementId);
+            el.textContent = '';
+            el.classList.remove('show');
+            
+            const statusEl = elementId.replace('-response', '-status');
+            document.getElementById(statusEl).innerHTML = '';
+        }
+
+        async function testAPI(url, responseId) {
+            const statusId = responseId.replace('-response', '-status');
+            showLoading(statusId);
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse(responseId, data, 'success');
+                } else {
+                    showResponse(responseId, data, 'error');
+                }
+            } catch (error) {
+                showResponse(responseId, { error: error.message }, 'error');
+            }
+        }
+
+        // Stats API Tests
+        function testStatsAll() {
+            testAPI(`${BASE_URL}/api/common/statscard.php`, 'stats-all-response');
+        }
+
+        function testStatsSpecific() {
+            testAPI(`${BASE_URL}/api/common/statscard.php?title=Total Students`, 'stats-specific-response');
+        }
+
+        // Faculty API Tests
+        function testFacultyAll() {
+            testAPI(`${BASE_URL}/api/common/facultycard.php`, 'faculty-all-response');
+        }
+
+        function testFacultyById() {
+            testAPI(`${BASE_URL}/api/common/facultycard.php?id=FAC001`, 'faculty-id-response');
+        }
+
+        // BOA API Tests
+        function testBOAAll() {
+            testAPI(`${BASE_URL}/api/boa/boamanagement.php`, 'boa-all-response');
+        }
+
+        // HOD API Tests
+        function testHODFaculty() {
+            testAPI(`${BASE_URL}/api/hod/faculty_management.php`, 'hod-faculty-response');
+        }
+
+        // Auto-test on load
+        console.log('%c🧪 API Test Suite Loaded', 'color: #667eea; font-size: 16px; font-weight: bold');
+        console.log('Base URL:', BASE_URL);
+        console.log('Click buttons to test each endpoint');
+    </script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 ﻿import { motion } from "motion/react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { toast } from "sonner";
 import { 
   Calendar, 
   Clock, 
@@ -17,10 +19,37 @@ import {
   Facebook,
   Twitter,
   Instagram,
-  Linkedin
+  Linkedin,
+  X
 } from "lucide-react";
 
 export function NewsEventsPage() {
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  
+  const handleRegister = (event: any) => {
+    // Check if registration is closed
+    if (event.registrationDeadline === "Registration Closed") {
+      toast.error("Registration Closed", {
+        description: "Registration for this event has been closed."
+      });
+      return;
+    }
+
+    // If event has a registration link, open it
+    if (event.registrationLink) {
+      window.open(event.registrationLink, '_blank');
+      toast.success("Opening Registration", {
+        description: "Redirecting to registration page..."
+      });
+    } else {
+      // Otherwise, show contact information
+      toast.info("Register for Event", {
+        description: `Please contact us at events@ssipmt.com or call +91 771 234 5678 to register for ${event.title}`,
+        duration: 5000
+      });
+    }
+  };
+  
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
@@ -45,16 +74,17 @@ export function NewsEventsPage() {
       category: "Hackathon",
       description: "National level hackathon on real-time challenges of Raipur Nagar Nigam (CG). Event is live now!",
       prizes: {
-        first: "Γé╣1,00,000",
-        second: "Γé╣75,000", 
-        third: "Γé╣50,000",
-        consolation: "5 ├ù Γé╣10,000"
+        first: "₹1,00,000",
+        second: "₹75,000", 
+        third: "₹50,000",
+        consolation: "5 × ₹10,000"
       },
       organizers: "SSIPMT & IEEE",
       associations: "CGTU, BHILAI (CG)",
       collaboration: "Municipal Corporation Raipur, Chhattisgarh",
       registrationDeadline: "Registration Closed",
       eventStatus: "Live Event",
+      registrationLink: null, // No link since registration is closed
       image: "/api/placeholder/300/200",
       bgColor: "from-blue-500 to-blue-600"
     },
@@ -101,6 +131,7 @@ export function NewsEventsPage() {
         }
       ],
       eventStatus: "Upcoming Event",
+      registrationLink: "https://forms.gle/example-samvaya25", // Example registration link
       image: "/api/placeholder/300/200",
       bgColor: "from-blue-500 to-blue-600"
     },
@@ -132,6 +163,7 @@ export function NewsEventsPage() {
         }
       ],
       eventStatus: "Upcoming Event",
+      registrationLink: "https://forms.gle/example-vyom2025", // Example registration link
       image: "/api/placeholder/300/200",
       bgColor: "from-blue-500 to-blue-600"
     }
@@ -387,7 +419,11 @@ export function NewsEventsPage() {
                             )}
                           </div>
 
-                          <Button variant="outline" className="group">
+                          <Button 
+                            variant="outline" 
+                            className="group"
+                            onClick={() => setSelectedEvent(event)}
+                          >
                             View Details
                             <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                           </Button>
@@ -534,10 +570,193 @@ export function NewsEventsPage() {
         
         <div className="text-center mt-8 pt-8 border-t border-gray-300">
           <p className="text-black text-sm">
-            ┬⌐ 2024 SSIPMT College of Engineering. All rights reserved.
+            © 2024 SSIPMT College of Engineering. All rights reserved.
           </p>
         </div>
       </motion.section>
+
+      {/* Event Details Modal */}
+      {selectedEvent && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedEvent(null)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className={`bg-gradient-to-br ${selectedEvent.bgColor} p-6 text-white relative`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute top-4 right-4 text-white hover:bg-white/20"
+                onClick={() => setSelectedEvent(null)}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+              
+              <Badge className="bg-white/20 text-white border-white/30 mb-3">
+                {selectedEvent.category}
+              </Badge>
+              
+              <h2 className="text-3xl font-bold mb-2">{selectedEvent.title}</h2>
+              {selectedEvent.subtitle && (
+                <h3 className="text-xl font-semibold mb-2">{selectedEvent.subtitle}</h3>
+              )}
+              <p className="text-white/90">{selectedEvent.description}</p>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Event Details */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-xs text-gray-500">Date</p>
+                    <p className="font-semibold text-gray-900">{selectedEvent.date}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Clock className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-xs text-gray-500">Time</p>
+                    <p className="font-semibold text-gray-900">{selectedEvent.time}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg md:col-span-2">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-xs text-gray-500">Location</p>
+                    <p className="font-semibold text-gray-900">{selectedEvent.location}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Theme (if available) */}
+              {selectedEvent.theme && (
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Theme
+                  </h4>
+                  <p className="text-blue-800">{selectedEvent.theme}</p>
+                </div>
+              )}
+
+              {/* Prizes (for hackathons) */}
+              {selectedEvent.prizes && (
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <h4 className="font-bold text-green-900 mb-3 flex items-center gap-2">
+                    <Trophy className="w-5 h-5" />
+                    Prize Money
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white p-3 rounded border-l-4 border-yellow-400">
+                      <p className="text-xs text-gray-500">1st Prize</p>
+                      <p className="text-lg font-bold text-gray-900">{selectedEvent.prizes.first}</p>
+                    </div>
+                    <div className="bg-white p-3 rounded border-l-4 border-gray-400">
+                      <p className="text-xs text-gray-500">2nd Prize</p>
+                      <p className="text-lg font-bold text-gray-900">{selectedEvent.prizes.second}</p>
+                    </div>
+                    <div className="bg-white p-3 rounded border-l-4 border-orange-400">
+                      <p className="text-xs text-gray-500">3rd Prize</p>
+                      <p className="text-lg font-bold text-gray-900">{selectedEvent.prizes.third}</p>
+                    </div>
+                    <div className="bg-white p-3 rounded border-l-4 border-blue-400">
+                      <p className="text-xs text-gray-500">Consolation</p>
+                      <p className="text-lg font-bold text-gray-900">{selectedEvent.prizes.consolation}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Speakers (for conclaves) */}
+              {selectedEvent.speakers && selectedEvent.speakers.length > 0 && (
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <h4 className="font-bold text-purple-900 mb-3 flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Distinguished Speakers
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedEvent.speakers.map((speaker: any, idx: number) => (
+                      <div key={idx} className="bg-white p-3 rounded flex items-start gap-3">
+                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Users className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">{speaker.name}</p>
+                          <p className="text-sm text-gray-600">{speaker.title}</p>
+                          <p className="text-sm text-purple-600 font-medium">{speaker.company}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Event Status and Registration */}
+              <div className="flex flex-wrap gap-3 pt-4 border-t">
+                {selectedEvent.eventStatus && (
+                  <Badge className="bg-green-100 text-green-800 text-sm px-4 py-2">
+                    {selectedEvent.eventStatus}
+                  </Badge>
+                )}
+                {selectedEvent.registrationDeadline && (
+                  <Badge className="bg-red-100 text-red-800 text-sm px-4 py-2">
+                    {selectedEvent.registrationDeadline}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Additional Information */}
+              {(selectedEvent.organizers || selectedEvent.associations || selectedEvent.collaboration) && (
+                <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                  <h4 className="font-bold text-gray-900 mb-2">Event Information</h4>
+                  {selectedEvent.organizers && (
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Organizers:</span> {selectedEvent.organizers}
+                    </p>
+                  )}
+                  {selectedEvent.associations && (
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Associations:</span> {selectedEvent.associations}
+                    </p>
+                  )}
+                  {selectedEvent.collaboration && (
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Collaboration:</span> {selectedEvent.collaboration}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 bg-gray-50 border-t flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setSelectedEvent(null)}>
+                Close
+              </Button>
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => handleRegister(selectedEvent)}
+                disabled={selectedEvent.registrationDeadline === "Registration Closed"}
+              >
+                {selectedEvent.registrationDeadline === "Registration Closed" 
+                  ? "Registration Closed" 
+                  : "Register Now"}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

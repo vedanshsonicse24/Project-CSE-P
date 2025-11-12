@@ -5,6 +5,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { toast } from "sonner";
 import { motion } from "motion/react";
+import { API_ENDPOINTS } from "../../server";
 
 interface LoginPanelProps {
   selectedRole: string;
@@ -27,12 +28,40 @@ export function LoginPanel({ selectedRole, onLogin }: LoginPanelProps) {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch(API_ENDPOINTS.loginModule.panel, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          role: selectedRole.toLowerCase()
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        // Store token and user data
+        localStorage.setItem('authToken', result.data.token);
+        localStorage.setItem('userData', JSON.stringify(result.data.user));
+        localStorage.setItem('userRole', selectedRole.toLowerCase());
+        
+        toast.success(result.message || `Successfully logged in as ${selectedRole}`);
+        
+        // Call onLogin callback
+        onLogin(selectedRole.toLowerCase().replace(" ", ""), username);
+      } else {
+        toast.error(result.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Failed to connect to server. Please try again.');
+    } finally {
       setIsLoading(false);
-      toast.success(`Successfully logged in as ${selectedRole}`);
-      onLogin(selectedRole.toLowerCase().replace(" ", ""), username);
-    }, 1500);
+    }
   };
 
   return (

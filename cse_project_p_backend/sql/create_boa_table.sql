@@ -1,0 +1,27 @@
+-- Create BOA (Benefit of Attendance) requests table
+CREATE TABLE IF NOT EXISTS boa_requests (
+    id VARCHAR(50) PRIMARY KEY,
+    event_name VARCHAR(255) NOT NULL,
+    event_date DATE NOT NULL,
+    organizing_dept VARCHAR(255) NOT NULL,
+    teacher_incharge VARCHAR(255) NOT NULL,
+    student_name VARCHAR(255) NOT NULL,
+    branch VARCHAR(100) NOT NULL,
+    semester VARCHAR(20) NOT NULL,
+    roll_no VARCHAR(50) NOT NULL,
+    section VARCHAR(10) NOT NULL,
+    date DATE NOT NULL,
+    num_lectures INT NOT NULL,
+    class_incharge VARCHAR(255) NOT NULL,
+    submission_date DATE NOT NULL,
+    event_photos TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    approved_by VARCHAR(255) DEFAULT NULL,
+    approval_date DATETIME DEFAULT NULL,
+    remarks TEXT DEFAULT NULL,
+    submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_student (roll_no),
+    INDEX idx_submitted_at (submitted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

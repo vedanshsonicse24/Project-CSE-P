@@ -238,6 +238,7 @@ export function StudentManagement() {
   const [sectionFilter, setSectionFilter] = useState("all");
   const [attendanceFilter, setAttendanceFilter] = useState<string[]>([]);
   const [showBacklogs, setShowBacklogs] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   
   // Monthly attendance dropdown states
   const [showMonthlyDropdown, setShowMonthlyDropdown] = useState(false);
@@ -457,6 +458,116 @@ export function StudentManagement() {
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Invalid file type. Please upload JPG or PNG image.");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      toast.error("File size too large. Maximum size is 5MB.");
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+
+    // Convert to base64 and simulate upload
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Image = e.target?.result as string;
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        // In production, you would send this to the backend:
+        // await fetch('/api/students/upload_photo.php', {
+        //   method: 'POST',
+        //   body: JSON.stringify({ student_id: selectedStudent?.id, photo: base64Image })
+        // });
+        
+        setIsUploadingPhoto(false);
+        toast.success("Photo uploaded successfully!");
+        console.log("Photo uploaded for:", selectedStudent?.name);
+        console.log("Base64 length:", base64Image.length);
+      }, 1000);
+    };
+
+    reader.onerror = () => {
+      setIsUploadingPhoto(false);
+      toast.error("Failed to read file. Please try again.");
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleDownloadCV = () => {
+    if (!selectedStudent) return;
+
+    // In production, fetch CV from backend:
+    // const response = await fetch(`/api/students/download_cv.php?student_id=${selectedStudent.id}`);
+    
+    // For now, check if CV exists (simulate)
+    const hasCV = selectedStudent.researchPapers > 0 || selectedStudent.projectsMade > 0;
+    
+    if (!hasCV) {
+      toast.error("No CV available for this student.");
+      return;
+    }
+
+    // Simulate CV download
+    toast.success(`Downloading CV for ${selectedStudent.name}...`);
+    
+    // Create a sample CV content
+    const cvContent = `
+CURRICULUM VITAE
+
+Name: ${selectedStudent.name}
+Roll Number: ${selectedStudent.roll}
+Enrollment Number: ${selectedStudent.enrollmentNumber}
+Email: ${selectedStudent.email}
+Contact: ${selectedStudent.contactNumber}
+
+ACADEMIC DETAILS
+Semester: ${selectedStudent.semester}
+Section: ${selectedStudent.section}
+CGPA: ${selectedStudent.averageCGPA}
+Attendance: ${selectedStudent.percent}%
+
+RESEARCH & PROJECTS
+Research Papers: ${selectedStudent.researchPapers}
+Projects Completed: ${selectedStudent.projectsMade}
+
+ACHIEVEMENTS
+${selectedStudent.achievements.map((a, i) => `${i + 1}. ${a}`).join('\n')}
+
+ADDRESS
+${selectedStudent.address}
+
+SOCIAL PROFILES
+LinkedIn: ${selectedStudent.linkedIn}
+GitHub: ${selectedStudent.github}
+    `.trim();
+
+    // Create blob and download
+    const blob = new Blob([cvContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `CV_${selectedStudent.name.replace(/\s+/g, '_')}_${selectedStudent.roll}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    
+    console.log("CV downloaded for:", selectedStudent.name);
   };
 
   return (
@@ -847,14 +958,25 @@ export function StudentManagement() {
                       {getInitials(editedStudent.name)}
                     </div>
                     {isEditMode && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{ borderColor: "#800000", color: "#800000" }}
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload Photo
-                      </Button>
+                      <>
+                        <input
+                          type="file"
+                          id="photo-upload"
+                          accept="image/jpeg,image/jpg,image/png"
+                          style={{ display: "none" }}
+                          onChange={handlePhotoUpload}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          style={{ borderColor: "#800000", color: "#800000" }}
+                          onClick={() => document.getElementById("photo-upload")?.click()}
+                          disabled={isUploadingPhoto}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          {isUploadingPhoto ? "Uploading..." : "Upload Photo"}
+                        </Button>
+                      </>
                     )}
                   </div>
 
@@ -919,11 +1041,9 @@ export function StudentManagement() {
                     style={{ border: "1px solid #ddd" }}
                   >
                     <button
-                      className="w-full px-4 py-3 flex items-center justify-center gap-2"
+                      className="w-full px-4 py-3 flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all"
                       style={{ backgroundColor: "#800000", color: "#fff" }}
-                      onClick={() => {
-                        console.log("Downloading CV for:", editedStudent.name);
-                      }}
+                      onClick={handleDownloadCV}
                     >
                       <Download className="h-4 w-4" />
                       <span>Download CV</span>

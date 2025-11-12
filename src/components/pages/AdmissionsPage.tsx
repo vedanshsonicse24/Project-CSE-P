@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Alert, AlertDescription } from "../ui/alert";
+import { toast } from "sonner";
 import { 
   Calendar, 
   FileText, 
@@ -22,6 +23,67 @@ import {
 } from "lucide-react";
 
 export function AdmissionsPage() {
+  
+  const downloadDocumentChecklist = () => {
+    // Get the required documents list
+    const requiredDocuments = [
+      "10th & 12th Mark Sheets and Certificates",
+      "Transfer Certificate from previous institution",
+      "Migration Certificate (if applicable)",
+      "Entrance Exam Score Card (JEE/GATE/CAT/etc.)",
+      "Category Certificate (if applicable)",
+      "Aadhar Card / Identity Proof",
+      "Passport Size Photographs (6 copies)",
+      "Income Certificate (for scholarship)",
+      "Medical Fitness Certificate",
+      "Character Certificate"
+    ];
+
+    // Create document content
+    const content = `
+SSIPMT COLLEGE OF ENGINEERING
+ADMISSION DOCUMENT CHECKLIST
+=====================================
+
+Please ensure you have the following documents ready for the admission process:
+
+${requiredDocuments.map((doc, index) => `${index + 1}. ${doc}`).join('\n')}
+
+IMPORTANT NOTES:
+- All documents should be original along with self-attested photocopies
+- Documents in regional languages should be accompanied by English translation
+- Passport size photographs should be recent (taken within last 6 months)
+- Scanned copies should be clear and in PDF/JPG format (max 2MB per file)
+
+FOR QUERIES:
+Email: admissions@ssipmt.com
+Phone: +91 771 234 5678
+Website: www.ssipmt.com
+
+Application Deadline: 30th June 2025
+Early applications get priority for seat allocation.
+
+© 2025 SSIPMT College of Engineering
+All Rights Reserved
+    `;
+
+    // Create a blob and download
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'SSIPMT_Admission_Document_Checklist.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    // Show success toast
+    toast.success("Checklist Downloaded!", {
+      description: "Document checklist has been downloaded successfully."
+    });
+  };
+  
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
@@ -362,7 +424,11 @@ export function AdmissionsPage() {
                     ))}
                   </div>
                   <div className="mt-6 text-center">
-                    <Button variant="outline" className="gap-2 border-blue-600 text-blue-600 hover:bg-blue-50">
+                    <Button 
+                      variant="outline" 
+                      className="gap-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                      onClick={downloadDocumentChecklist}
+                    >
                       <Download className="w-4 h-4" />
                       Download Document Checklist
                     </Button>

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import SwipeableAttendanceRow from '../attendance/SwipeableAttendanceRow';
@@ -13,9 +13,33 @@ import {
   Info,
   Smartphone,
   ArrowLeft,
-  ArrowRight
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
+import axios from 'axios';
+
+// TypeScript Interfaces
+interface AttendanceRecord {
+  id: number;
+  student_id: string;
+  student_name: string;
+  subject_code: string;
+  timetable_id: string | null;
+  date: string;
+  period: number;
+  status: 'Present' | 'Absent' | 'BOA';
+  marked_by: string | null;
+  marked_at: string;
+}
+
+interface AttendanceResponse {
+  success: boolean;
+  count: number;
+  data: AttendanceRecord[];
+}
 
 interface Student {
   id: string;
@@ -24,20 +48,65 @@ interface Student {
   attendanceStatus: 'present' | 'absent' | 'unmarked';
 }
 
-const sampleStudents: Student[] = [
-  { id: '1', name: 'Aarav Kumar', rollNumber: 'CSE2023001', attendanceStatus: 'unmarked' },
-  { id: '2', name: 'Priya Sharma', rollNumber: 'CSE2023002', attendanceStatus: 'unmarked' },
-  { id: '3', name: 'Rohan Patel', rollNumber: 'CSE2023003', attendanceStatus: 'unmarked' },
-  { id: '4', name: 'Ananya Singh', rollNumber: 'CSE2023004', attendanceStatus: 'unmarked' },
-  { id: '5', name: 'Arjun Reddy', rollNumber: 'CSE2023005', attendanceStatus: 'unmarked' },
-  { id: '6', name: 'Sneha Gupta', rollNumber: 'CSE2023006', attendanceStatus: 'unmarked' },
-  { id: '7', name: 'Vikram Joshi', rollNumber: 'CSE2023007', attendanceStatus: 'unmarked' },
-  { id: '8', name: 'Ishita Verma', rollNumber: 'CSE2023008', attendanceStatus: 'unmarked' },
-];
+const API_BASE_URL = 'http://localhost/cse_portal_backend/api/admin';
 
 const AdminAttendancePage = () => {
-  const [students, setStudents] = useState<Student[]>(sampleStudents);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showAttendanceTable, setShowAttendanceTable] = useState(false);
+
+  // Fetch attendance records from API
+  const fetchAttendanceRecords = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await axios.get<AttendanceResponse>(`${API_BASE_URL}/attendance.php`);
+      
+      if (response.data.success) {
+        setAttendanceRecords(response.data.data);
+        
+        // Convert attendance records to students list
+        const uniqueStudents = new Map<string, Student>();
+        
+        response.data.data.forEach(record => {
+          if (!uniqueStudents.has(record.student_id)) {
+            uniqueStudents.set(record.student_id, {
+              id: record.student_id,
+              name: record.student_name,
+              rollNumber: record.student_id, // Using student_id as roll number
+              attendanceStatus: record.status.toLowerCase() as 'present' | 'absent' | 'unmarked'
+            });
+          }
+        });
+        
+        setStudents(Array.from(uniqueStudents.values()));
+        toast.success(`Loaded ${response.data.count} attendance records`);
+      } else {
+        setError('Failed to fetch attendance records');
+        toast.error('Failed to fetch attendance records');
+      }
+    } catch (err) {
+      const errorMessage = axios.isAxiosError(err) 
+        ? err.message 
+        : 'An unexpected error occurred';
+      setError(errorMessage);
+      toast.error('Error fetching attendance', {
+        description: errorMessage
+      });
+      console.error('Error fetching attendance:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load data on component mount
+  useEffect(() => {
+    fetchAttendanceRecords();
+  }, []);
 
   // Calculate statistics
   const statistics = useMemo(() => {
@@ -164,31 +233,67 @@ const AdminAttendancePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#eff6ff] to-[#eef2ff] dark:from-[#0a0e1a] dark:via-[#1a2b46] dark:to-[#0f1724] p-4 md:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header Card */}
-        <Card className="border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-blue-900">
-          <CardHeader>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  Data Structures & Algorithms
-                </CardTitle>
-                <CardDescription className="text-base mt-2 text-gray-700 dark:text-gray-300">
-                  Section: CSE-A | Semester: 3rd
-                </CardDescription>
-              </div>
-              <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{currentDate}</span>
+        {/* Loading State */}
+        {isLoading && (
+          <Card className="border-2 border-blue-200 dark:border-blue-800">
+            <CardContent className="p-8 flex flex-col items-center justify-center">
+              <Loader2 className="h-12 w-12 text-blue-600 dark:text-blue-400 animate-spin mb-4" />
+              <p className="text-lg text-gray-600 dark:text-gray-400">Loading attendance data...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Error State */}
+        {error && !isLoading && (
+          <Card className="border-2 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/10">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400 flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-red-900 dark:text-red-200">Error Loading Data</h3>
+                  <p className="text-sm text-red-800 dark:text-red-300 mt-1">{error}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span>{currentTime}</span>
-                </div>
+                <Button
+                  onClick={fetchAttendanceRecords}
+                  variant="outline"
+                  className="border-red-300 hover:bg-red-100 dark:border-red-700"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry
+                </Button>
               </div>
-            </div>
-          </CardHeader>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Main Content - Only show if not loading */}
+        {!isLoading && (
+          <>
+            {/* Header Card */}
+            <Card className="border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-blue-900">
+              <CardHeader>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                      Admin Attendance Management
+                    </CardTitle>
+                    <CardDescription className="text-base mt-2 text-gray-700 dark:text-gray-300">
+                      View and manage student attendance records
+                    </CardDescription>
+                  </div>
+                  <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span>{currentDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span>{currentTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -285,8 +390,15 @@ const AdminAttendancePage = () => {
         {/* Quick Actions */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
+            onClick={() => setShowAttendanceTable(!showAttendanceTable)}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-base"
+          >
+            <PieChart className="h-5 w-5 mr-2" />
+            {showAttendanceTable ? 'Hide' : 'Show'} Attendance Records
+          </Button>
+          <Button
             onClick={() => handleMarkAll('present')}
-            disabled={isSubmitting}
+            disabled={isSubmitting || students.length === 0}
             className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-6 text-base"
           >
             <CheckCircle className="h-5 w-5 mr-2" />
@@ -294,7 +406,7 @@ const AdminAttendancePage = () => {
           </Button>
           <Button
             onClick={() => handleMarkAll('absent')}
-            disabled={isSubmitting}
+            disabled={isSubmitting || students.length === 0}
             className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-6 text-base"
           >
             <XCircle className="h-5 w-5 mr-2" />
@@ -302,14 +414,96 @@ const AdminAttendancePage = () => {
           </Button>
           <Button
             onClick={handleExportData}
-            disabled={isSubmitting}
+            disabled={isSubmitting || students.length === 0}
             variant="outline"
             className="sm:w-auto border-2 font-semibold py-6 text-base"
           >
             <Download className="h-5 w-5 mr-2" />
             Export
           </Button>
+          <Button
+            onClick={fetchAttendanceRecords}
+            disabled={isLoading}
+            variant="outline"
+            className="sm:w-auto border-2 font-semibold py-6 text-base"
+          >
+            <RefreshCw className={`h-5 w-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
         </div>
+
+        {/* Attendance Records Table from Database */}
+        {showAttendanceTable && (
+          <Card className="border-2 border-indigo-200 dark:border-indigo-800">
+            <CardHeader>
+              <CardTitle className="text-xl">Attendance Records from Database</CardTitle>
+              <CardDescription>
+                {attendanceRecords.length > 0 
+                  ? `Showing ${attendanceRecords.length} attendance records` 
+                  : 'No attendance records found'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {attendanceRecords.length === 0 ? (
+                <div className="text-center py-12">
+                  <AlertCircle className="h-16 w-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    No Records Found
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    There are no attendance records in the database yet.
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100 dark:bg-gray-800 border-b-2 border-gray-300 dark:border-gray-600">
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">ID</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Student ID</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Student Name</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Subject Code</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Date</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Period</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                        <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Marked At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {attendanceRecords.map((record) => (
+                        <tr 
+                          key={record.id} 
+                          className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        >
+                          <td className="p-3 text-gray-700 dark:text-gray-300">{record.id}</td>
+                          <td className="p-3 text-gray-700 dark:text-gray-300 font-mono">{record.student_id}</td>
+                          <td className="p-3 text-gray-700 dark:text-gray-300">{record.student_name}</td>
+                          <td className="p-3 text-gray-700 dark:text-gray-300 font-mono">{record.subject_code}</td>
+                          <td className="p-3 text-gray-700 dark:text-gray-300">{record.date}</td>
+                          <td className="p-3 text-gray-700 dark:text-gray-300">{record.period}</td>
+                          <td className="p-3">
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                              record.status === 'Present' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                                : record.status === 'Absent'
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                            }`}>
+                              {record.status}
+                            </span>
+                          </td>
+                          <td className="p-3 text-gray-600 dark:text-gray-400 text-sm">
+                            {new Date(record.marked_at).toLocaleString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Student List */}
         <Card>
@@ -341,7 +535,7 @@ const AdminAttendancePage = () => {
         {/* Submit Button */}
         <Button
           onClick={handleSubmitAttendance}
-          disabled={statistics.unmarked > 0 || isSubmitting}
+          disabled={statistics.unmarked > 0 || isSubmitting || students.length === 0}
           className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
@@ -356,6 +550,8 @@ const AdminAttendancePage = () => {
             </>
           )}
         </Button>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,8 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Card } from "./Card";
+import { toast } from "sonner";
+import { API_ENDPOINTS } from "../../server";
 
 interface Role {
   id: string;
@@ -9,13 +12,52 @@ interface Role {
 }
 
 interface RoleCarouselProps {
-  roles: Role[];
+  roles?: Role[];
   currentIndex: number;
   onSelectRole: (index: number) => void;
   onConfirmRole?: () => void;
 }
 
-export function RoleCarousel({ roles, currentIndex, onSelectRole, onConfirmRole }: RoleCarouselProps) {
+export function RoleCarousel({ roles: initialRoles, currentIndex, onSelectRole, onConfirmRole }: RoleCarouselProps) {
+  const [roles, setRoles] = useState<Role[]>(initialRoles || []);
+  const [isLoading, setIsLoading] = useState(!initialRoles);
+
+  useEffect(() => {
+    if (!initialRoles) {
+      fetchRoles();
+    }
+  }, [initialRoles]);
+
+  const fetchRoles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(API_ENDPOINTS.loginModule.roles);
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        setRoles(result.data);
+      } else {
+        toast.error('Failed to load roles');
+        // Fallback to default roles
+        setRoles([
+          { id: "student", title: "Student Portal", caption: "Access your courses and grades", image: "/src/assets/student-role.png" },
+          { id: "faculty", title: "Faculty Portal", caption: "Manage classes and students", image: "/src/assets/faculty-role.png" },
+          { id: "hod", title: "HOD Portal", caption: "Department management", image: "/src/assets/hod-role.png" }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+      toast.error('Failed to connect to server');
+      // Fallback to default roles
+      setRoles([
+        { id: "student", title: "Student Portal", caption: "Access your courses and grades", image: "/src/assets/student-role.png" },
+        { id: "faculty", title: "Faculty Portal", caption: "Manage classes and students", image: "/src/assets/faculty-role.png" },
+        { id: "hod", title: "HOD Portal", caption: "Department management", image: "/src/assets/hod-role.png" }
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handlePrevious = () => {
     onSelectRole(currentIndex === 0 ? roles.length - 1 : currentIndex - 1);
   };
@@ -77,6 +119,14 @@ export function RoleCarousel({ roles, currentIndex, onSelectRole, onConfirmRole 
       };
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="carousel-stage">

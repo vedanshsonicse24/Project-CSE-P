@@ -10,6 +10,7 @@ import {
   FileText,
   Users,
   Bell,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
@@ -20,10 +21,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Toaster } from "../ui/sonner";
+import { toast } from "sonner";
 import { BOASubmissionForm } from "../boa/BOASubmissionForm";
-import { AttendancePageNew } from "../attendance/AttendancePageNew";
 import { StudentAttendanceRedesigned } from "./StudentAttendanceRedesigned";
 import { Timetable } from "../timetable/Timetable";
+import { API_ENDPOINTS } from "../../server";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../ui/dialog";
+import { Textarea } from "../ui/textarea";
 
 const sidebarItems: any[] = [];
 
@@ -32,23 +43,131 @@ interface StudentDashboardProps {
   onNavigateToProfile?: () => void;
 }
 
+interface StudentInfo {
+  name: string;
+  roll: string;
+  semester: string;
+  section: string;
+  email: string;
+  phone: string;
+  cgpa: string;
+  attendance: string;
+}
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  time: string;
+}
+
 export function StudentDashboard({ initialSection = "dashboard", onNavigateToProfile }: StudentDashboardProps) {
   const [activeSection, setActiveSection] = useState(initialSection);
+  const [studentInfo, setStudentInfo] = useState<StudentInfo>({
+    name: "",
+    roll: "",
+    semester: "",
+    section: "",
+    email: "",
+    phone: "",
+    cgpa: "",
+    attendance: "",
+  });
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [uploadedCVs, setUploadedCVs] = useState<any[]>([]);
+  const [isLoadingCVs, setIsLoadingCVs] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isAddAchievementOpen, setIsAddAchievementOpen] = useState(false);
+  const [isViewDetailsOpen, setIsViewDetailsOpen] = useState(false);
+  const [selectedAchievement, setSelectedAchievement] = useState<any>(null);
+  const [newAchievement, setNewAchievement] = useState({
+    title: "",
+    category: "academic",
+    date: "",
+    description: "",
+  });
 
   // Update active section when prop changes
   useEffect(() => {
     setActiveSection(initialSection);
   }, [initialSection]);
 
-  const studentInfo = {
-    name: "Priya Sharma",
-    roll: "21CS002",
-    semester: "6th Semester",
-    section: "A",
-    email: "priya.sharma@student.edu",
-    phone: "+91 98765 43210",
-    cgpa: "8.9",
-    attendance: "92%",
+  // Fetch student dashboard data
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // Fetch uploaded CVs when component mounts or section changes
+  useEffect(() => {
+    if (activeSection === "upload-cv" && studentInfo.roll) {
+      fetchUploadedCVs();
+    }
+  }, [activeSection, studentInfo.roll]);
+
+  const fetchUploadedCVs = async () => {
+    if (!studentInfo.roll) return;
+    
+    setIsLoadingCVs(true);
+    try {
+      const response = await fetch(`${API_ENDPOINTS.student.getCVs}?rollNo=${studentInfo.roll}`);
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        setUploadedCVs(result.data);
+      } else {
+        toast.error("Failed to fetch CVs");
+      }
+    } catch (error) {
+      console.error('Error fetching CVs:', error);
+    } finally {
+      setIsLoadingCVs(false);
+    }
+  };
+
+  const fetchDashboardData = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Get student data from localStorage
+      const userData = localStorage.getItem("userData");
+      if (!userData) {
+        throw new Error("No user data found. Please login again.");
+      }
+      
+      const user = JSON.parse(userData);
+      const studentId = user.user_id || user.student_id || user.id;
+      
+      if (!studentId) {
+        throw new Error("Student ID not found. Please login again.");
+      }
+      
+      // Fetch dashboard data with student_id
+      const response = await fetch(`${API_ENDPOINTS.student.dashboard}?student_id=${studentId}`, {
+        headers: {
+          'Authorization': `Bearer ${studentId}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await response.json();
+      
+      if (result.status === "success" && result.data) {
+        setStudentInfo(result.data);
+        if (result.data.notifications) {
+          setNotifications(result.data.notifications);
+        }
+      } else {
+        throw new Error(result.message || "Failed to fetch dashboard data");
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load dashboard";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error("Dashboard fetch error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const mentorInfo = {
@@ -57,8 +176,6 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
     email: "rajesh.kumar@faculty.edu",
     phone: "+91 98765 12345",
   };
-
-
 
   const achievements = {
     academic: [
@@ -72,20 +189,37 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
     ],
   };
 
-  const notifications = [
-    { id: 1, title: "Assignment Due Tomorrow", message: "CSE301 - Data Structures assignment submission deadline is tomorrow.", time: "2 hours ago" },
+  const renderDashboard = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
+        </div>
+      );
+    }
 
-    { id: 3, title: "Mid-Semester Results Published", message: "Your mid-semester exam results are now available.", time: "1 day ago" },
-  ];
+    if (error) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={fetchDashboardData}>Retry</Button>
+          </div>
+        </div>
+      );
+    }
 
-  const renderDashboard = () => (
+    return (
     <div className="space-y-6">
       <div>
         <h2 className="mb-6">Student Dashboard</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard title="CGPA" value={studentInfo.cgpa} icon={Award} />
-          <StatsCard title="Attendance" value={studentInfo.attendance} icon={User} bgColor="bg-green-50" iconColor="text-green-600" />
-          <StatsCard title="Semester" value={studentInfo.semester} icon={BookOpen} bgColor="bg-purple-50" iconColor="text-purple-600" />
+          <StatsCard title="CGPA" value={studentInfo.cgpa || "N/A"} icon={Award} />
+          <StatsCard title="Attendance" value={studentInfo.attendance || "N/A"} icon={User} bgColor="bg-green-50" iconColor="text-green-600" />
+          <StatsCard title="Semester" value={studentInfo.semester || "N/A"} icon={BookOpen} bgColor="bg-purple-50" iconColor="text-purple-600" />
           <StatsCard title="Achievements" value="5" icon={Award} bgColor="bg-orange-50" iconColor="text-orange-600" />
         </div>
       </div>
@@ -213,9 +347,200 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
         </CardContent>
       </Card>
     </div>
-  );
+    );
+  };
 
   // The student dashboard no longer includes a separate 'profile' page/section here.
+
+  const handleViewCV = (cvFilename: string) => {
+    // In production, this would fetch the actual CV URL from the backend
+    // For now, we'll show a toast and simulate opening a CV
+    toast.info("Opening CV", {
+      description: `Opening ${cvFilename}...`,
+    });
+
+    // Simulate opening CV in new tab
+    // In production, this would be the actual file URL from backend
+    setTimeout(() => {
+      toast.success("CV Opened", {
+        description: "The CV has been opened in a new tab.",
+      });
+      // window.open(`${API_ENDPOINTS.student.cvUpload}/download?file=${cvFilename}`, '_blank');
+    }, 500);
+  };
+
+  const handleCVUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Invalid File Type", {
+        description: "Please upload a PDF, DOC, or DOCX file.",
+      });
+      return;
+    }
+
+    // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error("File Too Large", {
+        description: "File size must be less than 5MB.",
+      });
+      return;
+    }
+
+    // Show uploading toast
+    const uploadToastId = toast.loading("Uploading CV...", {
+      description: `Uploading ${file.name}`,
+    });
+
+    try {
+      // Create FormData and send to backend
+      const formData = new FormData();
+      formData.append('cv', file);
+      formData.append('rollNo', studentInfo.roll);
+      
+      const response = await fetch(API_ENDPOINTS.student.cvUpload, { 
+        method: 'POST', 
+        body: formData 
+      });
+      
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        toast.dismiss(uploadToastId);
+        toast.success("CV Uploaded Successfully!", {
+          description: `${file.name} has been uploaded and approved.`,
+        });
+        
+        // Reset file input
+        const fileInput = document.getElementById('cv-upload-input') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        
+        // Refresh CV list
+        await fetchUploadedCVs();
+      } else {
+        throw new Error(result.message || 'Upload failed');
+      }
+    } catch (error) {
+      toast.dismiss(uploadToastId);
+      toast.error("Upload Failed", {
+        description: error instanceof Error ? error.message : "Please try again.",
+      });
+      console.error('CV upload error:', error);
+    }
+  };
+
+  const handleViewAchievementDetails = (achievement: any) => {
+    setSelectedAchievement(achievement);
+    setIsViewDetailsOpen(true);
+  };
+
+  const handleAddAchievement = () => {
+    setIsAddAchievementOpen(true);
+  };
+
+  const handleSubmitAchievement = () => {
+    // Validate form
+    if (!newAchievement.title || !newAchievement.date || !newAchievement.description) {
+      toast.error("All fields are required", {
+        description: "Please fill in all fields before submitting.",
+      });
+      return;
+    }
+
+    // Show loading toast
+    toast.loading("Submitting achievement...");
+
+    // Simulate submission
+    setTimeout(() => {
+      toast.dismiss();
+      toast.success("Achievement Submitted!", {
+        description: "Your achievement has been submitted for approval.",
+      });
+
+      // Reset form and close dialog
+      setNewAchievement({
+        title: "",
+        category: "academic",
+        date: "",
+        description: "",
+      });
+      setIsAddAchievementOpen(false);
+
+      // In production, send to backend:
+      // const formData = {
+      //   ...newAchievement,
+      //   student_id: studentData.student_id,
+      // };
+      // fetch(API_ENDPOINTS.student.achievements, { 
+      //   method: 'POST', 
+      //   body: JSON.stringify(formData),
+      //   headers: { 'Content-Type': 'application/json' }
+      // });
+    }, 1500);
+  };
+
+  const handleDownloadCertificate = (achievement: any) => {
+    toast.loading("Generating Certificate...", {
+      description: "Please wait while we prepare your certificate.",
+    });
+
+    // Simulate certificate generation and download
+    setTimeout(() => {
+      toast.dismiss();
+
+      // Create certificate content
+      const certificateContent = `
+CERTIFICATE OF ACHIEVEMENT
+
+This is to certify that
+
+${studentInfo.name}
+Roll No: ${studentInfo.roll}
+
+has been awarded
+
+${achievement.title}
+
+Date: ${achievement.date}
+
+This certificate is issued by
+Shri Shankaracharya Institute of Professional Management & Technology
+Raipur, Chhattisgarh
+
+Status: ${achievement.status}
+
+---
+This is a digitally generated certificate.
+© ${new Date().getFullYear()} SSIPMT College of Engineering
+      `;
+
+      // Create blob and download
+      const blob = new Blob([certificateContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Certificate_${achievement.title.replace(/\s+/g, '_')}_${studentInfo.roll}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Certificate Downloaded!", {
+        description: `${achievement.title} certificate has been downloaded successfully.`,
+      });
+
+      // In production, fetch actual certificate from backend:
+      // const response = await fetch(
+      //   `${API_ENDPOINTS.student.certificates}?achievement_id=${achievement.id}`
+      // );
+      // const blob = await response.blob();
+      // saveAs(blob, `Certificate_${achievement.title}.pdf`);
+    }, 2000);
+  };
 
   const renderCV = () => (
     <div className="space-y-6">
@@ -231,7 +556,16 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
             <Upload className="h-16 w-16 mx-auto text-gray-400 mb-4" />
             <p className="mb-2">Drag and drop your CV here</p>
             <p className="text-sm text-gray-500 mb-4">or</p>
-            <Button>Browse Files</Button>
+            <input
+              type="file"
+              id="cv-upload-input"
+              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={handleCVUpload}
+              className="hidden"
+            />
+            <Button onClick={() => document.getElementById('cv-upload-input')?.click()}>
+              Browse Files
+            </Button>
             <p className="text-xs text-gray-500 mt-4">Supported formats: PDF, DOC, DOCX (Max 5MB)</p>
           </div>
         </CardContent>
@@ -242,34 +576,53 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
           <CardTitle>Uploaded CVs</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <FileText className="h-6 w-6 text-blue-600" />
-                <div>
-                  <p className="text-sm">CV_Priya_Sharma_2025.pdf</p>
-                  <p className="text-xs text-gray-500">Uploaded on 2025-10-01 • 2.3 MB</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Approved</Badge>
-                <Button size="sm" variant="outline">View</Button>
-              </div>
+          {isLoadingCVs ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
             </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <FileText className="h-6 w-6 text-blue-600" />
-                <div>
-                  <p className="text-sm">CV_Priya_Sharma_2024.pdf</p>
-                  <p className="text-xs text-gray-500">Uploaded on 2024-09-15 • 1.8 MB</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Approved</Badge>
-                <Button size="sm" variant="outline">View</Button>
-              </div>
+          ) : uploadedCVs.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p>No CVs uploaded yet</p>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-3">
+              {uploadedCVs.map((cv) => (
+                <div key={cv.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-6 w-6 text-blue-600" />
+                    <div>
+                      <p className="text-sm font-medium">{cv.fileName}</p>
+                      <p className="text-xs text-gray-500">
+                        Uploaded on {new Date(cv.uploadDate).toLocaleDateString()} • {cv.fileSize} MB
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant="outline" 
+                      className={
+                        cv.status === 'Approved' 
+                          ? "bg-green-50 text-green-700 border-green-200"
+                          : cv.status === 'Rejected'
+                          ? "bg-red-50 text-red-700 border-red-200"
+                          : "bg-yellow-50 text-yellow-700 border-yellow-200"
+                      }
+                    >
+                      {cv.status}
+                    </Badge>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => window.open(`http://localhost/cse_portal_backend/${cv.filePath}`, '_blank')}
+                    >
+                      View
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
@@ -279,7 +632,7 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2>Achievements</h2>
-        <Button>Add Achievement</Button>
+        <Button onClick={handleAddAchievement}>Add Achievement</Button>
       </div>
 
       <Tabs defaultValue="academic">
@@ -306,7 +659,14 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
                 <CardContent>
                   <p className="mb-2">{achievement.title}</p>
                   <p className="text-sm text-gray-600">{achievement.date}</p>
-                  <Button className="w-full mt-4" size="sm" variant="outline">View Details</Button>
+                  <Button 
+                    className="w-full mt-4" 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleViewAchievementDetails(achievement)}
+                  >
+                    View Details
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -328,7 +688,14 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
                 <CardContent>
                   <p className="mb-2">{achievement.title}</p>
                   <p className="text-sm text-gray-600">{achievement.date}</p>
-                  <Button className="w-full mt-4" size="sm" variant="outline">View Details</Button>
+                  <Button 
+                    className="w-full mt-4" 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleViewAchievementDetails(achievement)}
+                  >
+                    View Details
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -518,6 +885,149 @@ export function StudentDashboard({ initialSection = "dashboard", onNavigateToPro
         {renderContent()}
       </main>
       <Toaster />
+
+      {/* View Achievement Details Dialog */}
+      <Dialog open={isViewDetailsOpen} onOpenChange={setIsViewDetailsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Achievement Details</DialogTitle>
+            <DialogDescription>
+              Complete information about this achievement
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedAchievement && (
+            <div className="space-y-4 py-4">
+              <div className="flex items-center gap-4">
+                <Award className="h-12 w-12 text-blue-600" />
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold">{selectedAchievement.title}</h3>
+                  <p className="text-sm text-gray-500">{selectedAchievement.date}</p>
+                </div>
+                <Badge 
+                  variant="outline" 
+                  className={selectedAchievement.status === "Approved" 
+                    ? "bg-green-50 text-green-700 border-green-200" 
+                    : "bg-yellow-50 text-yellow-700 border-yellow-200"}
+                >
+                  {selectedAchievement.status}
+                </Badge>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-semibold mb-2">Description</h4>
+                <p className="text-gray-600">
+                  {selectedAchievement.description || "This is a prestigious achievement that demonstrates excellence and dedication in the field. Further details about the achievement can be added here."}
+                </p>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-semibold mb-2">Category</h4>
+                <Badge variant="outline">
+                  {selectedAchievement.id <= 3 ? "Academic" : "Extracurricular"}
+                </Badge>
+              </div>
+
+              {selectedAchievement.status === "Approved" && (
+                <div className="border-t pt-4">
+                  <h4 className="font-semibold mb-2">Certificate</h4>
+                  <Button 
+                    variant="outline" 
+                    className="gap-2"
+                    onClick={() => handleDownloadCertificate(selectedAchievement)}
+                  >
+                    <FileText className="h-4 w-4" />
+                    Download Certificate
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsViewDetailsOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Achievement Dialog */}
+      <Dialog open={isAddAchievementOpen} onOpenChange={setIsAddAchievementOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Add New Achievement</DialogTitle>
+            <DialogDescription>
+              Submit a new achievement for approval
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="achievement-title">Achievement Title *</Label>
+              <Input
+                id="achievement-title"
+                placeholder="e.g., Dean's List 2024"
+                value={newAchievement.title}
+                onChange={(e) => setNewAchievement({ ...newAchievement, title: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="achievement-category">Category *</Label>
+              <select
+                id="achievement-category"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={newAchievement.category}
+                onChange={(e) => setNewAchievement({ ...newAchievement, category: e.target.value })}
+              >
+                <option value="academic">Academic</option>
+                <option value="extracurricular">Extracurricular</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="achievement-date">Date *</Label>
+              <Input
+                id="achievement-date"
+                type="date"
+                value={newAchievement.date}
+                onChange={(e) => setNewAchievement({ ...newAchievement, date: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="achievement-description">Description *</Label>
+              <Textarea
+                id="achievement-description"
+                placeholder="Describe your achievement..."
+                rows={4}
+                value={newAchievement.description}
+                onChange={(e) => setNewAchievement({ ...newAchievement, description: e.target.value })}
+              />
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-blue-800">
+                <strong>Note:</strong> Your achievement will be reviewed by the faculty before approval. 
+                Please ensure all information is accurate.
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsAddAchievementOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitAchievement}>
+              Submit Achievement
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

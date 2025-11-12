@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { User, Calendar, Hash, Mail, Phone, Users, Linkedin, Github, MapPin, ArrowLeft, Eye, EyeOff, Camera, Upload, GraduationCap, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
+import { API_ENDPOINTS } from "../../server";
 
 export interface StudentRegistrationData {
   // Personal Information
@@ -77,6 +78,7 @@ export function StudentRegistration({ onBack, onRegister }: StudentRegistrationP
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (field: keyof StudentRegistrationData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -181,15 +183,81 @@ export function StudentRegistration({ onBack, onRegister }: StudentRegistrationP
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    toast.success("Registration successful! Redirecting to dashboard...");
-    onRegister(formData);
+    setIsLoading(true);
+
+    try {
+      // Prepare data for backend API
+      const registrationData = {
+        name: formData.fullName,
+        roll: formData.rollNumber,
+        enrollment_number: formData.enrollmentNumber,
+        email: formData.email,
+        password: formData.password,
+        contact_number: formData.phoneNumber,
+        semester: parseInt(formData.semester),
+        section: formData.section,
+        date_of_birth: formData.dateOfBirth,
+        address: formData.address,
+        linkedin: formData.linkedinProfile || null,
+        github: formData.githubProfile || null,
+        father_name: formData.fatherName,
+        father_contact: formData.fatherPhone,
+        father_occupation: formData.fatherOccupation,
+        mother_name: formData.motherName,
+        mother_contact: formData.motherPhone,
+        mother_occupation: formData.motherOccupation,
+        gender: formData.gender,
+        profile_picture: formData.profilePicture,
+      };
+
+      // Call backend API
+      const response = await fetch(API_ENDPOINTS.student.registration, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        toast.success("Registration successful! Redirecting to dashboard...");
+        
+        // Store student data in localStorage for auto-login
+        const userData = {
+          user_id: result.data.student_id,
+          student_id: result.data.student_id,
+          id: result.data.student_id,
+          name: result.data.name,
+          email: result.data.email,
+          roll: result.data.roll,
+          role: 'student'
+        };
+        
+        localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem('authToken', result.data.student_id); // Use student_id as token
+        
+        // Call the onRegister callback with original formData format
+        setTimeout(() => {
+          onRegister(formData);
+        }, 1000);
+      } else {
+        toast.error(result.message || "Registration failed. Please try again.");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error("Failed to connect to server. Please try again.");
+      setIsLoading(false);
+    }
   };
 
   const handleClearForm = () => {
@@ -651,14 +719,16 @@ export function StudentRegistration({ onBack, onRegister }: StudentRegistrationP
             <Button
               type="submit"
               className="flex-1 bg-gray-600 hover:bg-gray-700 text-gray-300 py-6 text-lg font-semibold rounded-xl shadow-lg"
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? "Registering..." : "Register"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={handleClearForm}
               className="flex-1 sm:flex-none sm:w-40 border-2 border-gray-400 text-gray-600 hover:border-gray-500 hover:bg-gray-100 py-6 text-lg rounded-xl"
+              disabled={isLoading}
             >
               Clear Form
             </Button>

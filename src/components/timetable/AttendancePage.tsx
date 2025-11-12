@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, BookOpen, Users, Clock, Check, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Users, Clock, Check, X, Loader2 } from 'lucide-react';
 import { students as initialStudents } from './data';
 import { Student } from './types';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
+import { API_ENDPOINTS } from '../../server';
 
 interface AttendancePageProps {
   slotId: string;
   onBack: () => void;
+  onAttendanceMarked?: () => void; // Callback to notify parent that attendance was marked
 }
 
-export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
+export function AttendancePage({ slotId, onBack, onAttendanceMarked }: AttendancePageProps) {
   const [students, setStudents] = useState<Student[]>(initialStudents);
   const [attendance, setAttendance] = useState<{ [key: string]: boolean }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleAttendance = (rollNo: string, status: boolean) => {
     setAttendance(prev => ({
@@ -40,14 +43,74 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
     toast.success('All students marked absent');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const presentCount = Object.values(attendance).filter(Boolean).length;
     const totalCount = students.length;
     
-    toast.success(`Attendance saved: ${presentCount}/${totalCount} students present`);
-    setTimeout(() => {
-      onBack();
-    }, 1500);
+    // Validate that all students are marked
+    if (Object.keys(attendance).length < students.length) {
+      toast.error('Please mark attendance for all students');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Get current user (faculty/HOD) from localStorage
+      const userData = localStorage.getItem("userData");
+      const user = userData ? JSON.parse(userData) : null;
+      const facultyId = user?.user_id || user?.faculty_id || user?.id || 'HOD001';
+      
+      // Get current date
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      // Prepare bulk attendance data
+      const bulkAttendanceData = {
+        subjectCode: 'DSA', // You might want to pass this from props based on slotId
+        date: today,
+        period: parseInt(slotId) || 1,
+        markedBy: facultyId,
+        students: students.map(student => ({
+          studentId: student.rollNo,
+          status: attendance[student.rollNo] ? 'Present' : 'Absent'
+        }))
+      };
+
+      // Call backend API with bulk_mark action
+      const response = await fetch(`${API_ENDPOINTS.attendance.mark}?action=bulk_mark`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bulkAttendanceData),
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success' || response.ok) {
+        toast.success(`Attendance saved: ${presentCount}/${totalCount} students present`, {
+          description: 'Attendance has been recorded successfully'
+        });
+        
+        // Notify parent component that attendance was marked
+        if (onAttendanceMarked) {
+          onAttendanceMarked();
+        }
+        
+        setTimeout(() => {
+          onBack();
+        }, 1500);
+      } else {
+        throw new Error(result.message || 'Failed to save attendance');
+      }
+    } catch (error) {
+      console.error('Error saving attendance:', error);
+      toast.error('Failed to save attendance', {
+        description: error instanceof Error ? error.message : 'Please try again'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -235,12 +298,20 @@ export function AttendancePage({ slotId, onBack }: AttendancePageProps) {
           </Button>
           <Button
             onClick={handleSubmit}
+            disabled={isSubmitting || Object.keys(attendance).length < students.length}
             className="flex-1 h-12 text-white"
             style={{
               background: 'linear-gradient(135deg, #2563eb 0%, #0891b2 100%)'
             }}
           >
-            Submit Attendance
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Submit Attendance'
+            )}
           </Button>
         </motion.div>
       </div>

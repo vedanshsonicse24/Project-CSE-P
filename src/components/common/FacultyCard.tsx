@@ -1,13 +1,26 @@
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { API_ENDPOINTS } from "../../server";
+import { Loader2 } from "lucide-react";
 
 interface FacultyCardProps {
+  name?: string;
+  title?: string;
+  department?: string;
+  image?: string;
+  isHOD?: boolean;
+  index?: number;
+  fetchFromAPI?: boolean; // Enable fetching single faculty by name
+  facultyId?: string; // For fetching specific faculty
+}
+
+interface FacultyData {
   name: string;
   title: string;
   department?: string;
   image: string;
-  isHOD?: boolean;
-  index?: number;
+  isHOD: boolean;
 }
 
 // Animated default avatar using inline SVG + motion
@@ -48,7 +61,95 @@ function AnimatedAvatar({ size = 96 }: { size?: number }) {
   );
 }
 
-export function FacultyCard({ name, title, department, image, isHOD = false, index = 0 }: FacultyCardProps) {
+export function FacultyCard({ 
+  name: propName, 
+  title: propTitle, 
+  department: propDepartment, 
+  image: propImage, 
+  isHOD: propIsHOD = false, 
+  index = 0,
+  fetchFromAPI = false,
+  facultyId
+}: FacultyCardProps) {
+  const [facultyData, setFacultyData] = useState<FacultyData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (fetchFromAPI && (propName || facultyId)) {
+      fetchFacultyData();
+    }
+  }, [fetchFromAPI, propName, facultyId]);
+
+  const fetchFacultyData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const queryParam = facultyId 
+        ? `?id=${encodeURIComponent(facultyId)}`
+        : propName 
+        ? `?name=${encodeURIComponent(propName)}`
+        : '';
+
+      const response = await fetch(`${API_ENDPOINTS.facultyCard}${queryParam}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      // Handle both direct object and {status, data} response formats
+      if (result.status === "success" && result.data) {
+        setFacultyData(result.data);
+      } else if (result.name) {
+        // Direct object response
+        setFacultyData(result as FacultyData);
+      } else {
+        throw new Error("Invalid response format");
+      }
+    } catch (err) {
+      console.error("Error fetching faculty data:", err);
+      setError(err instanceof Error ? err.message : "Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Use API data if available, otherwise use props
+  const name = fetchFromAPI && facultyData ? facultyData.name : propName || "Unknown";
+  const title = fetchFromAPI && facultyData ? facultyData.title : propTitle || "Faculty";
+  const department = fetchFromAPI && facultyData ? facultyData.department : propDepartment;
+  const image = fetchFromAPI && facultyData ? facultyData.image : propImage || "";
+  const isHOD = fetchFromAPI && facultyData ? facultyData.isHOD : propIsHOD;
+
+  if (loading) {
+    return (
+      <motion.div
+        className="flex-none bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center w-64"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="flex items-center justify-center h-48">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (error) {
+    return (
+      <motion.div
+        className="flex-none bg-white rounded-2xl shadow-lg border border-red-200 p-6 text-center w-64"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <p className="text-red-500 text-sm">Failed to load faculty data</p>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       className={`

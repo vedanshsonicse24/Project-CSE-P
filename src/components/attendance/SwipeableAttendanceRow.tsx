@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Check, X, Loader2 } from 'lucide-react';
 import { cn } from '../ui/utils';
+import { toast } from 'sonner';
 
 interface SwipeableAttendanceRowProps {
   studentId: string;
@@ -98,6 +99,8 @@ const SwipeableAttendanceRow: React.FC<SwipeableAttendanceRowProps> = React.memo
     setSwipeOffset(0);
 
     if (newStatus && newStatus !== status) {
+      const previousStatus = status; // Store previous state for rollback
+      
       try {
         setIsUpdating(true);
         triggerHaptic();
@@ -106,11 +109,38 @@ const SwipeableAttendanceRow: React.FC<SwipeableAttendanceRowProps> = React.memo
         setFeedbackType(newStatus);
         setShowFeedback(true);
 
-        // Call API
-        await onStatusChange(studentId, newStatus);
-        
-        // Update status
+        // Optimistically update UI
         setStatus(newStatus);
+
+        // Call backend API
+        const currentDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        const response = await fetch('http://localhost/cse_portal_backend/api/attendance/attendance.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            student_id: studentId,
+            status: newStatus,
+            date: currentDate,
+            period: 1 // Default period, can be passed as prop if needed
+          })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.message || 'Failed to update attendance');
+        }
+
+        // Success - call parent callback
+        await onStatusChange(studentId, newStatus);
+
+        console.log('✅ Attendance updated successfully:', result);
+        toast.success(`Marked ${studentName} as ${newStatus}`, {
+          description: `Attendance updated for ${currentDate}`
+        });
 
         // Clear feedback after animation
         feedbackTimeoutRef.current = setTimeout(() => {
@@ -119,18 +149,26 @@ const SwipeableAttendanceRow: React.FC<SwipeableAttendanceRowProps> = React.memo
         }, 600);
 
       } catch (error) {
-        console.error('Failed to update attendance:', error);
-        // Reset on error
+        console.error('❌ Failed to update attendance:', error);
+        
+        // Revert to previous status on error
+        setStatus(previousStatus);
         setShowFeedback(false);
         setFeedbackType(null);
+        
+        toast.error('Failed to update attendance', {
+          description: error instanceof Error ? error.message : 'Please try again'
+        });
       } finally {
         setIsUpdating(false);
       }
     }
-  }, [isSwiping, swipeOffset, status, studentId, onStatusChange, disabled, isUpdating, triggerHaptic]);
+  }, [isSwiping, swipeOffset, status, studentId, studentName, onStatusChange, disabled, isUpdating, triggerHaptic]);
 
   const handleButtonClick = useCallback(async (newStatus: 'present' | 'absent') => {
     if (disabled || isUpdating || status === newStatus) return;
+
+    const previousStatus = status; // Store previous state for rollback
 
     try {
       setIsUpdating(true);
@@ -139,8 +177,38 @@ const SwipeableAttendanceRow: React.FC<SwipeableAttendanceRowProps> = React.memo
       setFeedbackType(newStatus);
       setShowFeedback(true);
 
-      await onStatusChange(studentId, newStatus);
+      // Optimistically update UI
       setStatus(newStatus);
+
+      // Call backend API
+      const currentDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      
+      const response = await fetch('http://localhost/cse_portal_backend/api/attendance/attendance.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          status: newStatus,
+          date: currentDate,
+          period: 1 // Default period, can be passed as prop if needed
+        })
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to update attendance');
+      }
+
+      // Success - call parent callback
+      await onStatusChange(studentId, newStatus);
+
+      console.log('✅ Attendance updated successfully:', result);
+      toast.success(`Marked ${studentName} as ${newStatus}`, {
+        description: `Attendance updated for ${currentDate}`
+      });
 
       feedbackTimeoutRef.current = setTimeout(() => {
         setShowFeedback(false);
@@ -148,13 +216,20 @@ const SwipeableAttendanceRow: React.FC<SwipeableAttendanceRowProps> = React.memo
       }, 600);
 
     } catch (error) {
-      console.error('Failed to update attendance:', error);
+      console.error('❌ Failed to update attendance:', error);
+      
+      // Revert to previous status on error
+      setStatus(previousStatus);
       setShowFeedback(false);
       setFeedbackType(null);
+      
+      toast.error('Failed to update attendance', {
+        description: error instanceof Error ? error.message : 'Please try again'
+      });
     } finally {
       setIsUpdating(false);
     }
-  }, [disabled, isUpdating, status, studentId, onStatusChange, triggerHaptic]);
+  }, [disabled, isUpdating, status, studentId, studentName, onStatusChange, triggerHaptic]);
 
   const getStatusBadge = () => {
     if (status === 'present') {

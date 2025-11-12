@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { StatsCard } from "../common/StatsCard";
+import { API_ENDPOINTS } from "../../server";
+import { toast } from "sonner";
 import {
   LayoutDashboard,
   BookOpen,
@@ -48,16 +50,81 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
 
+  // Faculty data state
+  const [facultyId] = useState("FAC001"); // TODO: Get from auth context
+  const [stats, setStats] = useState({
+    totalClasses: 0,
+    totalMentees: 0,
+    yearsOfExperience: 0,
+    averageAttendance: 0
+  });
+  const [classes, setClasses] = useState<any[]>([]);
+  const [mentees, setMentees] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
   // Update active section when prop changes
   useEffect(() => {
     setActiveSection(initialSection);
   }, [initialSection]);
 
-  const classes = [
-    { id: 1, code: "CSE301", name: "Data Structures", section: "A", students: 45, time: "9:00 AM - 10:30 AM" },
-    { id: 2, code: "CSE302", name: "Database Management", section: "B", students: 42, time: "11:00 AM - 12:30 PM" },
-    { id: 3, code: "CSE401", name: "Machine Learning", section: "A", students: 38, time: "2:00 PM - 3:30 PM" },
-  ];
+  // Fetch faculty stats
+  useEffect(() => {
+    if (activeSection === "dashboard") {
+      fetchFacultyStats();
+      fetchFacultyClasses();
+    }
+  }, [activeSection]);
+
+  const fetchFacultyStats = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_ENDPOINTS.faculty.stats}&id=${facultyId}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.status === "success") {
+        setStats(result.data);
+      } else {
+        throw new Error(result.message || "Failed to fetch stats");
+      }
+    } catch (error: any) {
+      console.error("Error fetching faculty stats:", error);
+      toast.error("Failed to load statistics", {
+        description: error.message
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFacultyClasses = async () => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.faculty.classes}&id=${facultyId}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.status === "success") {
+        setClasses(result.data);
+      } else {
+        throw new Error(result.message || "Failed to fetch classes");
+      }
+    } catch (error: any) {
+      console.error("Error fetching faculty classes:", error);
+      // Use fallback data for demo
+      setClasses([
+        { code: "CSE301", name: "Data Structures", section: "A", semester: 5, type: "theory", credits: 4 },
+        { code: "CSE302", name: "Database Management", section: "B", semester: 5, type: "theory", credits: 4 },
+      ]);
+    }
+  };
 
   const students = [
     { id: 1, name: "Amit Kumar", roll: "21CS001", attendance: 92, grade: "A", present: true },
@@ -66,11 +133,30 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
     { id: 4, name: "Sneha Patel", roll: "21CS004", attendance: 95, grade: "A+", present: true },
   ];
 
-  const mentees = [
-    { id: 1, name: "Ananya Singh", roll: "21CS010", performance: "Excellent", contact: "ananya@student.edu" },
-    { id: 2, name: "Kiran Reddy", roll: "21CS015", performance: "Good", contact: "kiran@student.edu" },
-    { id: 3, name: "Pooja Gupta", roll: "21CS020", performance: "Average", contact: "pooja@student.edu" },
-  ];
+  // Grading state - track each student's grade and feedback
+  const [studentGrades, setStudentGrades] = useState<{[key: number]: string}>({
+    1: "A", 2: "A", 3: "B+", 4: "A+"
+  });
+  const [studentFeedback, setStudentFeedback] = useState<{[key: number]: string}>({
+    1: "vgvjj", 2: "", 3: "", 4: ""
+  });
+
+  const handleGradeChange = (studentId: number, newGrade: string) => {
+    setStudentGrades(prev => ({ ...prev, [studentId]: newGrade }));
+  };
+
+  const handleFeedbackChange = (studentId: number, newFeedback: string) => {
+    setStudentFeedback(prev => ({ ...prev, [studentId]: newFeedback }));
+  };
+
+  const handleUpdateGrade = (studentId: number, studentName: string) => {
+    const grade = studentGrades[studentId];
+    const feedback = studentFeedback[studentId];
+    
+    toast.success(`Grade Updated!`, {
+      description: `${studentName}: Grade ${grade}${feedback ? ` - ${feedback}` : ''}`
+    });
+  };
 
   const [engageLectures, setEngageLectures] = useState([
     { id: 1, date: "2025-10-10", class: "CSE301", semester: "6", section: "A", takenBy: "Dr. Sharma", reason: "Conference" },
@@ -101,30 +187,102 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
   const [engageDate, setEngageDate] = useState<string>("");
   const [period, setPeriod] = useState<string>("1");
 
-  const handleEngageLecture = () => {
-    const newLecture: any = {
-      id: Date.now(),
-      date: engageDate || new Date().toISOString().split("T")[0],
-      // class removed from engage form
-      takenBy: engageTo || "",
-      subject: subject || "",
-      reason: reason || "",
-      semester,
-      section,
-      period,
-      engagedBy,
-    };
-    setEngageLectures((prev) => [newLecture, ...prev]);
+  const handleEngageLecture = async () => {
+    // Validation
+    if (!engagedBy) {
+      toast.error("Please select who is engaged by");
+      return;
+    }
+    if (!engageTo) {
+      toast.error("Please select who to engage");
+      return;
+    }
+    if (!subject) {
+      toast.error("Please enter subject");
+      return;
+    }
+    if (!reason) {
+      toast.error("Please enter reason for engagement");
+      return;
+    }
+    if (!engageDate) {
+      toast.error("Please select date");
+      return;
+    }
 
-    // reset form
-    setEngagedBy(undefined);
-    setEngageTo(undefined);
-    setSemester("1");
-    setSection("A");
-    setSubject("");
-    setReason("");
-    setEngageDate("");
-    setPeriod("1");
+    // Show loading toast
+    const loadingToast = toast.loading("Creating engage lecture request...");
+
+    try {
+      // Get faculty IDs (you'll need to map names to IDs - for now using placeholder)
+      const facultyMap: { [key: string]: string } = {
+        "Dr. Rajesh Sharma": "FAC001",
+        "Dr. Priya Kumar": "FAC002",
+        "Prof. Amit Gupta": "FAC003",
+        "Dr. Neha Verma": "FAC004",
+      };
+
+      const payload = {
+        originalFacultyId: facultyMap[engagedBy] || "FAC001",
+        proxyFacultyId: facultyMap[engageTo] || "FAC002",
+        engageDate: engageDate,
+        reason: reason,
+        semester: semester,
+        section: section,
+        subject: subject,
+        period: period
+      };
+
+      const response = await fetch(API_ENDPOINTS.faculty.engage.create, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      toast.dismiss(loadingToast);
+
+      if (result.status === 'success') {
+        toast.success("Engage Lecture Created!", {
+          description: "Your engage lecture request has been submitted successfully."
+        });
+
+        // Add to local state for immediate UI update
+        const newLecture: any = {
+          id: result.data.id || Date.now(),
+          date: engageDate,
+          takenBy: engageTo,
+          subject: subject,
+          reason: reason,
+          semester,
+          section,
+          period,
+          engagedBy,
+        };
+        setEngageLectures((prev) => [newLecture, ...prev]);
+
+        // Reset form
+        setEngagedBy(undefined);
+        setEngageTo(undefined);
+        setSemester("1");
+        setSection("A");
+        setSubject("");
+        setReason("");
+        setEngageDate("");
+        setPeriod("1");
+      } else {
+        throw new Error(result.message || 'Failed to create engage lecture');
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error("Failed to Create Engage Lecture", {
+        description: error instanceof Error ? error.message : "Please try again later"
+      });
+      console.error('Engage lecture error:', error);
+    }
   };
 
   const renderDashboard = () => (
@@ -132,29 +290,58 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
       <div>
         <h2 className="mb-6">Faculty Dashboard</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard title="Total Classes" value="3" icon={BookOpen} />
-          <StatsCard title="Total Students" value="125" icon={Users} bgColor="bg-green-50" iconColor="text-green-600" />
-          <StatsCard title="Mentees" value="3" icon={UserCheck} bgColor="bg-purple-50" iconColor="text-purple-600" />
-          <StatsCard title="Engage Lectures" value="2" icon={Calendar} bgColor="bg-orange-50" iconColor="text-orange-600" />
+          <StatsCard 
+            title="Total Classes" 
+            value={stats.totalClasses.toString()} 
+            icon={BookOpen} 
+          />
+          <StatsCard 
+            title="Years of Experience" 
+            value={stats.yearsOfExperience.toString()} 
+            icon={Users} 
+            bgColor="bg-green-50" 
+            iconColor="text-green-600" 
+          />
+          <StatsCard 
+            title="Mentees" 
+            value={stats.totalMentees.toString()} 
+            icon={UserCheck} 
+            bgColor="bg-purple-50" 
+            iconColor="text-purple-600" 
+          />
+          <StatsCard 
+            title="Attendance %" 
+            value={`${stats.averageAttendance}%`} 
+            icon={Calendar} 
+            bgColor="bg-orange-50" 
+            iconColor="text-orange-600" 
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Today's Schedule</CardTitle>
+            <CardTitle>My Classes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {classes.map((cls) => (
-                <div key={cls.id} className="flex items-center p-4 bg-gray-50 rounded-lg gap-4">
-                  <div>
-                    <p>{cls.code} - {cls.name}</p>
-                    <p className="text-sm text-gray-600">Section {cls.section} • {cls.students} students</p>
-                    <p className="text-xs text-gray-500 mt-1">{cls.time}</p>
+              {loading ? (
+                <p className="text-gray-500 text-center py-4">Loading classes...</p>
+              ) : classes.length > 0 ? (
+                classes.map((cls, idx) => (
+                  <div key={idx} className="flex items-center p-4 bg-gray-50 rounded-lg gap-4">
+                    <div>
+                      <p>{cls.code} - {cls.name}</p>
+                      <p className="text-sm text-gray-600">
+                        Section {cls.section} • Semester {cls.semester} • {cls.type}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">No classes assigned</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -479,13 +666,40 @@ export function FacultyDashboard({ initialSection = "dashboard" }: FacultyDashbo
                   <TableCell>{student.name}</TableCell>
                   <TableCell>{student.roll}</TableCell>
                   <TableCell>
-                    <Badge>{student.grade}</Badge>
+                    <Select 
+                      value={studentGrades[student.id]} 
+                      onValueChange={(value: string) => handleGradeChange(student.id, value)}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="A+">A+</SelectItem>
+                        <SelectItem value="A">A</SelectItem>
+                        <SelectItem value="B+">B+</SelectItem>
+                        <SelectItem value="B">B</SelectItem>
+                        <SelectItem value="C+">C+</SelectItem>
+                        <SelectItem value="C">C</SelectItem>
+                        <SelectItem value="D">D</SelectItem>
+                        <SelectItem value="F">F</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </TableCell>
                   <TableCell>
-                    <Input placeholder="Add feedback" className="w-full" />
+                    <Input 
+                      placeholder="Add feedback" 
+                      className="w-full"
+                      value={studentFeedback[student.id] || ''}
+                      onChange={(e) => handleFeedbackChange(student.id, e.target.value)}
+                    />
                   </TableCell>
                   <TableCell>
-                    <Button size="sm">Update</Button>
+                    <Button 
+                      size="sm"
+                      onClick={() => handleUpdateGrade(student.id, student.name)}
+                    >
+                      Update
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

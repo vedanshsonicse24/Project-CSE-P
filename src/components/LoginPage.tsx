@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
+import { API_ENDPOINTS } from "../server";
 
 interface LoginPageProps {
   onLogin: (role: "faculty" | "student" | "hod" | "admin", username: string, rememberMe?: boolean) => void;
@@ -73,24 +74,65 @@ export function LoginPage({ onLogin, onNavigateToHome, onNavigateToRegister }: L
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      let finalRole: "faculty" | "student" | "hod" | "admin" = "student";
-      
-      if (currentRole.id === "student") {
-        finalRole = "student";
-        toast.success(`Successfully logged in as ${currentRole.title}`);
-      } else if (currentRole.id === "faculty") {
-        finalRole = "faculty";
-        toast.success(`Successfully logged in as Faculty`);
-      } else if (currentRole.id === "hod") {
-        finalRole = "hod";
-        toast.success(`Successfully logged in as ${currentRole.title}`);
+    try {
+      // API Call to Backend
+      const response = await fetch(API_ENDPOINTS.login, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password,
+          role: currentRole.id, // 'student', 'faculty', or 'hod'
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        // Map role from backend
+        let finalRole: "faculty" | "student" | "hod" | "admin" = "student";
+        
+        const userRole = result.data.user.role.toLowerCase();
+        if (userRole === "student") {
+          finalRole = "student";
+        } else if (userRole === "faculty") {
+          finalRole = "faculty";
+        } else if (userRole === "hod") {
+          finalRole = "hod";
+        } else if (userRole === "admin") {
+          finalRole = "admin";
+        }
+
+        // Store authentication data
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('authToken', result.data.token);
+        storage.setItem('userRole', finalRole);
+        storage.setItem('userId', result.data.user.id);
+        storage.setItem('username', result.data.user.username);
+        storage.setItem('fullName', result.data.user.full_name);
+        
+        // Store profile data if available
+        if (result.data.user.profile) {
+          storage.setItem('userProfile', JSON.stringify(result.data.user.profile));
+        }
+
+        toast.success(`Welcome back, ${result.data.user.full_name}!`);
+        
+        // Small delay for toast to show
+        setTimeout(() => {
+          onLogin(finalRole, result.data.user.username, rememberMe);
+        }, 500);
+      } else {
+        toast.error(result.message || "Login failed");
       }
-      
-      onLogin(finalRole, email, rememberMe);
-    }, 1500);
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Failed to connect to server. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderShape = (shape: any, index: number) => {
